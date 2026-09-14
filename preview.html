@@ -39,7 +39,36 @@
     }
     .screen { flex: 1; overflow: auto; padding: 20px 16px 16px; }
     h1 { font-size: 28px; margin: 0 0 4px; }
-    .subtitle { color: var(--muted); margin: 0 0 16px; }
+    .brand { margin-bottom: 16px; }
+    .brand-row {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .brand-row .pin {
+      width: 26px;
+      height: 26px;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+    .wordmark {
+      color: var(--primary);
+      font-size: 32px;
+      font-weight: 900;
+      font-style: italic;
+      letter-spacing: 0.04em;
+      line-height: 1;
+    }
+    .city {
+      margin-left: auto;
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid var(--primary);
+      border-radius: 4px;
+      padding: 4px 8px;
+    }
+    .subtitle { color: var(--muted); margin: 8px 0 0; }
     h2 { font-size: 20px; margin: 16px 0 10px; }
     h3 { font-size: 22px; margin: 16px 0 12px; }
     .search {
@@ -176,8 +205,16 @@
 <body>
   <div class="phone" id="phone">
     <div class="screen" id="home">
-      <h1>Rowlê</h1>
-      <p class="subtitle">Descubra o rolê em Brasília</p>
+      <div class="brand">
+        <div class="brand-row">
+          <svg class="pin" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"></path>
+          </svg>
+          <span class="wordmark">ROWLÊ</span>
+          <span class="city">BSB / DF</span>
+        </div>
+        <p class="subtitle">O que tá rolando em Brasília hoje.</p>
+      </div>
       <div class="search-wrap">
         <span class="icon" aria-hidden="true">
           <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
