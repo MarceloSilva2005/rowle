@@ -6,16 +6,16 @@
   <title>Rowlê</title>
   <style>
     :root {
-      --primary: #1565C0;
-      --on-primary: #fff;
-      --bg: #F7F7F7;
-      --surface: #fff;
-      --on-bg: #111;
-      --on-surface: #111;
-      --muted: #666;
-      --chip: #E7E7E7;
-      --chip-on: #1565C0;
-      --chip-on-text: #fff;
+      --primary: #C8FF00;
+      --on-primary: #000;
+      --bg: #000;
+      --surface: #111;
+      --on-bg: #fff;
+      --on-surface: #fff;
+      --muted: #B3B3B3;
+      --chip: #1A1A1A;
+      --chip-on: #C8FF00;
+      --chip-on-text: #000;
     }
     html, body { height: 100%; margin: 0; }
     body {
@@ -45,7 +45,7 @@
     .search {
       width: 100%;
       box-sizing: border-box;
-      border: 1px solid #bbb;
+      border: 1px solid var(--primary);
       border-radius: 14px;
       padding: 14px 14px 14px 42px;
       font-size: 16px;
@@ -120,7 +120,11 @@
       background: transparent;
       color: var(--muted);
     }
-    .nav button.on { color: var(--primary); font-weight: 700; }
+    .nav button.on {
+      background: var(--primary);
+      color: var(--on-primary);
+      font-weight: 700;
+    }
     .option {
       display: flex;
       align-items: center;
@@ -150,29 +154,41 @@
       font-size: 16px;
       cursor: pointer;
     }
+    body.light {
+      --primary: #5A8A00;
+      --on-primary: #fff;
+      --bg: #F4F4F0;
+      --surface: #fff;
+      --on-bg: #111;
+      --on-surface: #111;
+      --muted: #5C5C5C;
+      --chip: #E8E8E0;
+      --chip-on: #5A8A00;
+      --chip-on-text: #fff;
+    }
     body.dark {
-      --primary: #64B5F6;
-      --on-primary: #003258;
+      --primary: #C8FF00;
+      --on-primary: #000;
       --bg: #121212;
-      --surface: #1E1E1E;
+      --surface: #161616;
       --on-bg: #fff;
       --on-surface: #fff;
-      --muted: #BDBDBD;
-      --chip: #2A2A2A;
-      --chip-on: #64B5F6;
-      --chip-on-text: #003258;
+      --muted: #B3B3B3;
+      --chip: #1C1C1C;
+      --chip-on: #C8FF00;
+      --chip-on-text: #000;
     }
     body.amoled {
-      --primary: #64B5F6;
-      --on-primary: #001A2E;
+      --primary: #C8FF00;
+      --on-primary: #000;
       --bg: #000;
-      --surface: #080808;
+      --surface: #111;
       --on-bg: #fff;
       --on-surface: #fff;
-      --muted: #B0B0B0;
-      --chip: #111;
-      --chip-on: #64B5F6;
-      --chip-on-text: #001A2E;
+      --muted: #B3B3B3;
+      --chip: #141414;
+      --chip-on: #C8FF00;
+      --chip-on-text: #000;
     }
     .hint {
       position: absolute;
@@ -202,9 +218,9 @@
     <div class="screen" id="settings" hidden>
       <h1>Configurações</h1>
       <h2>Aparência</h2>
-      <label class="option"><input type="radio" name="theme" value="light" checked /> ☀️ Claro</label>
+      <label class="option"><input type="radio" name="theme" value="light" /> ☀️ Claro</label>
       <label class="option"><input type="radio" name="theme" value="dark" /> 🌙 Escuro</label>
-      <label class="option"><input type="radio" name="theme" value="amoled" /> 🖤 AMOLED</label>
+      <label class="option"><input type="radio" name="theme" value="amoled" checked /> 🖤 AMOLED</label>
     </div>
     <div class="nav" id="nav">
       <button id="nav-home" class="on" onclick="show('home')">🏠<br>Início</button>
@@ -376,12 +392,12 @@
     document.getElementById("q").addEventListener("input", render);
     const THEME_KEY = "rowle-theme";
     function applyTheme(value) {
-      document.body.classList.remove("dark", "amoled");
-      if (value !== "light") document.body.classList.add(value);
+      document.body.classList.remove("dark", "amoled", "light");
+      document.body.classList.add(value === "light" ? "light" : value === "dark" ? "dark" : "amoled");
       const radio = document.querySelector('input[name=theme][value="' + value + '"]');
       if (radio) radio.checked = true;
     }
-    applyTheme(localStorage.getItem(THEME_KEY) || "light");
+    applyTheme(localStorage.getItem(THEME_KEY) || "amoled");
     document.querySelectorAll("input[name=theme]").forEach(r => {
       r.addEventListener("change", () => {
         applyTheme(r.value);

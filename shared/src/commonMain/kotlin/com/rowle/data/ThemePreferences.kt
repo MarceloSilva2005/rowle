@@ -4,8 +4,8 @@ import com.rowle.ui.theme.AppTheme
 
 object ThemePreferences {
     fun read(): AppTheme {
-        val raw = readThemeName() ?: return AppTheme.LIGHT
-        return runCatching { AppTheme.valueOf(raw) }.getOrDefault(AppTheme.LIGHT)
+        val raw = readThemeName() ?: return AppTheme.AMOLED
+        return runCatching { AppTheme.valueOf(raw) }.getOrDefault(AppTheme.AMOLED)
     }
 
     fun write(theme: AppTheme) {

@@ -6,40 +6,53 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
+private val Lime = Color(0xFFC8FF00)
+private val Ink = Color(0xFF000000)
+private val Night = Color(0xFF121212)
+private val CardDark = Color(0xFF161616)
+private val CardAmoled = Color(0xFF111111)
+private val MutedDark = Color(0xFFB3B3B3)
+
 private val LightColors = lightColorScheme(
-    primary = Color(0xFF1565C0),
+    primary = Color(0xFF5A8A00),
     onPrimary = Color.White,
-    secondary = Color(0xFF5C6BC0),
-    background = Color(0xFFF7F7F7),
+    secondary = Color(0xFF5A8A00),
+    onSecondary = Color.White,
+    background = Color(0xFFF4F4F0),
     surface = Color.White,
-    onBackground = Color(0xFF111111),
-    onSurface = Color(0xFF111111),
-    surfaceVariant = Color(0xFFE7E7E7),
-    onSurfaceVariant = Color(0xFF666666)
+    onBackground = Ink,
+    onSurface = Ink,
+    surfaceVariant = Color(0xFFE8E8E0),
+    onSurfaceVariant = Color(0xFF5C5C5C),
+    outline = Color(0xFF5A8A00)
 )
 
 private val DarkColors = darkColorScheme(
-    primary = Color(0xFF64B5F6),
-    onPrimary = Color(0xFF003258),
-    secondary = Color(0xFF9FA8DA),
-    background = Color(0xFF121212),
-    surface = Color(0xFF1E1E1E),
+    primary = Lime,
+    onPrimary = Ink,
+    secondary = Lime,
+    onSecondary = Ink,
+    background = Night,
+    surface = CardDark,
     onBackground = Color.White,
     onSurface = Color.White,
-    surfaceVariant = Color(0xFF2A2A2A),
-    onSurfaceVariant = Color(0xFFBDBDBD)
+    surfaceVariant = Color(0xFF1C1C1C),
+    onSurfaceVariant = MutedDark,
+    outline = Lime
 )
 
 private val AmoledColors = darkColorScheme(
-    primary = Color(0xFF64B5F6),
-    onPrimary = Color(0xFF001A2E),
-    secondary = Color(0xFF9FA8DA),
-    background = Color.Black,
-    surface = Color(0xFF080808),
+    primary = Lime,
+    onPrimary = Ink,
+    secondary = Lime,
+    onSecondary = Ink,
+    background = Ink,
+    surface = CardAmoled,
     onBackground = Color.White,
     onSurface = Color.White,
-    surfaceVariant = Color(0xFF111111),
-    onSurfaceVariant = Color(0xFFB0B0B0)
+    surfaceVariant = Color(0xFF141414),
+    onSurfaceVariant = MutedDark,
+    outline = Lime
 )
 
 enum class AppTheme {
@@ -50,7 +63,7 @@ enum class AppTheme {
 
 @Composable
 fun RowleTheme(
-    theme: AppTheme = AppTheme.LIGHT,
+    theme: AppTheme = AppTheme.AMOLED,
     content: @Composable () -> Unit
 ) {
     val colors = when (theme) {
