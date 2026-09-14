@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rowlê</title>
+  <style>
+    :root {
+      --primary: #1565C0;
+      --on-primary: #fff;
+      --bg: #F7F7F7;
+      --surface: #fff;
+      --on-bg: #111;
+      --on-surface: #111;
+      --muted: #666;
+      --chip: #E7E7E7;
+      --chip-on: #1565C0;
+      --chip-on-text: #fff;
+    }
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: #1a1a1a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .phone {
+      width: 390px;
+      height: 780px;
+      background: var(--bg);
+      color: var(--on-bg);
+      border-radius: 28px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.45);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .screen { flex: 1; overflow: auto; padding: 20px 16px 16px; }
+    h1 { font-size: 28px; margin: 0 0 4px; }
+    .subtitle { color: var(--muted); margin: 0 0 16px; }
+    h2 { font-size: 20px; margin: 16px 0 10px; }
+    h3 { font-size: 22px; margin: 16px 0 12px; }
+    .search {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #bbb;
+      border-radius: 14px;
+      padding: 14px 14px 14px 42px;
+      font-size: 16px;
+      background: var(--surface);
+      color: var(--on-surface);
+      outline: none;
+    }
+    .search-wrap { position: relative; }
+    .search-wrap .icon { position: absolute; left: 14px; top: 12px; }
+    .cats { display: flex; gap: 8px; flex-wrap: wrap; }
+    .chip {
+      background: var(--chip);
+      color: var(--on-surface);
+      border: 0;
+      border-radius: 20px;
+      padding: 8px 12px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .chip.on {
+      background: var(--chip-on);
+      color: var(--chip-on-text);
+    }
+    .card {
+      background: var(--surface);
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.12);
+      cursor: pointer;
+    }
+    .cat { color: var(--primary); font-size: 12px; font-weight: 700; letter-spacing: .04em; }
+    .title { font-size: 19px; font-weight: 700; margin: 6px 0 10px; }
+    .meta { color: var(--muted); margin: 4px 0; }
+    .price { color: var(--primary); font-weight: 700; margin-top: 6px; }
+    .empty { color: var(--muted); padding: 20px 0; }
+    .nav {
+      display: flex;
+      gap: 8px;
+      padding: 8px 12px 12px;
+      background: var(--bg);
+      border-top: 1px solid color-mix(in srgb, var(--muted) 25%, transparent);
+    }
+    .nav button {
+      flex: 1;
+      border: 0;
+      border-radius: 12px;
+      padding: 10px;
+      font-size: 13px;
+      cursor: pointer;
+      background: transparent;
+      color: var(--muted);
+    }
+    .nav button.on { color: var(--primary); font-weight: 700; }
+    .option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 0;
+      cursor: pointer;
+      font-size: 17px;
+    }
+    input[type="radio"] { accent-color: var(--primary); width: 18px; height: 18px; }
+    .back {
+      border: 0;
+      background: transparent;
+      color: var(--on-bg);
+      font-size: 22px;
+      cursor: pointer;
+      padding: 0 0 12px;
+    }
+    .desc { color: var(--muted); line-height: 1.45; font-size: 16px; }
+    .ticket {
+      margin-top: 16px;
+      width: 100%;
+      border: 0;
+      border-radius: 10px;
+      padding: 14px;
+      background: var(--primary);
+      color: var(--on-primary);
+      font-size: 16px;
+      cursor: pointer;
+    }
+    body.dark {
+      --primary: #64B5F6;
+      --on-primary: #003258;
+      --bg: #121212;
+      --surface: #1E1E1E;
+      --on-bg: #fff;
+      --on-surface: #fff;
+      --muted: #BDBDBD;
+      --chip: #2A2A2A;
+      --chip-on: #64B5F6;
+      --chip-on-text: #003258;
+    }
+    body.amoled {
+      --primary: #64B5F6;
+      --on-primary: #001A2E;
+      --bg: #000;
+      --surface: #080808;
+      --on-bg: #fff;
+      --on-surface: #fff;
+      --muted: #B0B0B0;
+      --chip: #111;
+      --chip-on: #64B5F6;
+      --chip-on-text: #001A2E;
+    }
+    .hint {
+      position: absolute;
+      bottom: 16px;
+      color: #aaa;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="phone" id="phone">
+    <div class="screen" id="home">
+      <h1>Rowlê</h1>
+      <p class="subtitle">Descubra o rolê em Brasília</p>
+      <div class="search-wrap">
+        <span class="icon">🔎</span>
+        <input class="search" id="q" placeholder="Buscar eventos" />
+      </div>
+      <h2>Categorias</h2>
+      <div class="cats" id="cats"></div>
+      <h3>Eventos próximos</h3>
+      <div id="list"></div>
+    </div>
+    <div class="screen" id="detail" hidden></div>
+    <div class="screen" id="settings" hidden>
+      <h1>Configurações</h1>
+      <h2>Aparência</h2>
+      <label class="option"><input type="radio" name="theme" value="light" checked /> ☀️ Claro</label>
+      <label class="option"><input type="radio" name="theme" value="dark" /> 🌙 Escuro</label>
+      <label class="option"><input type="radio" name="theme" value="amoled" /> 🖤 AMOLED</label>
+    </div>
+    <div class="nav" id="nav">
+      <button id="nav-home" class="on" onclick="show('home')">🏠<br>Início</button>
+      <button id="nav-settings" onclick="show('settings')">⚙️<br>Config</button>
+    </div>
+  </div>
+  <p class="hint">Preview no navegador — o app real é Android/iOS</p>
+  <script>
+    const events = [
+      { id: "1", title: "Festival de Tecnologia de Brasília", description: "Palestras, oficinas e networking com a cena de tecnologia do DF. Aberto a estudantes, devs e curiosos.", category: "Tecnologia", date: "20 set", time: "14:00", location: "CIC — Asa Norte", price: "Grátis" },
+      { id: "2", title: "Show de Rock em Brasília", description: "Noite de bandas locais e clássicos do rock. Chegue cedo: o espaço costuma lotar no fim de semana.", category: "Shows", date: "19 set", time: "20:00", location: "Asa Sul", price: "R$ 40", ticketUrl: "https://www.sympla.com.br" },
+      { id: "3", title: "Feira Cultural de Brasília", description: "Arte, cultura, gastronomia e atrações para toda a família no Plano Piloto.", category: "Cultura", date: "21 set", time: "10:00", location: "Eixo Monumental", price: "Grátis" },
+      { id: "4", title: "Samba no Parque", description: "Roda de samba ao ar livre com comida de boteco e espaço para dançar. Entrada franca.", category: "Shows", date: "20 set", time: "16:00", location: "Parque da Cidade", price: "Grátis" },
+      { id: "5", title: "Mostra de Cinema no Cine Brasília", description: "Sessões de cinema brasileiro e debates com realizadores. Classificação indicativa na bilheteria.", category: "Cultura", date: "22 set", time: "19:30", location: "Cine Brasília — Asa Sul", price: "R$ 20" }
+    ];
+    const emoji = { Shows: "🎵", Cultura: "🎭", Tecnologia: "💻" };
+    let selectedCategory = null;
+    function renderCats() {
+      const cats = [...new Set(events.map(e => e.category))];
+      const el = document.getElementById("cats");
+      el.innerHTML = `<button class="chip ${selectedCategory === null ? "on" : ""}" data-cat="">Todos</button>` +
+        cats.map(c => `<button class="chip ${selectedCategory === c ? "on" : ""}" data-cat="${c}">${emoji[c] || "📌"} ${c}</button>`).join("");
+      el.querySelectorAll(".chip").forEach(btn => {
+        btn.onclick = () => {
+          const value = btn.getAttribute("data-cat");
+          selectedCategory = value === "" ? null : (selectedCategory === value ? null : value);
+          render();
+        };
+      });
+    }
+    function render() {
+      renderCats();
+      const q = document.getElementById("q").value.toLowerCase();
+      const filtered = events.filter(e => {
+        const catOk = !selectedCategory || e.category === selectedCategory;
+        const qOk = !q || e.title.toLowerCase().includes(q) || e.category.toLowerCase().includes(q) || e.location.toLowerCase().includes(q);
+        return catOk && qOk;
+      });
+      const list = document.getElementById("list");
+      list.innerHTML = filtered.length
+        ? filtered.map(e => `
+            <div class="card" data-id="${e.id}">
+              <div class="cat">${e.category.toUpperCase()}</div>
+              <div class="title">${e.title}</div>
+              <div class="meta">📅 ${e.date} • ${e.time}</div>
+              <div class="meta">📍 ${e.location}</div>
+              <div class="price">${e.price}</div>
+            </div>`).join("")
+        : `<div class="empty">Nenhum evento encontrado.</div>`;
+      list.querySelectorAll(".card").forEach(card => {
+        card.onclick = () => openDetail(card.getAttribute("data-id"));
+      });
+    }
+    function openDetail(id) {
+      const e = events.find(x => x.id === id);
+      if (!e) return;
+      const ticket = e.ticketUrl
+        ? `<button class="ticket" onclick="window.open('${e.ticketUrl}', '_blank')">Ver ingressos</button>`
+        : "";
+      document.getElementById("detail").innerHTML = `
+        <button class="back" onclick="show('home')">←</button>
+        <div class="cat">${e.category.toUpperCase()}</div>
+        <h1>${e.title}</h1>
+        <p class="meta">📅 ${e.date} • ${e.time}</p>
+        <p class="meta">📍 ${e.location}</p>
+        <p class="price" style="font-size:20px">${e.price}</p>
+        <h2>Sobre</h2>
+        <p class="desc">${e.description}</p>
+        ${ticket}
+      `;
+      show("detail");
+    }
+    function show(id) {
+      ["home", "detail", "settings"].forEach(s => {
+        document.getElementById(s).hidden = s !== id;
+      });
+      document.getElementById("nav").hidden = id === "detail";
+      document.getElementById("nav-home").classList.toggle("on", id === "home");
+      document.getElementById("nav-settings").classList.toggle("on", id === "settings");
+    }
+    document.getElementById("q").addEventListener("input", render);
+    document.querySelectorAll("input[name=theme]").forEach(r => {
+      r.addEventListener("change", () => {
+        document.body.classList.remove("dark", "amoled");
+        if (r.value !== "light") document.body.classList.add(r.value);
+      });
+    });
+    render();
+  </script>
+</body>
+</html>
