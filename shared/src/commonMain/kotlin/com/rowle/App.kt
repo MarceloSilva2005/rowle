@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
+import com.rowle.data.ThemePreferences
 import com.rowle.data.eventById
 import com.rowle.ui.AppScreen
 import com.rowle.ui.EventDetailScreen
@@ -24,7 +25,7 @@ import com.rowle.ui.theme.AppTheme
 
 @Composable
 fun App() {
-    var currentTheme by remember { mutableStateOf(AppTheme.LIGHT) }
+    var currentTheme by remember { mutableStateOf(ThemePreferences.read()) }
     var screen by remember { mutableStateOf<AppScreen>(AppScreen.Home) }
 
     val canGoBack = screen !is AppScreen.Home
@@ -87,7 +88,10 @@ fun App() {
                 is AppScreen.Settings -> {
                     SettingsScreen(
                         currentTheme = currentTheme,
-                        onThemeSelected = { theme -> currentTheme = theme },
+                        onThemeSelected = { theme ->
+                            currentTheme = theme
+                            ThemePreferences.write(theme)
+                        },
                         modifier = Modifier.padding(innerPadding)
                     )
                 }

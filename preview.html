@@ -263,10 +263,18 @@
       document.getElementById("nav-settings").classList.toggle("on", id === "settings");
     }
     document.getElementById("q").addEventListener("input", render);
+    const THEME_KEY = "rowle-theme";
+    function applyTheme(value) {
+      document.body.classList.remove("dark", "amoled");
+      if (value !== "light") document.body.classList.add(value);
+      const radio = document.querySelector('input[name=theme][value="' + value + '"]');
+      if (radio) radio.checked = true;
+    }
+    applyTheme(localStorage.getItem(THEME_KEY) || "light");
     document.querySelectorAll("input[name=theme]").forEach(r => {
       r.addEventListener("change", () => {
-        document.body.classList.remove("dark", "amoled");
-        if (r.value !== "light") document.body.classList.add(r.value);
+        applyTheme(r.value);
+        localStorage.setItem(THEME_KEY, r.value);
       });
     });
     render();
