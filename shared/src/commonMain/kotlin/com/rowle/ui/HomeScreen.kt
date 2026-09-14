@@ -12,7 +12,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -83,7 +86,7 @@ fun HomeScreen(
                     Text("Buscar eventos")
                 },
                 leadingIcon = {
-                    Text("🔎")
+                    Icon(Icons.Filled.Search, contentDescription = null)
                 },
                 shape = RoundedCornerShape(14.dp)
             )
@@ -114,7 +117,7 @@ fun HomeScreen(
                         onClick = {
                             selectedCategory = if (selectedCategory == category) null else category
                         },
-                        label = { Text(categoryLabel(category)) }
+                        label = { Text(category) }
                     )
                 }
             }
@@ -274,12 +277,4 @@ private fun EmptyEvents(
     }
 }
 
-private fun categoryLabel(category: String): String {
-    val emoji = when (category) {
-        "Shows" -> "🎵"
-        "Cultura" -> "🎭"
-        "Tecnologia" -> "💻"
-        else -> "📌"
-    }
-    return "$emoji $category"
-}
+

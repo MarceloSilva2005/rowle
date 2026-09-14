@@ -7,6 +7,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -55,14 +58,14 @@ fun EventCard(
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            Text(
-                text = "📅 ${formatEventWhen(event.date, event.time)}",
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+            EventMetaLine(
+                icon = Icons.Filled.DateRange,
+                text = formatEventWhen(event.date, event.time)
             )
 
-            Text(
-                text = "📍 ${event.location}",
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+            EventMetaLine(
+                icon = Icons.Filled.Place,
+                text = event.location
             )
 
             Text(

@@ -3,6 +3,9 @@ package com.rowle
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -41,7 +44,7 @@ fun App() {
                         NavigationBarItem(
                             selected = screen is AppScreen.Home,
                             onClick = { screen = AppScreen.Home },
-                            icon = { Text("🏠") },
+                            icon = { Icon(Icons.Filled.Home, contentDescription = "Início") },
                             label = { Text("Início") }
                         )
                     }
