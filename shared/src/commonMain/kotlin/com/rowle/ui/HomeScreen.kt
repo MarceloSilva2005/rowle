@@ -4,14 +4,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,8 +22,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rowle.data.eventCategories
@@ -162,10 +167,15 @@ fun HomeScreen(
 
         if (filteredEvents.isEmpty()) {
             item {
-                Text(
-                    text = "Nenhum evento encontrado.",
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(vertical = 20.dp)
+                EmptyEvents(
+                    searchText = searchText,
+                    selectedCategory = selectedCategory,
+                    selectedWhen = selectedWhen,
+                    onClearFilters = {
+                        searchText = ""
+                        selectedCategory = null
+                        selectedWhen = WhenFilter.ALL
+                    }
                 )
             }
         } else {
@@ -198,6 +208,70 @@ private fun Header() {
 
 private enum class WhenFilter {
     ALL, TODAY, WEEKEND
+}
+
+@Composable
+private fun EmptyEvents(
+    searchText: String,
+    selectedCategory: String?,
+    selectedWhen: WhenFilter,
+    onClearFilters: () -> Unit
+) {
+    val hasFilters = searchText.isNotBlank() ||
+        selectedCategory != null ||
+        selectedWhen != WhenFilter.ALL
+
+    val title: String
+    val subtitle: String
+    when {
+        searchText.isNotBlank() -> {
+            title = "Nada por “${searchText.trim()}”"
+            subtitle = "Tenta outro nome, ou limpa a busca e os filtros."
+        }
+        selectedWhen == WhenFilter.TODAY -> {
+            title = "Nada pra hoje"
+            subtitle = "Olha o fim de semana ou tira o filtro de data."
+        }
+        selectedWhen == WhenFilter.WEEKEND -> {
+            title = "Nada nesse fim de semana"
+            subtitle = "Tira o filtro ou escolhe outra categoria."
+        }
+        selectedCategory != null -> {
+            title = "Nenhum rolê de $selectedCategory"
+            subtitle = "Escolhe outra categoria ou vê todos os eventos."
+        }
+        else -> {
+            title = "Nenhum evento por aqui"
+            subtitle = "Quando tiver rolê novo, aparece nessa lista."
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 28.dp, horizontal = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = title,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = subtitle,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center
+        )
+        if (hasFilters) {
+            Spacer(modifier = Modifier.height(16.dp))
+            OutlinedButton(onClick = onClearFilters) {
+                Text("Limpar filtros")
+            }
+        }
+    }
 }
 
 private fun categoryLabel(category: String): String {

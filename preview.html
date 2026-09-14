@@ -81,7 +81,28 @@
     .title { font-size: 19px; font-weight: 700; margin: 6px 0 10px; }
     .meta { color: var(--muted); margin: 4px 0; }
     .price { color: var(--primary); font-weight: 700; margin-top: 6px; }
-    .empty { color: var(--muted); padding: 20px 0; }
+    .empty {
+      text-align: center;
+      padding: 28px 8px 12px;
+    }
+    .empty h4 {
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+    .empty p {
+      margin: 0;
+      color: var(--muted);
+    }
+    .empty button {
+      margin-top: 16px;
+      border: 1px solid var(--primary);
+      background: transparent;
+      color: var(--primary);
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-size: 14px;
+      cursor: pointer;
+    }
     .nav {
       display: flex;
       gap: 8px;
@@ -289,10 +310,41 @@
               <div class="meta">📍 ${e.location}</div>
               <div class="price">${e.price}</div>
             </div>`).join("")
-        : `<div class="empty">Nenhum evento encontrado.</div>`;
+        : emptyHtml();
       list.querySelectorAll(".card").forEach(card => {
         card.onclick = () => openDetail(card.getAttribute("data-id"));
       });
+      const clear = document.getElementById("clear-filters");
+      if (clear) clear.onclick = clearFilters;
+    }
+    function emptyHtml() {
+      const q = document.getElementById("q").value.trim();
+      let title = "Nenhum evento por aqui";
+      let subtitle = "Quando tiver rolê novo, aparece nessa lista.";
+      if (q) {
+        title = "Nada por “" + q + "”";
+        subtitle = "Tenta outro nome, ou limpa a busca e os filtros.";
+      } else if (selectedWhen === "today") {
+        title = "Nada pra hoje";
+        subtitle = "Olha o fim de semana ou tira o filtro de data.";
+      } else if (selectedWhen === "weekend") {
+        title = "Nada nesse fim de semana";
+        subtitle = "Tira o filtro ou escolhe outra categoria.";
+      } else if (selectedCategory) {
+        title = "Nenhum rolê de " + selectedCategory;
+        subtitle = "Escolhe outra categoria ou vê todos os eventos.";
+      }
+      const hasFilters = q || selectedCategory || selectedWhen !== "all";
+      const btn = hasFilters
+        ? `<button type="button" id="clear-filters">Limpar filtros</button>`
+        : "";
+      return `<div class="empty"><h4>${title}</h4><p>${subtitle}</p>${btn}</div>`;
+    }
+    function clearFilters() {
+      document.getElementById("q").value = "";
+      selectedCategory = null;
+      selectedWhen = "all";
+      render();
     }
     function openDetail(id) {
       const e = events.find(x => x.id === id);
