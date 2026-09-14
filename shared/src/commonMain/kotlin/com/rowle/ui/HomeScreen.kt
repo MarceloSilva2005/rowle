@@ -24,6 +24,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rowle.data.eventCategories
+import com.rowle.data.isThisWeekend
+import com.rowle.data.isToday
 import com.rowle.data.sampleEvents
 import com.rowle.model.Event
 
@@ -35,15 +37,21 @@ fun HomeScreen(
 ) {
     var searchText by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf<String?>(null) }
+    var selectedWhen by remember { mutableStateOf(WhenFilter.ALL) }
 
     val filteredEvents = sampleEvents.filter { event ->
         val matchesCategory = selectedCategory == null || event.category == selectedCategory
+        val matchesWhen = when (selectedWhen) {
+            WhenFilter.ALL -> true
+            WhenFilter.TODAY -> isToday(event.date)
+            WhenFilter.WEEKEND -> isThisWeekend(event.date)
+        }
         val query = searchText.trim()
         val matchesSearch = query.isEmpty() ||
             event.title.contains(query, ignoreCase = true) ||
             event.category.contains(query, ignoreCase = true) ||
             event.location.contains(query, ignoreCase = true)
-        matchesCategory && matchesSearch
+        matchesCategory && matchesWhen && matchesSearch
     }
 
     LazyColumn(
@@ -109,6 +117,42 @@ fun HomeScreen(
 
         item {
             Text(
+                text = "Quando",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+        item {
+            FlowRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                FilterChip(
+                    selected = selectedWhen == WhenFilter.ALL,
+                    onClick = { selectedWhen = WhenFilter.ALL },
+                    label = { Text("Todos") }
+                )
+                FilterChip(
+                    selected = selectedWhen == WhenFilter.TODAY,
+                    onClick = {
+                        selectedWhen = if (selectedWhen == WhenFilter.TODAY) WhenFilter.ALL else WhenFilter.TODAY
+                    },
+                    label = { Text("Hoje") }
+                )
+                FilterChip(
+                    selected = selectedWhen == WhenFilter.WEEKEND,
+                    onClick = {
+                        selectedWhen = if (selectedWhen == WhenFilter.WEEKEND) WhenFilter.ALL else WhenFilter.WEEKEND
+                    },
+                    label = { Text("Fim de semana") }
+                )
+            }
+        }
+
+        item {
+            Text(
                 text = "Eventos próximos",
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
@@ -150,6 +194,10 @@ private fun Header() {
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
+}
+
+private enum class WhenFilter {
+    ALL, TODAY, WEEKEND
 }
 
 private fun categoryLabel(category: String): String {

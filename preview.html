@@ -172,6 +172,8 @@
       </div>
       <h2>Categorias</h2>
       <div class="cats" id="cats"></div>
+      <h2>Quando</h2>
+      <div class="cats" id="when"></div>
       <h3>Eventos próximos</h3>
       <div id="list"></div>
     </div>
@@ -190,15 +192,52 @@
   </div>
   <p class="hint">Preview no navegador — o app real é Android/iOS</p>
   <script>
+    function startOfDay(d) {
+      const x = new Date(d);
+      x.setHours(0, 0, 0, 0);
+      return x;
+    }
+    function addDays(d, n) {
+      const x = new Date(d);
+      x.setDate(x.getDate() + n);
+      return startOfDay(x);
+    }
+    function nextDow(from, dow) {
+      const x = startOfDay(from);
+      while (x.getDay() !== dow) x.setDate(x.getDate() + 1);
+      return startOfDay(x);
+    }
+    const today = startOfDay(new Date());
+    const tomorrow = addDays(today, 1);
+    const saturday = nextDow(today, 6);
+    const sunday = nextDow(today, 0);
+    const months = ["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
+    function sameDay(a, b) { return a.getTime() === b.getTime(); }
+    function thisWeekend() {
+      const dow = today.getDay();
+      if (dow === 6) return { sat: today, sun: addDays(today, 1) };
+      if (dow === 0) return { sat: addDays(today, -1), sun: today };
+      return { sat: saturday, sun: sunday };
+    }
+    function dateLabel(date) {
+      const w = thisWeekend();
+      if (sameDay(date, today)) return "Hoje";
+      if (sameDay(date, tomorrow)) return "Amanhã";
+      if (sameDay(date, w.sat)) return "Sábado";
+      if (sameDay(date, w.sun)) return "Domingo";
+      return date.getDate() + " " + months[date.getMonth()];
+    }
+    function formatWhen(e) { return dateLabel(e.date) + " • " + e.time; }
     const events = [
-      { id: "1", title: "Festival de Tecnologia de Brasília", description: "Palestras, oficinas e networking com a cena de tecnologia do DF. Aberto a estudantes, devs e curiosos.", category: "Tecnologia", date: "20 set", time: "14:00", location: "CIC — Asa Norte", price: "Grátis" },
-      { id: "2", title: "Show de Rock em Brasília", description: "Noite de bandas locais e clássicos do rock. Chegue cedo: o espaço costuma lotar no fim de semana.", category: "Shows", date: "19 set", time: "20:00", location: "Asa Sul", price: "R$ 40", ticketUrl: "https://www.sympla.com.br" },
-      { id: "3", title: "Feira Cultural de Brasília", description: "Arte, cultura, gastronomia e atrações para toda a família no Plano Piloto.", category: "Cultura", date: "21 set", time: "10:00", location: "Eixo Monumental", price: "Grátis" },
-      { id: "4", title: "Samba no Parque", description: "Roda de samba ao ar livre com comida de boteco e espaço para dançar. Entrada franca.", category: "Shows", date: "20 set", time: "16:00", location: "Parque da Cidade", price: "Grátis" },
-      { id: "5", title: "Mostra de Cinema no Cine Brasília", description: "Sessões de cinema brasileiro e debates com realizadores. Classificação indicativa na bilheteria.", category: "Cultura", date: "22 set", time: "19:30", location: "Cine Brasília — Asa Sul", price: "R$ 20" }
-    ];
+      { id: "1", title: "Festival de Tecnologia de Brasília", description: "Palestras, oficinas e networking com a cena de tecnologia do DF. Aberto a estudantes, devs e curiosos.", category: "Tecnologia", date: today, time: "14:00", location: "CIC — Asa Norte", price: "Grátis" },
+      { id: "2", title: "Show de Rock em Brasília", description: "Noite de bandas locais e clássicos do rock. Chegue cedo: o espaço costuma lotar no fim de semana.", category: "Shows", date: tomorrow, time: "20:00", location: "Asa Sul", price: "R$ 40", ticketUrl: "https://www.sympla.com.br" },
+      { id: "3", title: "Feira Cultural de Brasília", description: "Arte, cultura, gastronomia e atrações para toda a família no Plano Piloto.", category: "Cultura", date: saturday, time: "10:00", location: "Eixo Monumental", price: "Grátis" },
+      { id: "4", title: "Samba no Parque", description: "Roda de samba ao ar livre com comida de boteco e espaço para dançar. Entrada franca.", category: "Shows", date: saturday, time: "16:00", location: "Parque da Cidade", price: "Grátis" },
+      { id: "5", title: "Mostra de Cinema no Cine Brasília", description: "Sessões de cinema brasileiro e debates com realizadores. Classificação indicativa na bilheteria.", category: "Cultura", date: sunday, time: "19:30", location: "Cine Brasília — Asa Sul", price: "R$ 20" }
+    ].sort((a, b) => a.date - b.date || a.time.localeCompare(b.time));
     const emoji = { Shows: "🎵", Cultura: "🎭", Tecnologia: "💻" };
     let selectedCategory = null;
+    let selectedWhen = "all";
     function renderCats() {
       const cats = [...new Set(events.map(e => e.category))];
       const el = document.getElementById("cats");
@@ -211,14 +250,34 @@
           render();
         };
       });
+      const whenEl = document.getElementById("when");
+      const whens = [
+        ["all", "Todos"],
+        ["today", "Hoje"],
+        ["weekend", "Fim de semana"]
+      ];
+      whenEl.innerHTML = whens.map(([id, label]) =>
+        `<button class="chip ${selectedWhen === id ? "on" : ""}" data-when="${id}">${label}</button>`
+      ).join("");
+      whenEl.querySelectorAll(".chip").forEach(btn => {
+        btn.onclick = () => {
+          const value = btn.getAttribute("data-when");
+          selectedWhen = selectedWhen === value && value !== "all" ? "all" : value;
+          render();
+        };
+      });
     }
     function render() {
       renderCats();
       const q = document.getElementById("q").value.toLowerCase();
+      const w = thisWeekend();
       const filtered = events.filter(e => {
         const catOk = !selectedCategory || e.category === selectedCategory;
+        const whenOk = selectedWhen === "all"
+          || (selectedWhen === "today" && sameDay(e.date, today))
+          || (selectedWhen === "weekend" && (sameDay(e.date, w.sat) || sameDay(e.date, w.sun)));
         const qOk = !q || e.title.toLowerCase().includes(q) || e.category.toLowerCase().includes(q) || e.location.toLowerCase().includes(q);
-        return catOk && qOk;
+        return catOk && whenOk && qOk;
       });
       const list = document.getElementById("list");
       list.innerHTML = filtered.length
@@ -226,7 +285,7 @@
             <div class="card" data-id="${e.id}">
               <div class="cat">${e.category.toUpperCase()}</div>
               <div class="title">${e.title}</div>
-              <div class="meta">📅 ${e.date} • ${e.time}</div>
+              <div class="meta">📅 ${formatWhen(e)}</div>
               <div class="meta">📍 ${e.location}</div>
               <div class="price">${e.price}</div>
             </div>`).join("")
@@ -245,7 +304,7 @@
         <button class="back" onclick="show('home')">←</button>
         <div class="cat">${e.category.toUpperCase()}</div>
         <h1>${e.title}</h1>
-        <p class="meta">📅 ${e.date} • ${e.time}</p>
+        <p class="meta">📅 ${formatWhen(e)}</p>
         <p class="meta">📍 ${e.location}</p>
         <p class="price" style="font-size:20px">${e.price}</p>
         <h2>Sobre</h2>

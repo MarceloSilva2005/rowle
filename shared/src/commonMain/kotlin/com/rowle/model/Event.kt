@@ -1,11 +1,14 @@
 package com.rowle.model
 
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalTime
+
 data class Event(
     val id: String,
     val title: String,
     val description: String,
-    val date: String,
-    val time: String,
+    val date: LocalDate,
+    val time: LocalTime,
     val location: String,
     val category: String,
     val price: String,

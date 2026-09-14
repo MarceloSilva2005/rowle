@@ -23,6 +23,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.rowle.data.formatEventWhen
 import com.rowle.model.Event
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -76,7 +77,7 @@ fun EventDetailScreen(
             )
 
             Text(
-                text = "📅  ${event.date} • ${event.time}",
+                text = "📅  ${formatEventWhen(event.date, event.time)}",
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 

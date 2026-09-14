@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.rowle.data.formatEventWhen
 import com.rowle.model.Event
 
 @Composable
@@ -55,7 +56,7 @@ fun EventCard(
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(
-                text = "📅 ${event.date} • ${event.time}",
+                text = "📅 ${formatEventWhen(event.date, event.time)}",
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
