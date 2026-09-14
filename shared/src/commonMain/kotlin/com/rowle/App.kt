@@ -14,18 +14,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
-import com.rowle.data.ThemePreferences
 import com.rowle.data.eventById
 import com.rowle.ui.AppScreen
 import com.rowle.ui.EventDetailScreen
 import com.rowle.ui.HomeScreen
-import com.rowle.ui.SettingsScreen
 import com.rowle.ui.theme.RowleTheme
-import com.rowle.ui.theme.AppTheme
 
 @Composable
 fun App() {
-    var currentTheme by remember { mutableStateOf(ThemePreferences.read()) }
     var screen by remember { mutableStateOf<AppScreen>(AppScreen.Home) }
 
     val canGoBack = screen !is AppScreen.Home
@@ -33,7 +29,7 @@ fun App() {
         screen = AppScreen.Home
     }
 
-    RowleTheme(theme = currentTheme) {
+    RowleTheme {
         val showBottomBar = screen !is AppScreen.EventDetail
 
         Scaffold(
@@ -47,12 +43,6 @@ fun App() {
                             onClick = { screen = AppScreen.Home },
                             icon = { Text("🏠") },
                             label = { Text("Início") }
-                        )
-                        NavigationBarItem(
-                            selected = screen is AppScreen.Settings,
-                            onClick = { screen = AppScreen.Settings },
-                            icon = { Text("⚙️") },
-                            label = { Text("Config") }
                         )
                     }
                 }
@@ -83,17 +73,6 @@ fun App() {
                             modifier = Modifier.padding(innerPadding)
                         )
                     }
-                }
-
-                is AppScreen.Settings -> {
-                    SettingsScreen(
-                        currentTheme = currentTheme,
-                        onThemeSelected = { theme ->
-                            currentTheme = theme
-                            ThemePreferences.write(theme)
-                        },
-                        modifier = Modifier.padding(innerPadding)
-                    )
                 }
             }
         }

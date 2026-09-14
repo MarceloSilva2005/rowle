@@ -125,15 +125,6 @@
       color: var(--on-primary);
       font-weight: 700;
     }
-    .option {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 0;
-      cursor: pointer;
-      font-size: 17px;
-    }
-    input[type="radio"] { accent-color: var(--primary); width: 18px; height: 18px; }
     .back {
       border: 0;
       background: transparent;
@@ -153,42 +144,6 @@
       color: var(--on-primary);
       font-size: 16px;
       cursor: pointer;
-    }
-    body.light {
-      --primary: #5A8A00;
-      --on-primary: #fff;
-      --bg: #F4F4F0;
-      --surface: #fff;
-      --on-bg: #111;
-      --on-surface: #111;
-      --muted: #5C5C5C;
-      --chip: #E8E8E0;
-      --chip-on: #5A8A00;
-      --chip-on-text: #fff;
-    }
-    body.dark {
-      --primary: #C8FF00;
-      --on-primary: #000;
-      --bg: #121212;
-      --surface: #161616;
-      --on-bg: #fff;
-      --on-surface: #fff;
-      --muted: #B3B3B3;
-      --chip: #1C1C1C;
-      --chip-on: #C8FF00;
-      --chip-on-text: #000;
-    }
-    body.amoled {
-      --primary: #C8FF00;
-      --on-primary: #000;
-      --bg: #000;
-      --surface: #111;
-      --on-bg: #fff;
-      --on-surface: #fff;
-      --muted: #B3B3B3;
-      --chip: #141414;
-      --chip-on: #C8FF00;
-      --chip-on-text: #000;
     }
     .hint {
       position: absolute;
@@ -215,16 +170,8 @@
       <div id="list"></div>
     </div>
     <div class="screen" id="detail" hidden></div>
-    <div class="screen" id="settings" hidden>
-      <h1>Configurações</h1>
-      <h2>Aparência</h2>
-      <label class="option"><input type="radio" name="theme" value="light" /> ☀️ Claro</label>
-      <label class="option"><input type="radio" name="theme" value="dark" /> 🌙 Escuro</label>
-      <label class="option"><input type="radio" name="theme" value="amoled" checked /> 🖤 AMOLED</label>
-    </div>
     <div class="nav" id="nav">
       <button id="nav-home" class="on" onclick="show('home')">🏠<br>Início</button>
-      <button id="nav-settings" onclick="show('settings')">⚙️<br>Config</button>
     </div>
   </div>
   <p class="hint">Preview no navegador — o app real é Android/iOS</p>
@@ -382,28 +329,13 @@
       show("detail");
     }
     function show(id) {
-      ["home", "detail", "settings"].forEach(s => {
+      ["home", "detail"].forEach(s => {
         document.getElementById(s).hidden = s !== id;
       });
       document.getElementById("nav").hidden = id === "detail";
       document.getElementById("nav-home").classList.toggle("on", id === "home");
-      document.getElementById("nav-settings").classList.toggle("on", id === "settings");
     }
     document.getElementById("q").addEventListener("input", render);
-    const THEME_KEY = "rowle-theme";
-    function applyTheme(value) {
-      document.body.classList.remove("dark", "amoled", "light");
-      document.body.classList.add(value === "light" ? "light" : value === "dark" ? "dark" : "amoled");
-      const radio = document.querySelector('input[name=theme][value="' + value + '"]');
-      if (radio) radio.checked = true;
-    }
-    applyTheme(localStorage.getItem(THEME_KEY) || "amoled");
-    document.querySelectorAll("input[name=theme]").forEach(r => {
-      r.addEventListener("change", () => {
-        applyTheme(r.value);
-        localStorage.setItem(THEME_KEY, r.value);
-      });
-    });
     render();
   </script>
 </body>
