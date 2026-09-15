@@ -64,67 +64,65 @@ fun EventDetailScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp, vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            Text(
-                text = event.category.uppercase(),
-                color = MaterialTheme.colorScheme.primary,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold
-            )
+            EventCover(category = event.category, height = 200.dp)
 
-            Text(
-                text = event.title,
-                color = MaterialTheme.colorScheme.onBackground,
-                fontSize = 26.sp,
-                fontWeight = FontWeight.Bold
-            )
+            Column(
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Text(
+                    text = event.title,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontSize = 26.sp,
+                    fontWeight = FontWeight.Bold
+                )
 
-            EventMetaLine(
-                icon = Icons.Filled.DateRange,
-                text = formatEventWhen(event.date, event.time)
-            )
+                EventMetaLine(
+                    icon = Icons.Filled.DateRange,
+                    text = formatEventWhen(event.date, event.time)
+                )
 
-            EventMetaLine(
-                icon = Icons.Filled.Place,
-                text = event.location
-            )
+                EventMetaLine(
+                    icon = Icons.Filled.Place,
+                    text = event.location
+                )
 
-            Text(
-                text = event.price,
-                color = MaterialTheme.colorScheme.primary,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
-            )
+                Text(
+                    text = event.price,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
 
-            Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-            Text(
-                text = "Sobre",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground
-            )
+                Text(
+                    text = "Sobre",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
 
-            Text(
-                text = event.description,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontSize = 16.sp,
-                lineHeight = 22.sp
-            )
+                Text(
+                    text = event.description,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 16.sp,
+                    lineHeight = 22.sp
+                )
 
-            if (!ticketUrl.isNullOrBlank()) {
-                Spacer(modifier = Modifier.height(12.dp))
-                Button(
-                    onClick = { uriHandler.openUri(ticketUrl) },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Ver ingressos")
+                if (!ticketUrl.isNullOrBlank()) {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Button(
+                        onClick = { uriHandler.openUri(ticketUrl) },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Ver ingressos")
+                    }
                 }
-            }
 
-            Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(24.dp))
+            }
         }
     }
 }

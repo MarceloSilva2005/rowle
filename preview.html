@@ -117,13 +117,43 @@
     .card {
       background: var(--surface);
       border-radius: 18px;
-      padding: 16px;
+      padding: 0;
       margin-bottom: 12px;
       box-shadow: 0 2px 8px rgba(0,0,0,.12);
       cursor: pointer;
+      overflow: hidden;
     }
+    .cover {
+      height: 148px;
+      position: relative;
+      background: #1A1A1A;
+    }
+    .cover.Shows { background: #243000; }
+    .cover.Cultura { background: #1C2410; }
+    .cover.Tecnologia { background: #102418; }
+    .cover::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent, rgba(0,0,0,.8));
+    }
+    .cover .cat {
+      position: absolute;
+      left: 12px;
+      bottom: 12px;
+      z-index: 1;
+      background: var(--primary);
+      color: #000;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      border-radius: 4px;
+      padding: 4px 8px;
+    }
+    .card-body { padding: 16px; }
+    .detail-cover { height: 200px; margin: 0 -16px 16px; }
     .cat { color: var(--primary); font-size: 12px; font-weight: 700; letter-spacing: .04em; }
-    .title { font-size: 19px; font-weight: 700; margin: 6px 0 10px; }
+    .title { font-size: 19px; font-weight: 700; margin: 0 0 10px; }
     .meta { color: var(--muted); margin: 4px 0; }
     .price { color: var(--primary); font-weight: 700; margin-top: 6px; }
     .empty {
@@ -155,6 +185,7 @@
       background: var(--bg);
       border-top: 1px solid color-mix(in srgb, var(--muted) 25%, transparent);
     }
+    .nav[hidden] { display: none; }
     .nav button {
       flex: 1;
       border: 0;
@@ -339,11 +370,13 @@
       list.innerHTML = filtered.length
         ? filtered.map(e => `
             <div class="card" data-id="${e.id}">
-              <div class="cat">${e.category.toUpperCase()}</div>
-              <div class="title">${e.title}</div>
-              <div class="meta-line">${iconCal()} ${formatWhen(e)}</div>
-              <div class="meta-line">${iconPin()} ${e.location}</div>
-              <div class="price">${e.price}</div>
+              <div class="cover ${e.category}"><div class="cat">${e.category.toUpperCase()}</div></div>
+              <div class="card-body">
+                <div class="title">${e.title}</div>
+                <div class="meta-line">${iconCal()} ${formatWhen(e)}</div>
+                <div class="meta-line">${iconPin()} ${e.location}</div>
+                <div class="price">${e.price}</div>
+              </div>
             </div>`).join("")
         : emptyHtml();
       list.querySelectorAll(".card").forEach(card => {
@@ -389,7 +422,7 @@
         : "";
       document.getElementById("detail").innerHTML = `
         <button class="back" onclick="show('home')">←</button>
-        <div class="cat">${e.category.toUpperCase()}</div>
+        <div class="cover detail-cover ${e.category}"><div class="cat">${e.category.toUpperCase()}</div></div>
         <h1>${e.title}</h1>
         <p class="meta-line">${iconCal()} ${formatWhen(e)}</p>
         <p class="meta-line">${iconPin()} ${e.location}</p>

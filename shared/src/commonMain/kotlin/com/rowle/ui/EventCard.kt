@@ -2,9 +2,7 @@ package com.rowle.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -38,41 +36,36 @@ fun EventCard(
             defaultElevation = 3.dp
         )
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
-        ) {
-            Text(
-                text = event.category.uppercase(),
-                color = MaterialTheme.colorScheme.primary,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold
-            )
+        Column {
+            EventCover(category = event.category)
 
-            Text(
-                text = event.title,
-                color = MaterialTheme.colorScheme.onSurface,
-                fontSize = 19.sp,
-                fontWeight = FontWeight.Bold
-            )
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                Text(
+                    text = event.title,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontSize = 19.sp,
+                    fontWeight = FontWeight.Bold
+                )
 
-            Spacer(modifier = Modifier.height(4.dp))
+                EventMetaLine(
+                    icon = Icons.Filled.DateRange,
+                    text = formatEventWhen(event.date, event.time)
+                )
 
-            EventMetaLine(
-                icon = Icons.Filled.DateRange,
-                text = formatEventWhen(event.date, event.time)
-            )
+                EventMetaLine(
+                    icon = Icons.Filled.Place,
+                    text = event.location
+                )
 
-            EventMetaLine(
-                icon = Icons.Filled.Place,
-                text = event.location
-            )
-
-            Text(
-                text = event.price,
-                color = MaterialTheme.colorScheme.primary,
-                fontWeight = FontWeight.Bold
-            )
+                Text(
+                    text = event.price,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
     }
 }
