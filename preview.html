@@ -276,6 +276,41 @@
       padding: 8px 16px 16px;
     }
     .saved-grid .poster { width: auto; }
+    .filter-label {
+      font-family: "Barlow Condensed", sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      font-size: 11px;
+      color: #8A8A8A;
+      padding: 6px 16px;
+    }
+    .chips {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 0 16px 8px;
+      scrollbar-width: none;
+    }
+    .chips::-webkit-scrollbar { display: none; }
+    .chip {
+      font-family: "Barlow Condensed", sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      font-size: 12px;
+      text-transform: uppercase;
+      border: 1px solid #2A2A2A;
+      background: #111;
+      color: #B3B3B3;
+      border-radius: 6px;
+      padding: 8px 12px;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .chip.on {
+      background: var(--primary);
+      color: var(--on-primary);
+      border-color: var(--primary);
+    }
     .nav {
       display: flex;
       gap: 8px;
@@ -336,9 +371,7 @@
 <body>
   <div class="phone" id="phone">
     <div class="screen" id="home"></div>
-    <div class="screen" id="explore" hidden>
-      <div class="soon"><h2>EXPLORAR</h2><p>Essa aba ainda vai entrar.</p></div>
-    </div>
+    <div class="screen" id="explore" hidden></div>
     <div class="screen" id="saved" hidden></div>
     <div class="screen" id="you" hidden>
       <div class="soon"><h2>VOCÊ</h2><p>Essa aba ainda vai entrar.</p></div>
@@ -349,7 +382,7 @@
         <svg class="icon-svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l9 8h-3v9h-5v-6H11v6H6v-9H3z"></path></svg>
         INÍCIO
       </button>
-      <button id="nav-explore" onclick="showTab('explore')">
+      <button id="nav-explore" onclick="openExplore()">
         <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
         EXPLORAR
       </button>
@@ -415,7 +448,17 @@
       { id: "4", title: "Samba no Parque", description: "Roda de samba ao ar livre com comida de boteco e espaço para dançar. Entrada franca.", category: "Shows", date: saturday, time: "16:00", location: "UnB", area: "UnB", price: "Grátis" },
       { id: "5", title: "Mostra de Cinema no Cine Brasília", description: "Sessões de cinema brasileiro e debates com realizadores. Classificação indicativa na bilheteria.", category: "Cultura", date: sunday, time: "19:30", location: "Conic", area: "Conic", price: "R$ 20" }
     ].sort((a, b) => a.date - b.date || a.time.localeCompare(b.time));
+    const categories = [...new Set(events.map(e => e.category))];
+    const whenFilters = [
+      { id: "todos", label: "Todos" },
+      { id: "hoje", label: "Hoje" },
+      { id: "amanha", label: "Amanhã" },
+      { id: "fim", label: "Fim de semana" }
+    ];
     let selectedArea = null;
+    let exploreQuery = "";
+    let exploreCategory = null;
+    let exploreWhen = "todos";
     let detailFrom = "home";
     const FAV_KEY = "rowle.favorites";
     const favorites = new Set();
@@ -563,6 +606,113 @@
         input.setSelectionRange(caret, caret);
       }
     }
+    function matchesWhen(e) {
+      if (exploreWhen === "hoje") return sameDay(e.date, today);
+      if (exploreWhen === "amanha") return sameDay(e.date, tomorrow);
+      if (exploreWhen === "fim") {
+        const w = thisWeekend();
+        return sameDay(e.date, w.sat) || sameDay(e.date, w.sun);
+      }
+      return true;
+    }
+    function chipHtml(label, on, attrs) {
+      return `<button type="button" class="chip ${on ? "on" : ""}" ${attrs}>${label.toUpperCase()}</button>`;
+    }
+    function emptyExploreHtml() {
+      const q = exploreQuery.trim();
+      const hasFilters = q || exploreCategory || exploreWhen !== "todos";
+      let title = "Nenhum evento por aqui";
+      let subtitle = "Quando tiver rolê novo, aparece nessa lista.";
+      if (q) {
+        title = "Nada por “" + q + "”";
+        subtitle = "Tenta outro nome, ou limpa a busca e os filtros.";
+      } else if (hasFilters) {
+        title = "Nada com esses filtros";
+        subtitle = "Tenta outra categoria, data ou busca.";
+      }
+      const btn = hasFilters ? `<button type="button" id="clear-explore">Limpar filtros</button>` : "";
+      return `<div class="empty"><h4>${title}</h4><p>${subtitle}</p>${btn}</div>`;
+    }
+    function renderExplore() {
+      const prev = document.getElementById("eq");
+      const qValue = prev ? prev.value : exploreQuery;
+      exploreQuery = qValue;
+      const q = qValue.trim().toLowerCase();
+      const keepFocus = document.activeElement === prev;
+      const caret = prev && typeof prev.selectionStart === "number" ? prev.selectionStart : qValue.length;
+      const filtered = events.filter(e => {
+        const catOk = !exploreCategory || e.category === exploreCategory;
+        const whenOk = matchesWhen(e);
+        const qOk = !q || e.title.toLowerCase().includes(q) || e.category.toLowerCase().includes(q) || e.location.toLowerCase().includes(q) || e.area.toLowerCase().includes(q);
+        return catOk && whenOk && qOk;
+      });
+      const catChips = chipHtml("Todos", !exploreCategory, `data-cat=""`) +
+        categories.map(c => chipHtml(c, exploreCategory === c, `data-cat="${c}"`)).join("");
+      const whenChips = whenFilters.map(w => chipHtml(w.label, exploreWhen === w.id, `data-when="${w.id}"`)).join("");
+      const body = filtered.length
+        ? `<div class="saved-grid">${filtered.map(posterHtml).join("")}</div>`
+        : emptyExploreHtml();
+      document.getElementById("explore").innerHTML = `
+        <div class="saved-head">
+          <div class="section-name">EXPLORAR</div>
+          <p class="section-sub">Todos os rolês, do seu jeito</p>
+        </div>
+        <div class="search-wrap">
+          <span class="icon" aria-hidden="true">
+            <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="7"></circle>
+              <path d="M20 20l-3.5-3.5"></path>
+            </svg>
+          </span>
+          <input class="search" id="eq" placeholder="Buscar um evento" value="${qValue.replace(/"/g, "&quot;")}" />
+        </div>
+        <div class="filter-label">CATEGORIA</div>
+        <div class="chips" id="cat-chips">${catChips}</div>
+        <div class="filter-label">QUANDO</div>
+        <div class="chips" id="when-chips">${whenChips}</div>
+        ${body}
+      `;
+      document.querySelectorAll("#cat-chips .chip").forEach(btn => {
+        btn.onclick = () => {
+          const value = btn.getAttribute("data-cat") || null;
+          exploreCategory = value || null;
+          renderExplore();
+        };
+      });
+      document.querySelectorAll("#when-chips .chip").forEach(btn => {
+        btn.onclick = () => {
+          exploreWhen = btn.getAttribute("data-when") || "todos";
+          renderExplore();
+        };
+      });
+      document.querySelectorAll("#explore .poster").forEach(card => {
+        card.onclick = () => openDetail(card.getAttribute("data-id"), "explore");
+      });
+      document.querySelectorAll("#explore .heart").forEach(btn => {
+        btn.onclick = (ev) => {
+          ev.stopPropagation();
+          toggleFav(btn.getAttribute("data-id"));
+          renderExplore();
+        };
+      });
+      const clear = document.getElementById("clear-explore");
+      if (clear) clear.onclick = () => {
+        exploreQuery = "";
+        exploreCategory = null;
+        exploreWhen = "todos";
+        renderExplore();
+      };
+      const input = document.getElementById("eq");
+      input.addEventListener("input", renderExplore);
+      if (keepFocus) {
+        input.focus();
+        input.setSelectionRange(caret, caret);
+      }
+    }
+    function openExplore() {
+      renderExplore();
+      showTab("explore");
+    }
     function renderSaved() {
       const saved = events.filter(e => favorites.has(e.id));
       let body;
@@ -598,6 +748,9 @@
       if (detailFrom === "saved") {
         renderSaved();
         showTab("saved");
+      } else if (detailFrom === "explore") {
+        renderExplore();
+        showTab("explore");
       } else {
         goHome();
       }

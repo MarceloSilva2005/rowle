@@ -32,6 +32,7 @@ import com.rowle.data.eventById
 import com.rowle.data.rememberFavoriteStore
 import com.rowle.ui.AppScreen
 import com.rowle.ui.EventDetailScreen
+import com.rowle.ui.ExploreScreen
 import com.rowle.ui.HomeScreen
 import com.rowle.ui.SavedScreen
 import com.rowle.ui.theme.RowleTheme
@@ -139,7 +140,16 @@ fun App() {
                                 modifier = Modifier.padding(innerPadding)
                             )
                         }
-                        MainTab.EXPLORE -> ComingSoon("Explorar", Modifier.padding(innerPadding))
+                        MainTab.EXPLORE -> {
+                            ExploreScreen(
+                                favoriteIds = favoriteIds,
+                                onEventClick = { event ->
+                                    screen = AppScreen.EventDetail(event.id)
+                                },
+                                onToggleFavorite = { toggleFavorite(it) },
+                                modifier = Modifier.padding(innerPadding)
+                            )
+                        }
                         MainTab.SAVED -> {
                             SavedScreen(
                                 favoriteIds = favoriteIds,

@@ -33,6 +33,8 @@ fun dateLabel(date: LocalDate): String {
 
 fun isToday(date: LocalDate): Boolean = date == today()
 
+fun isTomorrow(date: LocalDate): Boolean = date == today().plus(1, DateTimeUnit.DAY)
+
 fun isThisWeekend(date: LocalDate): Boolean {
     val (saturday, sunday) = thisWeekend(today())
     return date == saturday || date == sunday
