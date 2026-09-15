@@ -122,7 +122,6 @@ fun HomeScreen(
             if (emAlta.isNotEmpty()) {
                 item {
                     SectionHeader(
-                        index = "01",
                         title = "EM ALTA",
                         subtitle = "O que mais tá saindo essa semana"
                     )
@@ -136,7 +135,6 @@ fun HomeScreen(
                 item {
                     Spacer(modifier = Modifier.height(8.dp))
                     SectionHeader(
-                        index = if (emAlta.isNotEmpty()) "02" else "01",
                         title = "HOJE",
                         subtitle = "Ainda dá tempo de ir"
                     )
@@ -224,25 +222,15 @@ private fun PlaceStrip(
 
 @Composable
 private fun SectionHeader(
-    index: String,
     title: String,
     subtitle: String
 ) {
     Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-        Row(verticalAlignment = Alignment.Bottom) {
-            Text(
-                text = index,
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.displayLarge,
-                fontSize = 28.sp
-            )
-            Spacer(modifier = Modifier.width(10.dp))
-            Text(
-                text = title,
-                color = Color.White,
-                style = MaterialTheme.typography.displayLarge
-            )
-        }
+        Text(
+            text = title,
+            color = Color.White,
+            style = MaterialTheme.typography.displayLarge
+        )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = subtitle,

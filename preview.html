@@ -126,19 +126,13 @@
     }
     .icon-svg { width: 18px; height: 18px; display: block; }
     .section { padding: 12px 16px 4px; }
-    .section-title {
-      display: flex;
-      align-items: flex-end;
-      gap: 10px;
-      line-height: 1;
-    }
-    .section-index, .section-name {
+    .section-name {
       font-family: "Barlow Condensed", sans-serif;
       font-weight: 900;
       font-style: italic;
+      font-size: 40px;
+      line-height: 1;
     }
-    .section-index { color: var(--primary); font-size: 28px; }
-    .section-name { font-size: 40px; }
     .section-sub { color: var(--muted); margin: 6px 0 0; font-size: 13px; }
     .row-scroll {
       display: flex;
@@ -446,16 +440,15 @@
         if (emAlta.length) {
           body += `
             <div class="section">
-              <div class="section-title"><span class="section-index">01</span><span class="section-name">EM ALTA</span></div>
+              <div class="section-name">EM ALTA</div>
               <p class="section-sub">O que mais tá saindo essa semana</p>
             </div>
             <div class="row-scroll">${emAlta.map(posterHtml).join("")}</div>`;
         }
         if (hoje.length) {
-          const hojeIndex = emAlta.length ? "02" : "01";
           body += `
             <div class="section">
-              <div class="section-title"><span class="section-index">${hojeIndex}</span><span class="section-name">HOJE</span></div>
+              <div class="section-name">HOJE</div>
               <p class="section-sub">Ainda dá tempo de ir</p>
             </div>
             <div class="row-scroll">${hoje.map(posterHtml).join("")}</div>`;
