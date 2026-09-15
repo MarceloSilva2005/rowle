@@ -417,7 +417,23 @@
     ].sort((a, b) => a.date - b.date || a.time.localeCompare(b.time));
     let selectedArea = null;
     let detailFrom = "home";
+    const FAV_KEY = "rowle.favorites";
     const favorites = new Set();
+    function loadFavorites() {
+      try {
+        const raw = localStorage.getItem(FAV_KEY);
+        if (!raw) return;
+        JSON.parse(raw).forEach(id => favorites.add(id));
+      } catch (e) {}
+    }
+    function persistFavorites() {
+      localStorage.setItem(FAV_KEY, JSON.stringify([...favorites]));
+    }
+    function toggleFav(id) {
+      if (favorites.has(id)) favorites.delete(id); else favorites.add(id);
+      persistFavorites();
+    }
+    loadFavorites();
     function heartSvg(on) {
       return on
         ? '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.6-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.4-7 10-7 10z"></path></svg>'
@@ -530,7 +546,7 @@
         btn.onclick = (ev) => {
           ev.stopPropagation();
           const id = btn.getAttribute("data-id");
-          if (favorites.has(id)) favorites.delete(id); else favorites.add(id);
+          toggleFav(id);
           renderHome();
         };
       });
@@ -569,7 +585,7 @@
         btn.onclick = (ev) => {
           ev.stopPropagation();
           const id = btn.getAttribute("data-id");
-          if (favorites.has(id)) favorites.delete(id); else favorites.add(id);
+          toggleFav(id);
           renderSaved();
         };
       });
@@ -611,7 +627,7 @@
         btn.onclick = (ev) => {
           ev.stopPropagation();
           const favId = btn.getAttribute("data-id");
-          if (favorites.has(favId)) favorites.delete(favId); else favorites.add(favId);
+          toggleFav(favId);
           openDetail(favId);
         };
       });

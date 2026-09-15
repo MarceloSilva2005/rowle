@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.unit.dp
 import com.rowle.data.eventById
+import com.rowle.data.rememberFavoriteStore
 import com.rowle.ui.AppScreen
 import com.rowle.ui.EventDetailScreen
 import com.rowle.ui.HomeScreen
@@ -47,12 +48,15 @@ private enum class MainTab(
 
 @Composable
 fun App() {
+    val favoriteStore = rememberFavoriteStore()
     var screen by remember { mutableStateOf<AppScreen>(AppScreen.Home) }
     var tab by remember { mutableStateOf(MainTab.HOME) }
-    var favoriteIds by remember { mutableStateOf(setOf<String>()) }
+    var favoriteIds by remember { mutableStateOf(favoriteStore.load()) }
 
     fun toggleFavorite(id: String) {
-        favoriteIds = if (id in favoriteIds) favoriteIds - id else favoriteIds + id
+        val next = if (id in favoriteIds) favoriteIds - id else favoriteIds + id
+        favoriteIds = next
+        favoriteStore.save(next)
     }
 
     val canGoBack = screen !is AppScreen.Home
