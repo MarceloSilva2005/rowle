@@ -1,10 +1,11 @@
 package com.rowle.ui
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,16 +15,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,145 +35,75 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.rowle.data.eventCategories
-import com.rowle.data.isThisWeekend
+import com.rowle.data.eventAreas
 import com.rowle.data.isToday
 import com.rowle.data.sampleEvents
 import com.rowle.model.Event
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun HomeScreen(
     onEventClick: (Event) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var searchText by remember { mutableStateOf("") }
-    var selectedCategory by remember { mutableStateOf<String?>(null) }
-    var selectedWhen by remember { mutableStateOf(WhenFilter.ALL) }
+    var selectedArea by remember { mutableStateOf<String?>(null) }
 
     val filteredEvents = sampleEvents.filter { event ->
-        val matchesCategory = selectedCategory == null || event.category == selectedCategory
-        val matchesWhen = when (selectedWhen) {
-            WhenFilter.ALL -> true
-            WhenFilter.TODAY -> isToday(event.date)
-            WhenFilter.WEEKEND -> isThisWeekend(event.date)
-        }
+        val matchesArea = selectedArea == null || event.area == selectedArea
         val query = searchText.trim()
         val matchesSearch = query.isEmpty() ||
             event.title.contains(query, ignoreCase = true) ||
             event.category.contains(query, ignoreCase = true) ||
-            event.location.contains(query, ignoreCase = true)
-        matchesCategory && matchesWhen && matchesSearch
+            event.location.contains(query, ignoreCase = true) ||
+            event.area.contains(query, ignoreCase = true)
+        matchesArea && matchesSearch
     }
+    val emAlta = filteredEvents.filter { !isToday(it.date) }
+    val hoje = filteredEvents.filter { isToday(it.date) }
 
     LazyColumn(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp),
-        contentPadding = androidx.compose.foundation.layout.PaddingValues(
-            top = 20.dp,
-            bottom = 16.dp
-        ),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        modifier = modifier.fillMaxSize(),
+        contentPadding = PaddingValues(top = 20.dp, bottom = 24.dp)
     ) {
         item {
-            Header()
+            Header(modifier = Modifier.padding(horizontal = 16.dp))
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(14.dp))
+            PlaceStrip(
+                selectedArea = selectedArea,
+                onSelect = { area ->
+                    selectedArea = if (selectedArea == area) null else area
+                }
+            )
         }
 
         item {
             OutlinedTextField(
                 value = searchText,
                 onValueChange = { searchText = it },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 16.dp),
                 singleLine = true,
                 placeholder = {
-                    Text("Buscar eventos")
+                    Text("Buscar um evento")
                 },
                 leadingIcon = {
                     Icon(Icons.Filled.Search, contentDescription = null)
                 },
-                shape = RoundedCornerShape(14.dp)
-            )
-        }
-
-        item {
-            Text(
-                text = "Categorias",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
-
-        item {
-            FlowRow(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                FilterChip(
-                    selected = selectedCategory == null,
-                    onClick = { selectedCategory = null },
-                    label = { Text("Todos") }
+                shape = RoundedCornerShape(14.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color(0xFF3A3A3A),
+                    unfocusedBorderColor = Color(0xFF2A2A2A),
+                    focusedContainerColor = Color(0xFF111111),
+                    unfocusedContainerColor = Color(0xFF111111)
                 )
-                eventCategories.forEach { category ->
-                    FilterChip(
-                        selected = selectedCategory == category,
-                        onClick = {
-                            selectedCategory = if (selectedCategory == category) null else category
-                        },
-                        label = { Text(category) }
-                    )
-                }
-            }
-        }
-
-        item {
-            Text(
-                text = "Quando",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
-
-        item {
-            FlowRow(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                FilterChip(
-                    selected = selectedWhen == WhenFilter.ALL,
-                    onClick = { selectedWhen = WhenFilter.ALL },
-                    label = { Text("Todos") }
-                )
-                FilterChip(
-                    selected = selectedWhen == WhenFilter.TODAY,
-                    onClick = {
-                        selectedWhen = if (selectedWhen == WhenFilter.TODAY) WhenFilter.ALL else WhenFilter.TODAY
-                    },
-                    label = { Text("Hoje") }
-                )
-                FilterChip(
-                    selected = selectedWhen == WhenFilter.WEEKEND,
-                    onClick = {
-                        selectedWhen = if (selectedWhen == WhenFilter.WEEKEND) WhenFilter.ALL else WhenFilter.WEEKEND
-                    },
-                    label = { Text("Fim de semana") }
-                )
-            }
-        }
-
-        item {
-            Text(
-                text = "Eventos próximos",
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(top = 8.dp)
             )
         }
 
@@ -178,31 +111,49 @@ fun HomeScreen(
             item {
                 EmptyEvents(
                     searchText = searchText,
-                    selectedCategory = selectedCategory,
-                    selectedWhen = selectedWhen,
+                    selectedArea = selectedArea,
                     onClearFilters = {
                         searchText = ""
-                        selectedCategory = null
-                        selectedWhen = WhenFilter.ALL
+                        selectedArea = null
                     }
                 )
             }
         } else {
-            items(filteredEvents, key = { it.id }) { event ->
-                EventCard(
-                    event = event,
-                    onClick = { onEventClick(event) }
-                )
+            if (emAlta.isNotEmpty()) {
+                item {
+                    SectionHeader(
+                        index = "01",
+                        title = "EM ALTA",
+                        subtitle = "O que mais tá saindo essa semana"
+                    )
+                }
+                item {
+                    EventPosterRow(events = emAlta, onEventClick = onEventClick)
+                }
+            }
+
+            if (hoje.isNotEmpty()) {
+                item {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    SectionHeader(
+                        index = if (emAlta.isNotEmpty()) "02" else "01",
+                        title = "HOJE",
+                        subtitle = "Ainda dá tempo de ir"
+                    )
+                }
+                item {
+                    EventPosterRow(events = hoje, onEventClick = onEventClick)
+                }
             }
         }
     }
 }
 
 @Composable
-private fun Header() {
+private fun Header(modifier: Modifier = Modifier) {
     val lime = MaterialTheme.colorScheme.primary
 
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
@@ -217,17 +168,14 @@ private fun Header() {
             Text(
                 text = "ROWLÊ",
                 color = lime,
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Black,
-                fontStyle = FontStyle.Italic,
-                letterSpacing = 1.sp
+                style = MaterialTheme.typography.headlineLarge
             )
             Spacer(modifier = Modifier.weight(1f))
             Text(
                 text = "BSB / DF",
                 color = lime,
+                style = MaterialTheme.typography.labelLarge,
                 fontSize = 12.sp,
-                fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .border(1.dp, lime, RoundedCornerShape(4.dp))
                     .padding(horizontal = 8.dp, vertical = 4.dp)
@@ -241,21 +189,94 @@ private fun Header() {
     }
 }
 
-private enum class WhenFilter {
-    ALL, TODAY, WEEKEND
+@Composable
+private fun PlaceStrip(
+    selectedArea: String?,
+    onSelect: (String) -> Unit
+) {
+    val lime = MaterialTheme.colorScheme.primary
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState())
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        eventAreas.forEachIndexed { index, area ->
+            if (index > 0) {
+                Text(
+                    text = "·",
+                    color = lime.copy(alpha = 0.45f),
+                    style = MaterialTheme.typography.labelLarge
+                )
+            }
+            val selected = selectedArea == area
+            Text(
+                text = area.uppercase(),
+                color = if (selected) lime else lime.copy(alpha = 0.4f),
+                style = MaterialTheme.typography.labelLarge,
+                modifier = Modifier.clickable { onSelect(area) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun SectionHeader(
+    index: String,
+    title: String,
+    subtitle: String
+) {
+    Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+        Row(verticalAlignment = Alignment.Bottom) {
+            Text(
+                text = index,
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.displayLarge,
+                fontSize = 28.sp
+            )
+            Spacer(modifier = Modifier.width(10.dp))
+            Text(
+                text = title,
+                color = Color.White,
+                style = MaterialTheme.typography.displayLarge
+            )
+        }
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = subtitle,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontSize = 13.sp
+        )
+    }
+}
+
+@Composable
+private fun EventPosterRow(
+    events: List<Event>,
+    onEventClick: (Event) -> Unit
+) {
+    LazyRow(
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        items(events, key = { it.id }) { event ->
+            EventCard(
+                event = event,
+                onClick = { onEventClick(event) }
+            )
+        }
+    }
 }
 
 @Composable
 private fun EmptyEvents(
     searchText: String,
-    selectedCategory: String?,
-    selectedWhen: WhenFilter,
+    selectedArea: String?,
     onClearFilters: () -> Unit
 ) {
-    val hasFilters = searchText.isNotBlank() ||
-        selectedCategory != null ||
-        selectedWhen != WhenFilter.ALL
-
+    val hasFilters = searchText.isNotBlank() || selectedArea != null
     val title: String
     val subtitle: String
     when {
@@ -263,17 +284,9 @@ private fun EmptyEvents(
             title = "Nada por “${searchText.trim()}”"
             subtitle = "Tenta outro nome, ou limpa a busca e os filtros."
         }
-        selectedWhen == WhenFilter.TODAY -> {
-            title = "Nada pra hoje"
-            subtitle = "Olha o fim de semana ou tira o filtro de data."
-        }
-        selectedWhen == WhenFilter.WEEKEND -> {
-            title = "Nada nesse fim de semana"
-            subtitle = "Tira o filtro ou escolhe outra categoria."
-        }
-        selectedCategory != null -> {
-            title = "Nenhum rolê de $selectedCategory"
-            subtitle = "Escolhe outra categoria ou vê todos os eventos."
+        selectedArea != null -> {
+            title = "Nenhum rolê em $selectedArea"
+            subtitle = "Escolhe outro lugar ou vê todos os eventos."
         }
         else -> {
             title = "Nenhum evento por aqui"
@@ -284,15 +297,17 @@ private fun EmptyEvents(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 28.dp, horizontal = 8.dp),
+            .padding(vertical = 28.dp, horizontal = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = title,
             fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onBackground
+            style = MaterialTheme.typography.titleLarge.copy(
+                fontSize = 22.sp,
+                color = MaterialTheme.colorScheme.onBackground
+            ),
+            textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
@@ -308,5 +323,3 @@ private fun EmptyEvents(
         }
     }
 }
-
-

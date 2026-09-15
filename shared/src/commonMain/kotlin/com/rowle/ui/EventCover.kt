@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,15 +18,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.rowle.ui.theme.Lime
 
 @Composable
 fun EventCover(
     category: String,
     modifier: Modifier = Modifier,
-    height: Dp = 148.dp
+    height: Dp = 200.dp
 ) {
-    val lime = MaterialTheme.colorScheme.primary
-
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -43,29 +41,54 @@ fun EventCover(
                     )
                 )
         )
-        Surface(
-            color = lime,
-            shape = RoundedCornerShape(4.dp),
+        CategoryBadge(
+            category = category,
             modifier = Modifier
-                .align(Alignment.BottomStart)
+                .align(Alignment.TopStart)
                 .padding(12.dp)
-        ) {
-            Text(
-                text = category.uppercase(),
-                color = Color.Black,
-                fontSize = 11.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-            )
-        }
+        )
     }
 }
 
-private fun coverTone(category: String): Color {
+@Composable
+fun CategoryBadge(
+    category: String,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        color = categoryTint(category),
+        shape = RoundedCornerShape(4.dp),
+        modifier = modifier
+    ) {
+        Text(
+            text = category.uppercase(),
+            color = categoryOnTint(category),
+            fontSize = 11.sp,
+            fontWeight = FontWeight.Bold,
+            letterSpacing = 0.6.sp,
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+        )
+    }
+}
+
+internal fun coverTone(category: String): Color {
     return when (category) {
-        "Shows" -> Color(0xFF243000)
-        "Cultura" -> Color(0xFF1C2410)
+        "Shows" -> Color(0xFF2A1020)
+        "Cultura" -> Color(0xFF1A1228)
         "Tecnologia" -> Color(0xFF102418)
         else -> Color(0xFF1A1A1A)
     }
+}
+
+internal fun categoryTint(category: String): Color {
+    return when (category) {
+        "Shows" -> Color(0xFFFF4FA3)
+        "Cultura" -> Color(0xFFC77DFF)
+        "Tecnologia" -> Lime
+        else -> Lime
+    }
+}
+
+internal fun categoryOnTint(category: String): Color {
+    return if (category == "Tecnologia") Color.Black else Color.White
 }

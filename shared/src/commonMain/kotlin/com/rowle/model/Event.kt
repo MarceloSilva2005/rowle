@@ -10,6 +10,7 @@ data class Event(
     val date: LocalDate,
     val time: LocalTime,
     val location: String,
+    val area: String,
     val category: String,
     val price: String,
     val imageUrl: String? = null,

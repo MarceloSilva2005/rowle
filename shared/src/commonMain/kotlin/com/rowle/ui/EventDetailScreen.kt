@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
 import com.rowle.data.formatEventWhen
 import com.rowle.model.Event
 
@@ -74,8 +75,7 @@ fun EventDetailScreen(
                 Text(
                     text = event.title,
                     color = MaterialTheme.colorScheme.onBackground,
-                    fontSize = 26.sp,
-                    fontWeight = FontWeight.Bold
+                    style = MaterialTheme.typography.displayLarge.copy(fontSize = 32.sp)
                 )
 
                 EventMetaLine(

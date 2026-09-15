@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Rowlê</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;1,900&display=swap" rel="stylesheet" />
   <style>
     :root {
       --primary: #C8FF00;
@@ -13,9 +16,6 @@
       --on-bg: #fff;
       --on-surface: #fff;
       --muted: #B3B3B3;
-      --chip: #1A1A1A;
-      --chip-on: #C8FF00;
-      --chip-on-text: #000;
     }
     html, body { height: 100%; margin: 0; }
     body {
@@ -37,9 +37,17 @@
       flex-direction: column;
       overflow: hidden;
     }
-    .screen { flex: 1; overflow: auto; padding: 20px 16px 16px; }
-    h1 { font-size: 28px; margin: 0 0 4px; }
-    .brand { margin-bottom: 16px; }
+    .screen { flex: 1; overflow: auto; padding: 20px 0 16px; }
+    .screen.detail { padding: 20px 16px 16px; }
+    .pad { padding: 0 16px; }
+    h1 {
+      font-family: "Barlow Condensed", sans-serif;
+      font-weight: 900;
+      font-style: italic;
+      font-size: 32px;
+      margin: 0 0 8px;
+    }
+    .brand { margin-bottom: 14px; }
     .brand-row {
       display: flex;
       align-items: center;
@@ -52,8 +60,9 @@
       flex-shrink: 0;
     }
     .wordmark {
+      font-family: "Barlow Condensed", sans-serif;
       color: var(--primary);
-      font-size: 32px;
+      font-size: 34px;
       font-weight: 900;
       font-style: italic;
       letter-spacing: 0.04em;
@@ -61,20 +70,44 @@
     }
     .city {
       margin-left: auto;
+      font-family: "Barlow Condensed", sans-serif;
       color: var(--primary);
       font-size: 12px;
       font-weight: 700;
+      letter-spacing: 0.12em;
       border: 1px solid var(--primary);
       border-radius: 4px;
       padding: 4px 8px;
     }
     .subtitle { color: var(--muted); margin: 8px 0 0; }
-    h2 { font-size: 20px; margin: 16px 0 10px; }
-    h3 { font-size: 22px; margin: 16px 0 12px; }
+    .places {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 0 16px;
+      margin-bottom: 4px;
+      scrollbar-width: none;
+    }
+    .places::-webkit-scrollbar { display: none; }
+    .place {
+      font-family: "Barlow Condensed", sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      font-size: 13px;
+      color: color-mix(in srgb, var(--primary) 40%, transparent);
+      background: none;
+      border: 0;
+      padding: 0;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .place.on { color: var(--primary); }
+    .dot { color: color-mix(in srgb, var(--primary) 45%, transparent); }
     .search {
       width: 100%;
       box-sizing: border-box;
-      border: 1px solid var(--primary);
+      border: 1px solid #2A2A2A;
       border-radius: 14px;
       padding: 14px 14px 14px 42px;
       font-size: 16px;
@@ -82,7 +115,7 @@
       color: var(--on-surface);
       outline: none;
     }
-    .search-wrap { position: relative; }
+    .search-wrap { position: relative; margin: 16px 16px 8px; }
     .search-wrap .icon {
       position: absolute;
       left: 14px;
@@ -92,6 +125,96 @@
       color: var(--muted);
     }
     .icon-svg { width: 18px; height: 18px; display: block; }
+    .section { padding: 12px 16px 4px; }
+    .section-title {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      line-height: 1;
+    }
+    .section-index, .section-name {
+      font-family: "Barlow Condensed", sans-serif;
+      font-weight: 900;
+      font-style: italic;
+    }
+    .section-index { color: var(--primary); font-size: 28px; }
+    .section-name { font-size: 40px; }
+    .section-sub { color: var(--muted); margin: 6px 0 0; font-size: 13px; }
+    .row-scroll {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding: 8px 16px 16px;
+      scrollbar-width: none;
+    }
+    .row-scroll::-webkit-scrollbar { display: none; }
+    .poster { width: 200px; flex-shrink: 0; cursor: pointer; }
+    .poster-cover {
+      height: 248px;
+      border-radius: 16px;
+      position: relative;
+      overflow: hidden;
+      background: #1A1A1A;
+    }
+    .poster-cover.Shows { background: #2A1020; }
+    .poster-cover.Cultura { background: #1A1228; }
+    .poster-cover.Tecnologia { background: #102418; }
+    .poster-cover::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent, rgba(0,0,0,.9));
+    }
+    .badge {
+      position: absolute;
+      left: 12px;
+      top: 12px;
+      z-index: 1;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      border-radius: 4px;
+      padding: 4px 8px;
+    }
+    .badge.Shows { background: #FF4FA3; color: #fff; }
+    .badge.Cultura { background: #C77DFF; color: #fff; }
+    .badge.Tecnologia { background: var(--primary); color: #000; }
+    .poster-title {
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      z-index: 1;
+      font-family: "Barlow Condensed", sans-serif;
+      font-weight: 900;
+      font-style: italic;
+      font-size: 24px;
+      line-height: 1.05;
+      text-transform: uppercase;
+    }
+    .poster-meta {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .cover {
+      height: 200px;
+      position: relative;
+      background: #1A1A1A;
+      margin: 0 -16px 16px;
+    }
+    .cover.Shows { background: #2A1020; }
+    .cover.Cultura { background: #1A1228; }
+    .cover.Tecnologia { background: #102418; }
+    .cover::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent, rgba(0,0,0,.8));
+    }
     .meta-line {
       display: flex;
       align-items: center;
@@ -100,74 +223,10 @@
       margin: 4px 0;
     }
     .meta-line svg { width: 16px; height: 16px; flex-shrink: 0; }
-    .cats { display: flex; gap: 8px; flex-wrap: wrap; }
-    .chip {
-      background: var(--chip);
-      color: var(--on-surface);
-      border: 0;
-      border-radius: 20px;
-      padding: 8px 12px;
-      font-size: 13px;
-      cursor: pointer;
-    }
-    .chip.on {
-      background: var(--chip-on);
-      color: var(--chip-on-text);
-    }
-    .card {
-      background: var(--surface);
-      border-radius: 18px;
-      padding: 0;
-      margin-bottom: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,.12);
-      cursor: pointer;
-      overflow: hidden;
-    }
-    .cover {
-      height: 148px;
-      position: relative;
-      background: #1A1A1A;
-    }
-    .cover.Shows { background: #243000; }
-    .cover.Cultura { background: #1C2410; }
-    .cover.Tecnologia { background: #102418; }
-    .cover::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to bottom, transparent, rgba(0,0,0,.8));
-    }
-    .cover .cat {
-      position: absolute;
-      left: 12px;
-      bottom: 12px;
-      z-index: 1;
-      background: var(--primary);
-      color: #000;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: .04em;
-      border-radius: 4px;
-      padding: 4px 8px;
-    }
-    .card-body { padding: 16px; }
-    .detail-cover { height: 200px; margin: 0 -16px 16px; }
-    .cat { color: var(--primary); font-size: 12px; font-weight: 700; letter-spacing: .04em; }
-    .title { font-size: 19px; font-weight: 700; margin: 0 0 10px; }
-    .meta { color: var(--muted); margin: 4px 0; }
     .price { color: var(--primary); font-weight: 700; margin-top: 6px; }
-    .empty {
-      text-align: center;
-      padding: 28px 8px 12px;
-    }
-    .empty h4 {
-      margin: 0 0 8px;
-      font-size: 18px;
-    }
-    .empty p {
-      margin: 0;
-      color: var(--muted);
-    }
+    .empty { text-align: center; padding: 28px 24px 12px; }
+    .empty h4 { margin: 0 0 8px; font-size: 22px; font-family: "Barlow Condensed", sans-serif; font-style: italic; font-weight: 900; }
+    .empty p { margin: 0; color: var(--muted); }
     .empty button {
       margin-top: 16px;
       border: 1px solid var(--primary);
@@ -178,6 +237,22 @@
       font-size: 14px;
       cursor: pointer;
     }
+    .soon {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .soon h2 {
+      font-family: "Barlow Condensed", sans-serif;
+      font-weight: 900;
+      font-style: italic;
+      font-size: 40px;
+      margin: 0;
+    }
+    .soon p { color: var(--muted); margin: 0; }
     .nav {
       display: flex;
       gap: 8px;
@@ -190,11 +265,14 @@
       flex: 1;
       border: 0;
       border-radius: 12px;
-      padding: 10px;
-      font-size: 13px;
+      padding: 10px 4px;
+      font-family: "Barlow Condensed", sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
       cursor: pointer;
       background: transparent;
-      color: var(--muted);
+      color: #8A8A8A;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -203,7 +281,6 @@
     .nav button.on {
       background: var(--primary);
       color: var(--on-primary);
-      font-weight: 700;
     }
     .back {
       border: 0;
@@ -235,40 +312,33 @@
 </head>
 <body>
   <div class="phone" id="phone">
-    <div class="screen" id="home">
-      <div class="brand">
-        <div class="brand-row">
-          <svg class="pin" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"></path>
-          </svg>
-          <span class="wordmark">ROWLÊ</span>
-          <span class="city">BSB / DF</span>
-        </div>
-        <p class="subtitle">O que tá rolando em Brasília hoje.</p>
-      </div>
-      <div class="search-wrap">
-        <span class="icon" aria-hidden="true">
-          <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="11" cy="11" r="7"></circle>
-            <path d="M20 20l-3.5-3.5"></path>
-          </svg>
-        </span>
-        <input class="search" id="q" placeholder="Buscar eventos" />
-      </div>
-      <h2>Categorias</h2>
-      <div class="cats" id="cats"></div>
-      <h2>Quando</h2>
-      <div class="cats" id="when"></div>
-      <h3>Eventos próximos</h3>
-      <div id="list"></div>
+    <div class="screen" id="home"></div>
+    <div class="screen" id="explore" hidden>
+      <div class="soon"><h2>EXPLORAR</h2><p>Essa aba ainda vai entrar.</p></div>
     </div>
-    <div class="screen" id="detail" hidden></div>
+    <div class="screen" id="saved" hidden>
+      <div class="soon"><h2>SALVOS</h2><p>Essa aba ainda vai entrar.</p></div>
+    </div>
+    <div class="screen" id="you" hidden>
+      <div class="soon"><h2>VOCÊ</h2><p>Essa aba ainda vai entrar.</p></div>
+    </div>
+    <div class="screen detail" id="detail" hidden></div>
     <div class="nav" id="nav">
-      <button id="nav-home" class="on" onclick="show('home')">
-        <svg class="icon-svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M12 3l9 8h-3v9h-5v-6H11v6H6v-9H3z"></path>
-        </svg>
-        Início
+      <button id="nav-home" class="on" onclick="showTab('home')">
+        <svg class="icon-svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l9 8h-3v9h-5v-6H11v6H6v-9H3z"></path></svg>
+        INÍCIO
+      </button>
+      <button id="nav-explore" onclick="showTab('explore')">
+        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+        EXPLORAR
+      </button>
+      <button id="nav-saved" onclick="showTab('saved')">
+        <svg class="icon-svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.6-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.4-7 10-7 10z"></path></svg>
+        SALVOS
+      </button>
+      <button id="nav-you" onclick="showTab('you')">
+        <svg class="icon-svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4zm0 2c-4 0-8 2-8 5v1h16v-1c0-3-4-5-8-5z"></path></svg>
+        VOCÊ
       </button>
     </div>
   </div>
@@ -316,103 +386,126 @@
     function iconPin() {
       return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s7-7.2 7-12a7 7 0 1 0-14 0c0 4.8 7 12 7 12z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>';
     }
+    const areas = ["Norte", "Asa Sul", "Pontão", "Conic", "UnB"];
     const events = [
-      { id: "1", title: "Festival de Tecnologia de Brasília", description: "Palestras, oficinas e networking com a cena de tecnologia do DF. Aberto a estudantes, devs e curiosos.", category: "Tecnologia", date: today, time: "14:00", location: "CIC — Asa Norte", price: "Grátis" },
-      { id: "2", title: "Show de Rock em Brasília", description: "Noite de bandas locais e clássicos do rock. Chegue cedo: o espaço costuma lotar no fim de semana.", category: "Shows", date: tomorrow, time: "20:00", location: "Asa Sul", price: "R$ 40", ticketUrl: "https://www.sympla.com.br" },
-      { id: "3", title: "Feira Cultural de Brasília", description: "Arte, cultura, gastronomia e atrações para toda a família no Plano Piloto.", category: "Cultura", date: saturday, time: "10:00", location: "Eixo Monumental", price: "Grátis" },
-      { id: "4", title: "Samba no Parque", description: "Roda de samba ao ar livre com comida de boteco e espaço para dançar. Entrada franca.", category: "Shows", date: saturday, time: "16:00", location: "Parque da Cidade", price: "Grátis" },
-      { id: "5", title: "Mostra de Cinema no Cine Brasília", description: "Sessões de cinema brasileiro e debates com realizadores. Classificação indicativa na bilheteria.", category: "Cultura", date: sunday, time: "19:30", location: "Cine Brasília — Asa Sul", price: "R$ 20" }
+      { id: "1", title: "Festival de Tecnologia de Brasília", description: "Palestras, oficinas e networking com a cena de tecnologia do DF. Aberto a estudantes, devs e curiosos.", category: "Tecnologia", date: today, time: "14:00", location: "CIC — Asa Norte", area: "Norte", price: "Grátis" },
+      { id: "2", title: "Show de Rock em Brasília", description: "Noite de bandas locais e clássicos do rock. Chegue cedo: o espaço costuma lotar no fim de semana.", category: "Shows", date: tomorrow, time: "20:00", location: "Asa Sul", area: "Asa Sul", price: "R$ 40", ticketUrl: "https://www.sympla.com.br" },
+      { id: "3", title: "Feira Cultural de Brasília", description: "Arte, cultura, gastronomia e atrações para toda a família no Plano Piloto.", category: "Cultura", date: saturday, time: "10:00", location: "Pontão do Lago Sul", area: "Pontão", price: "Grátis" },
+      { id: "4", title: "Samba no Parque", description: "Roda de samba ao ar livre com comida de boteco e espaço para dançar. Entrada franca.", category: "Shows", date: saturday, time: "16:00", location: "UnB", area: "UnB", price: "Grátis" },
+      { id: "5", title: "Mostra de Cinema no Cine Brasília", description: "Sessões de cinema brasileiro e debates com realizadores. Classificação indicativa na bilheteria.", category: "Cultura", date: sunday, time: "19:30", location: "Conic", area: "Conic", price: "R$ 20" }
     ].sort((a, b) => a.date - b.date || a.time.localeCompare(b.time));
-    let selectedCategory = null;
-    let selectedWhen = "all";
-    function renderCats() {
-      const cats = [...new Set(events.map(e => e.category))];
-      const el = document.getElementById("cats");
-      el.innerHTML = `<button class="chip ${selectedCategory === null ? "on" : ""}" data-cat="">Todos</button>` +
-        cats.map(c => `<button class="chip ${selectedCategory === c ? "on" : ""}" data-cat="${c}">${c}</button>`).join("");
-      el.querySelectorAll(".chip").forEach(btn => {
-        btn.onclick = () => {
-          const value = btn.getAttribute("data-cat");
-          selectedCategory = value === "" ? null : (selectedCategory === value ? null : value);
-          render();
-        };
-      });
-      const whenEl = document.getElementById("when");
-      const whens = [
-        ["all", "Todos"],
-        ["today", "Hoje"],
-        ["weekend", "Fim de semana"]
-      ];
-      whenEl.innerHTML = whens.map(([id, label]) =>
-        `<button class="chip ${selectedWhen === id ? "on" : ""}" data-when="${id}">${label}</button>`
-      ).join("");
-      whenEl.querySelectorAll(".chip").forEach(btn => {
-        btn.onclick = () => {
-          const value = btn.getAttribute("data-when");
-          selectedWhen = selectedWhen === value && value !== "all" ? "all" : value;
-          render();
-        };
-      });
-    }
-    function render() {
-      renderCats();
-      const q = document.getElementById("q").value.toLowerCase();
-      const w = thisWeekend();
-      const filtered = events.filter(e => {
-        const catOk = !selectedCategory || e.category === selectedCategory;
-        const whenOk = selectedWhen === "all"
-          || (selectedWhen === "today" && sameDay(e.date, today))
-          || (selectedWhen === "weekend" && (sameDay(e.date, w.sat) || sameDay(e.date, w.sun)));
-        const qOk = !q || e.title.toLowerCase().includes(q) || e.category.toLowerCase().includes(q) || e.location.toLowerCase().includes(q);
-        return catOk && whenOk && qOk;
-      });
-      const list = document.getElementById("list");
-      list.innerHTML = filtered.length
-        ? filtered.map(e => `
-            <div class="card" data-id="${e.id}">
-              <div class="cover ${e.category}"><div class="cat">${e.category.toUpperCase()}</div></div>
-              <div class="card-body">
-                <div class="title">${e.title}</div>
-                <div class="meta-line">${iconCal()} ${formatWhen(e)}</div>
-                <div class="meta-line">${iconPin()} ${e.location}</div>
-                <div class="price">${e.price}</div>
-              </div>
-            </div>`).join("")
-        : emptyHtml();
-      list.querySelectorAll(".card").forEach(card => {
-        card.onclick = () => openDetail(card.getAttribute("data-id"));
-      });
-      const clear = document.getElementById("clear-filters");
-      if (clear) clear.onclick = clearFilters;
+    let selectedArea = null;
+    function posterHtml(e) {
+      return `
+        <div class="poster" data-id="${e.id}">
+          <div class="poster-cover ${e.category}">
+            <span class="badge ${e.category}">${e.category.toUpperCase()}</span>
+            <div class="poster-title">${e.title}</div>
+          </div>
+          <div class="poster-meta">${formatWhen(e)}</div>
+          <div class="poster-meta">${e.location}  ·  ${e.price}</div>
+        </div>`;
     }
     function emptyHtml() {
-      const q = document.getElementById("q").value.trim();
+      const q = (document.getElementById("q")?.value || "").trim();
       let title = "Nenhum evento por aqui";
       let subtitle = "Quando tiver rolê novo, aparece nessa lista.";
       if (q) {
         title = "Nada por “" + q + "”";
         subtitle = "Tenta outro nome, ou limpa a busca e os filtros.";
-      } else if (selectedWhen === "today") {
-        title = "Nada pra hoje";
-        subtitle = "Olha o fim de semana ou tira o filtro de data.";
-      } else if (selectedWhen === "weekend") {
-        title = "Nada nesse fim de semana";
-        subtitle = "Tira o filtro ou escolhe outra categoria.";
-      } else if (selectedCategory) {
-        title = "Nenhum rolê de " + selectedCategory;
-        subtitle = "Escolhe outra categoria ou vê todos os eventos.";
+      } else if (selectedArea) {
+        title = "Nenhum rolê em " + selectedArea;
+        subtitle = "Escolhe outro lugar ou vê todos os eventos.";
       }
-      const hasFilters = q || selectedCategory || selectedWhen !== "all";
-      const btn = hasFilters
-        ? `<button type="button" id="clear-filters">Limpar filtros</button>`
-        : "";
+      const hasFilters = q || selectedArea;
+      const btn = hasFilters ? `<button type="button" id="clear-filters">Limpar filtros</button>` : "";
       return `<div class="empty"><h4>${title}</h4><p>${subtitle}</p>${btn}</div>`;
     }
-    function clearFilters() {
-      document.getElementById("q").value = "";
-      selectedCategory = null;
-      selectedWhen = "all";
-      render();
+    function renderHome() {
+      const prev = document.getElementById("q");
+      const qValue = prev ? prev.value : "";
+      const q = qValue.toLowerCase();
+      const keepFocus = document.activeElement === prev;
+      const caret = prev && typeof prev.selectionStart === "number" ? prev.selectionStart : qValue.length;
+      const filtered = events.filter(e => {
+        const areaOk = !selectedArea || e.area === selectedArea;
+        const qOk = !q || e.title.toLowerCase().includes(q) || e.category.toLowerCase().includes(q) || e.location.toLowerCase().includes(q) || e.area.toLowerCase().includes(q);
+        return areaOk && qOk;
+      });
+      const emAlta = filtered.filter(e => !sameDay(e.date, today));
+      const hoje = filtered.filter(e => sameDay(e.date, today));
+      const places = areas.map((area, i) => {
+        const dot = i === 0 ? "" : `<span class="dot">·</span>`;
+        return `${dot}<button class="place ${selectedArea === area ? "on" : ""}" data-area="${area}">${area.toUpperCase()}</button>`;
+      }).join("");
+      let body;
+      if (!filtered.length) {
+        body = emptyHtml();
+      } else {
+        body = "";
+        if (emAlta.length) {
+          body += `
+            <div class="section">
+              <div class="section-title"><span class="section-index">01</span><span class="section-name">EM ALTA</span></div>
+              <p class="section-sub">O que mais tá saindo essa semana</p>
+            </div>
+            <div class="row-scroll">${emAlta.map(posterHtml).join("")}</div>`;
+        }
+        if (hoje.length) {
+          const hojeIndex = emAlta.length ? "02" : "01";
+          body += `
+            <div class="section">
+              <div class="section-title"><span class="section-index">${hojeIndex}</span><span class="section-name">HOJE</span></div>
+              <p class="section-sub">Ainda dá tempo de ir</p>
+            </div>
+            <div class="row-scroll">${hoje.map(posterHtml).join("")}</div>`;
+        }
+      }
+      document.getElementById("home").innerHTML = `
+        <div class="brand pad">
+          <div class="brand-row">
+            <svg class="pin" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"></path>
+            </svg>
+            <span class="wordmark">ROWLÊ</span>
+            <span class="city">BSB / DF</span>
+          </div>
+          <p class="subtitle">O que tá rolando em Brasília hoje.</p>
+        </div>
+        <div class="places">${places}</div>
+        <div class="search-wrap">
+          <span class="icon" aria-hidden="true">
+            <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="7"></circle>
+              <path d="M20 20l-3.5-3.5"></path>
+            </svg>
+          </span>
+          <input class="search" id="q" placeholder="Buscar um evento" value="${qValue.replace(/"/g, "&quot;")}" />
+        </div>
+        ${body}
+      `;
+      document.querySelectorAll(".place").forEach(btn => {
+        btn.onclick = () => {
+          const value = btn.getAttribute("data-area");
+          selectedArea = selectedArea === value ? null : value;
+          renderHome();
+        };
+      });
+      document.querySelectorAll(".poster").forEach(card => {
+        card.onclick = () => openDetail(card.getAttribute("data-id"));
+      });
+      const input = document.getElementById("q");
+      input.addEventListener("input", renderHome);
+      const clear = document.getElementById("clear-filters");
+      if (clear) clear.onclick = () => {
+        selectedArea = null;
+        document.getElementById("q").value = "";
+        renderHome();
+      };
+      if (keepFocus) {
+        input.focus();
+        input.setSelectionRange(caret, caret);
+      }
     }
     function openDetail(id) {
       const e = events.find(x => x.id === id);
@@ -421,27 +514,29 @@
         ? `<button class="ticket" onclick="window.open('${e.ticketUrl}', '_blank')">Ver ingressos</button>`
         : "";
       document.getElementById("detail").innerHTML = `
-        <button class="back" onclick="show('home')">←</button>
-        <div class="cover detail-cover ${e.category}"><div class="cat">${e.category.toUpperCase()}</div></div>
+        <button class="back" onclick="showTab('home')">←</button>
+        <div class="cover ${e.category}"><span class="badge ${e.category}">${e.category.toUpperCase()}</span></div>
         <h1>${e.title}</h1>
         <p class="meta-line">${iconCal()} ${formatWhen(e)}</p>
         <p class="meta-line">${iconPin()} ${e.location}</p>
         <p class="price" style="font-size:20px">${e.price}</p>
-        <h2>Sobre</h2>
+        <h2 style="font-size:18px;margin:16px 0 8px">Sobre</h2>
         <p class="desc">${e.description}</p>
         ${ticket}
       `;
-      show("detail");
+      showTab("detail");
     }
-    function show(id) {
-      ["home", "detail"].forEach(s => {
+    function showTab(id) {
+      ["home", "explore", "saved", "you", "detail"].forEach(s => {
         document.getElementById(s).hidden = s !== id;
       });
       document.getElementById("nav").hidden = id === "detail";
       document.getElementById("nav-home").classList.toggle("on", id === "home");
+      document.getElementById("nav-explore").classList.toggle("on", id === "explore");
+      document.getElementById("nav-saved").classList.toggle("on", id === "saved");
+      document.getElementById("nav-you").classList.toggle("on", id === "you");
     }
-    document.getElementById("q").addEventListener("input", render);
-    render();
+    renderHome();
   </script>
 </body>
 </html>

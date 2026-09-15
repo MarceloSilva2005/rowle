@@ -19,6 +19,7 @@ private fun sampleEventsList(): List<Event> {
             date = now,
             time = LocalTime(14, 0),
             location = "CIC — Asa Norte",
+            area = "Norte",
             category = "Tecnologia",
             price = "Grátis"
         ),
@@ -29,6 +30,7 @@ private fun sampleEventsList(): List<Event> {
             date = tomorrow,
             time = LocalTime(20, 0),
             location = "Asa Sul",
+            area = "Asa Sul",
             category = "Shows",
             price = "R$ 40",
             ticketUrl = "https://www.sympla.com.br"
@@ -39,7 +41,8 @@ private fun sampleEventsList(): List<Event> {
             description = "Arte, cultura, gastronomia e atrações para toda a família no Plano Piloto.",
             date = saturday,
             time = LocalTime(10, 0),
-            location = "Eixo Monumental",
+            location = "Pontão do Lago Sul",
+            area = "Pontão",
             category = "Cultura",
             price = "Grátis"
         ),
@@ -49,7 +52,8 @@ private fun sampleEventsList(): List<Event> {
             description = "Roda de samba ao ar livre com comida de boteco e espaço para dançar. Entrada franca.",
             date = saturday,
             time = LocalTime(16, 0),
-            location = "Parque da Cidade",
+            location = "UnB",
+            area = "UnB",
             category = "Shows",
             price = "Grátis"
         ),
@@ -59,7 +63,8 @@ private fun sampleEventsList(): List<Event> {
             description = "Sessões de cinema brasileiro e debates com realizadores. Classificação indicativa na bilheteria.",
             date = sunday,
             time = LocalTime(19, 30),
-            location = "Cine Brasília — Asa Sul",
+            location = "Conic",
+            area = "Conic",
             category = "Cultura",
             price = "R$ 20"
         )
@@ -71,3 +76,5 @@ val sampleEvents: List<Event> = sampleEventsList()
 fun eventById(id: String): Event? = sampleEvents.find { it.id == id }
 
 val eventCategories: List<String> = sampleEvents.map { it.category }.distinct()
+
+val eventAreas: List<String> = listOf("Norte", "Asa Sul", "Pontão", "Conic", "UnB")
