@@ -32,8 +32,7 @@ private fun sampleEventsList(): List<Event> {
             location = "Asa Sul",
             area = "Asa Sul",
             category = "Shows",
-            price = "R$ 40",
-            ticketUrl = "https://www.sympla.com.br"
+            price = "R$ 40"
         ),
         Event(
             id = "3",

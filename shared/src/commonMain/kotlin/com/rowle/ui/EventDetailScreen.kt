@@ -18,6 +18,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -29,7 +30,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+import com.rowle.data.eventShareText
 import com.rowle.data.formatEventWhen
+import com.rowle.data.rememberSharer
 import com.rowle.model.Event
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -42,7 +45,8 @@ fun EventDetailScreen(
     modifier: Modifier = Modifier
 ) {
     val uriHandler = LocalUriHandler.current
-    val ticketUrl = event.ticketUrl
+    val sharer = rememberSharer()
+    val eventLink = event.link
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -120,13 +124,20 @@ fun EventDetailScreen(
                     lineHeight = 22.sp
                 )
 
-                if (!ticketUrl.isNullOrBlank()) {
-                    Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(12.dp))
+                OutlinedButton(
+                    onClick = { sharer.share(eventShareText(event)) },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Compartilhar")
+                }
+
+                if (!eventLink.isNullOrBlank()) {
                     Button(
-                        onClick = { uriHandler.openUri(ticketUrl) },
+                        onClick = { uriHandler.openUri(eventLink) },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Ver ingressos")
+                        Text("Saiba mais")
                     }
                 }
 

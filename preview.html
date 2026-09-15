@@ -36,6 +36,7 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      position: relative;
     }
     .screen { flex: 1; overflow: auto; padding: 20px 0 16px; }
     .screen.detail { padding: 20px 16px 16px; }
@@ -368,8 +369,19 @@
       padding: 0 0 12px;
     }
     .desc { color: var(--muted); line-height: 1.45; font-size: 16px; }
-    .ticket {
+    .share {
       margin-top: 16px;
+      width: 100%;
+      border: 1px solid var(--primary);
+      border-radius: 10px;
+      padding: 14px;
+      background: transparent;
+      color: var(--primary);
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .ticket {
+      margin-top: 12px;
       width: 100%;
       border: 0;
       border-radius: 10px;
@@ -379,6 +391,22 @@
       font-size: 16px;
       cursor: pointer;
     }
+    .toast {
+      position: absolute;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%);
+      background: var(--primary);
+      color: var(--on-primary);
+      font-family: "Barlow Condensed", sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      padding: 10px 16px;
+      border-radius: 8px;
+      z-index: 20;
+      white-space: nowrap;
+    }
+    .toast[hidden] { display: none; }
     .hint {
       position: absolute;
       bottom: 16px;
@@ -394,6 +422,7 @@
     <div class="screen" id="saved" hidden></div>
     <div class="screen" id="you" hidden></div>
     <div class="screen detail" id="detail" hidden></div>
+    <div class="toast" id="toast" hidden>COPIADO</div>
     <div class="nav" id="nav">
       <button id="nav-home" class="on" onclick="showTab('home')">
         <svg class="icon-svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l9 8h-3v9h-5v-6H11v6H6v-9H3z"></path></svg>
@@ -460,7 +489,7 @@
     const areas = ["Norte", "Asa Sul", "Pontão", "Conic", "UnB"];
     const events = [
       { id: "1", title: "Festival de Tecnologia de Brasília", description: "Palestras, oficinas e networking com a cena de tecnologia do DF. Aberto a estudantes, devs e curiosos.", category: "Tecnologia", date: today, time: "14:00", location: "CIC — Asa Norte", area: "Norte", price: "Grátis" },
-      { id: "2", title: "Show de Rock em Brasília", description: "Noite de bandas locais e clássicos do rock. Chegue cedo: o espaço costuma lotar no fim de semana.", category: "Shows", date: tomorrow, time: "20:00", location: "Asa Sul", area: "Asa Sul", price: "R$ 40", ticketUrl: "https://www.sympla.com.br" },
+      { id: "2", title: "Show de Rock em Brasília", description: "Noite de bandas locais e clássicos do rock. Chegue cedo: o espaço costuma lotar no fim de semana.", category: "Shows", date: tomorrow, time: "20:00", location: "Asa Sul", area: "Asa Sul", price: "R$ 40" },
       { id: "3", title: "Feira Cultural de Brasília", description: "Arte, cultura, gastronomia e atrações para toda a família no Plano Piloto.", category: "Cultura", date: saturday, time: "10:00", location: "Pontão do Lago Sul", area: "Pontão", price: "Grátis" },
       { id: "4", title: "Samba no Parque", description: "Roda de samba ao ar livre com comida de boteco e espaço para dançar. Entrada franca.", category: "Shows", date: saturday, time: "16:00", location: "UnB", area: "UnB", price: "Grátis" },
       { id: "5", title: "Mostra de Cinema no Cine Brasília", description: "Sessões de cinema brasileiro e debates com realizadores. Classificação indicativa na bilheteria.", category: "Cultura", date: sunday, time: "19:30", location: "Conic", area: "Conic", price: "R$ 20" }
@@ -799,12 +828,38 @@
         goHome();
       }
     }
+    function eventShareText(e) {
+      let text = e.title + "\n" + formatWhen(e) + "\n" + e.location + "  ·  " + e.price;
+      if (e.link) text += "\n" + e.link;
+      return text + "\n\nRowlê — Brasília";
+    }
+    function showCopied() {
+      const toast = document.getElementById("toast");
+      toast.hidden = false;
+      clearTimeout(showCopied.timer);
+      showCopied.timer = setTimeout(() => { toast.hidden = true; }, 1600);
+    }
+    function shareEvent(e) {
+      const text = eventShareText(e);
+      if (navigator.share) {
+        navigator.share({ title: e.title, text }).catch(() => copyShare(text));
+      } else {
+        copyShare(text);
+      }
+    }
+    function copyShare(text) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(showCopied, showCopied);
+      } else {
+        showCopied();
+      }
+    }
     function openDetail(id, from) {
       if (from) detailFrom = from;
       const e = events.find(x => x.id === id);
       if (!e) return;
-      const ticket = e.ticketUrl
-        ? `<button class="ticket" onclick="window.open('${e.ticketUrl}', '_blank')">Ver ingressos</button>`
+      const more = e.link
+        ? `<button class="ticket" type="button" id="open-link">Saiba mais</button>`
         : "";
       document.getElementById("detail").innerHTML = `
         <div class="detail-bar">
@@ -818,7 +873,8 @@
         <p class="price" style="font-size:20px">${e.price}</p>
         <h2 style="font-size:18px;margin:16px 0 8px">Sobre</h2>
         <p class="desc">${e.description}</p>
-        ${ticket}
+        <button class="share" type="button" id="share-event">Compartilhar</button>
+        ${more}
       `;
       document.querySelectorAll("#detail .heart").forEach(btn => {
         btn.onclick = (ev) => {
@@ -828,6 +884,9 @@
           openDetail(favId);
         };
       });
+      document.getElementById("share-event").onclick = () => shareEvent(e);
+      const linkBtn = document.getElementById("open-link");
+      if (linkBtn) linkBtn.onclick = () => window.open(e.link, "_blank");
       showTab("detail");
     }
     function goHome() {

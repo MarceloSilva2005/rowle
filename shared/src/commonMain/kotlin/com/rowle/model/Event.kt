@@ -14,5 +14,5 @@ data class Event(
     val category: String,
     val price: String,
     val imageUrl: String? = null,
-    val ticketUrl: String? = null
+    val link: String? = null
 )
