@@ -47,6 +47,8 @@ import com.rowle.model.Event
 @Composable
 fun HomeScreen(
     onEventClick: (Event) -> Unit,
+    favoriteIds: Set<String>,
+    onToggleFavorite: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var searchText by remember { mutableStateOf("") }
@@ -127,7 +129,12 @@ fun HomeScreen(
                     )
                 }
                 item {
-                    EventPosterRow(events = emAlta, onEventClick = onEventClick)
+                    EventPosterRow(
+                        events = emAlta,
+                        favoriteIds = favoriteIds,
+                        onEventClick = onEventClick,
+                        onToggleFavorite = onToggleFavorite
+                    )
                 }
             }
 
@@ -140,7 +147,12 @@ fun HomeScreen(
                     )
                 }
                 item {
-                    EventPosterRow(events = hoje, onEventClick = onEventClick)
+                    EventPosterRow(
+                        events = hoje,
+                        favoriteIds = favoriteIds,
+                        onEventClick = onEventClick,
+                        onToggleFavorite = onToggleFavorite
+                    )
                 }
             }
         }
@@ -243,7 +255,9 @@ private fun SectionHeader(
 @Composable
 private fun EventPosterRow(
     events: List<Event>,
-    onEventClick: (Event) -> Unit
+    favoriteIds: Set<String>,
+    onEventClick: (Event) -> Unit,
+    onToggleFavorite: (String) -> Unit
 ) {
     LazyRow(
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
@@ -252,6 +266,8 @@ private fun EventPosterRow(
         items(events, key = { it.id }) { event ->
             EventCard(
                 event = event,
+                isFavorite = event.id in favoriteIds,
+                onToggleFavorite = { onToggleFavorite(event.id) },
                 onClick = { onEventClick(event) }
             )
         }

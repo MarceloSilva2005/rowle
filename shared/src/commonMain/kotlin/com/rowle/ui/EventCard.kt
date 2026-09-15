@@ -28,6 +28,8 @@ import com.rowle.model.Event
 @Composable
 fun EventCard(
     event: Event,
+    isFavorite: Boolean,
+    onToggleFavorite: () -> Unit,
     onClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
@@ -57,6 +59,11 @@ fun EventCard(
                 modifier = Modifier
                     .align(Alignment.TopStart)
                     .padding(12.dp)
+            )
+            FavoriteButton(
+                isFavorite = isFavorite,
+                onClick = onToggleFavorite,
+                modifier = Modifier.align(Alignment.TopEnd)
             )
             Text(
                 text = event.title.uppercase(),

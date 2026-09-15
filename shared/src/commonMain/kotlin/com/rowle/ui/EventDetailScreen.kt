@@ -36,6 +36,8 @@ import com.rowle.model.Event
 @Composable
 fun EventDetailScreen(
     event: Event,
+    isFavorite: Boolean,
+    onToggleFavorite: () -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -52,6 +54,13 @@ fun EventDetailScreen(
                     IconButton(onClick = onBack) {
                         Icon(Icons.Filled.ArrowBack, contentDescription = "Voltar")
                     }
+                },
+                actions = {
+                    FavoriteButton(
+                        isFavorite = isFavorite,
+                        onClick = onToggleFavorite,
+                        inactiveTint = MaterialTheme.colorScheme.onBackground
+                    )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background,

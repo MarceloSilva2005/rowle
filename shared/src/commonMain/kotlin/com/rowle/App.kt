@@ -48,6 +48,11 @@ private enum class MainTab(
 fun App() {
     var screen by remember { mutableStateOf<AppScreen>(AppScreen.Home) }
     var tab by remember { mutableStateOf(MainTab.HOME) }
+    var favoriteIds by remember { mutableStateOf(setOf<String>()) }
+
+    fun toggleFavorite(id: String) {
+        favoriteIds = if (id in favoriteIds) favoriteIds - id else favoriteIds + id
+    }
 
     val canGoBack = screen !is AppScreen.Home
     BackHandler(enabled = canGoBack) {
@@ -101,6 +106,8 @@ fun App() {
                     if (event != null) {
                         EventDetailScreen(
                             event = event,
+                            isFavorite = event.id in favoriteIds,
+                            onToggleFavorite = { toggleFavorite(event.id) },
                             onBack = { screen = AppScreen.Home }
                         )
                     } else {
@@ -108,6 +115,8 @@ fun App() {
                             onEventClick = { clicked ->
                                 screen = AppScreen.EventDetail(clicked.id)
                             },
+                            favoriteIds = favoriteIds,
+                            onToggleFavorite = { toggleFavorite(it) },
                             modifier = Modifier.padding(innerPadding)
                         )
                     }
@@ -120,6 +129,8 @@ fun App() {
                                 onEventClick = { event ->
                                     screen = AppScreen.EventDetail(event.id)
                                 },
+                                favoriteIds = favoriteIds,
+                                onToggleFavorite = { toggleFavorite(it) },
                                 modifier = Modifier.padding(innerPadding)
                             )
                         }

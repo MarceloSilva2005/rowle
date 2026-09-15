@@ -173,6 +173,27 @@
     .badge.Shows { background: #FF4FA3; color: #fff; }
     .badge.Cultura { background: #C77DFF; color: #fff; }
     .badge.Tecnologia { background: var(--primary); color: #000; }
+    .heart {
+      background: none;
+      border: 0;
+      padding: 6px;
+      color: #fff;
+      cursor: pointer;
+      z-index: 2;
+    }
+    .heart.on { color: var(--primary); }
+    .heart svg { width: 24px; height: 24px; display: block; }
+    .poster-cover .heart {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+    }
+    .detail-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
     .poster-title {
       position: absolute;
       left: 12px;
@@ -389,11 +410,22 @@
       { id: "5", title: "Mostra de Cinema no Cine Brasília", description: "Sessões de cinema brasileiro e debates com realizadores. Classificação indicativa na bilheteria.", category: "Cultura", date: sunday, time: "19:30", location: "Conic", area: "Conic", price: "R$ 20" }
     ].sort((a, b) => a.date - b.date || a.time.localeCompare(b.time));
     let selectedArea = null;
+    const favorites = new Set();
+    function heartSvg(on) {
+      return on
+        ? '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.6-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.4-7 10-7 10z"></path></svg>'
+        : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.1 8.6A4 4 0 0 1 19 11c0 5.4-7 10-7 10S5 16.4 5 11a4 4 0 0 1 7.1-2.4z"></path></svg>';
+    }
+    function heartButton(id) {
+      const on = favorites.has(id);
+      return `<button type="button" class="heart ${on ? "on" : ""}" data-id="${id}" aria-label="${on ? "Remover dos salvos" : "Salvar evento"}">${heartSvg(on)}</button>`;
+    }
     function posterHtml(e) {
       return `
         <div class="poster" data-id="${e.id}">
           <div class="poster-cover ${e.category}">
             <span class="badge ${e.category}">${e.category.toUpperCase()}</span>
+            ${heartButton(e.id)}
             <div class="poster-title">${e.title}</div>
           </div>
           <div class="poster-meta">${formatWhen(e)}</div>
@@ -487,6 +519,14 @@
       document.querySelectorAll(".poster").forEach(card => {
         card.onclick = () => openDetail(card.getAttribute("data-id"));
       });
+      document.querySelectorAll("#home .heart").forEach(btn => {
+        btn.onclick = (ev) => {
+          ev.stopPropagation();
+          const id = btn.getAttribute("data-id");
+          if (favorites.has(id)) favorites.delete(id); else favorites.add(id);
+          renderHome();
+        };
+      });
       const input = document.getElementById("q");
       input.addEventListener("input", renderHome);
       const clear = document.getElementById("clear-filters");
@@ -507,7 +547,10 @@
         ? `<button class="ticket" onclick="window.open('${e.ticketUrl}', '_blank')">Ver ingressos</button>`
         : "";
       document.getElementById("detail").innerHTML = `
-        <button class="back" onclick="showTab('home')">←</button>
+        <div class="detail-bar">
+          <button class="back" onclick="goHome()">←</button>
+          ${heartButton(e.id)}
+        </div>
         <div class="cover ${e.category}"><span class="badge ${e.category}">${e.category.toUpperCase()}</span></div>
         <h1>${e.title}</h1>
         <p class="meta-line">${iconCal()} ${formatWhen(e)}</p>
@@ -517,7 +560,19 @@
         <p class="desc">${e.description}</p>
         ${ticket}
       `;
+      document.querySelectorAll("#detail .heart").forEach(btn => {
+        btn.onclick = (ev) => {
+          ev.stopPropagation();
+          const favId = btn.getAttribute("data-id");
+          if (favorites.has(favId)) favorites.delete(favId); else favorites.add(favId);
+          openDetail(favId);
+        };
+      });
       showTab("detail");
+    }
+    function goHome() {
+      renderHome();
+      showTab("home");
     }
     function showTab(id) {
       ["home", "explore", "saved", "you", "detail"].forEach(s => {
