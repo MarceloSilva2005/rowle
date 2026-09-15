@@ -268,6 +268,14 @@
       margin: 0;
     }
     .soon p { color: var(--muted); margin: 0; }
+    .saved-head { padding: 4px 16px 8px; }
+    .saved-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px 12px;
+      padding: 8px 16px 16px;
+    }
+    .saved-grid .poster { width: auto; }
     .nav {
       display: flex;
       gap: 8px;
@@ -331,9 +339,7 @@
     <div class="screen" id="explore" hidden>
       <div class="soon"><h2>EXPLORAR</h2><p>Essa aba ainda vai entrar.</p></div>
     </div>
-    <div class="screen" id="saved" hidden>
-      <div class="soon"><h2>SALVOS</h2><p>Essa aba ainda vai entrar.</p></div>
-    </div>
+    <div class="screen" id="saved" hidden></div>
     <div class="screen" id="you" hidden>
       <div class="soon"><h2>VOCÊ</h2><p>Essa aba ainda vai entrar.</p></div>
     </div>
@@ -347,7 +353,7 @@
         <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
         EXPLORAR
       </button>
-      <button id="nav-saved" onclick="showTab('saved')">
+      <button id="nav-saved" onclick="openSaved()">
         <svg class="icon-svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.6-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.4-7 10-7 10z"></path></svg>
         SALVOS
       </button>
@@ -410,6 +416,7 @@
       { id: "5", title: "Mostra de Cinema no Cine Brasília", description: "Sessões de cinema brasileiro e debates com realizadores. Classificação indicativa na bilheteria.", category: "Cultura", date: sunday, time: "19:30", location: "Conic", area: "Conic", price: "R$ 20" }
     ].sort((a, b) => a.date - b.date || a.time.localeCompare(b.time));
     let selectedArea = null;
+    let detailFrom = "home";
     const favorites = new Set();
     function heartSvg(on) {
       return on
@@ -517,7 +524,7 @@
         };
       });
       document.querySelectorAll(".poster").forEach(card => {
-        card.onclick = () => openDetail(card.getAttribute("data-id"));
+        card.onclick = () => openDetail(card.getAttribute("data-id"), "home");
       });
       document.querySelectorAll("#home .heart").forEach(btn => {
         btn.onclick = (ev) => {
@@ -540,7 +547,47 @@
         input.setSelectionRange(caret, caret);
       }
     }
-    function openDetail(id) {
+    function renderSaved() {
+      const saved = events.filter(e => favorites.has(e.id));
+      let body;
+      if (!saved.length) {
+        body = `<div class="empty"><h4>Nenhum rolê salvo</h4><p>Marca o coração num evento pra achar ele aqui.</p></div>`;
+      } else {
+        body = `<div class="saved-grid">${saved.map(posterHtml).join("")}</div>`;
+      }
+      document.getElementById("saved").innerHTML = `
+        <div class="saved-head">
+          <div class="section-name">SALVOS</div>
+          <p class="section-sub">Os rolês que você marcou</p>
+        </div>
+        ${body}
+      `;
+      document.querySelectorAll("#saved .poster").forEach(card => {
+        card.onclick = () => openDetail(card.getAttribute("data-id"), "saved");
+      });
+      document.querySelectorAll("#saved .heart").forEach(btn => {
+        btn.onclick = (ev) => {
+          ev.stopPropagation();
+          const id = btn.getAttribute("data-id");
+          if (favorites.has(id)) favorites.delete(id); else favorites.add(id);
+          renderSaved();
+        };
+      });
+    }
+    function openSaved() {
+      renderSaved();
+      showTab("saved");
+    }
+    function goBackFromDetail() {
+      if (detailFrom === "saved") {
+        renderSaved();
+        showTab("saved");
+      } else {
+        goHome();
+      }
+    }
+    function openDetail(id, from) {
+      if (from) detailFrom = from;
       const e = events.find(x => x.id === id);
       if (!e) return;
       const ticket = e.ticketUrl
@@ -548,7 +595,7 @@
         : "";
       document.getElementById("detail").innerHTML = `
         <div class="detail-bar">
-          <button class="back" onclick="goHome()">←</button>
+          <button class="back" onclick="goBackFromDetail()">←</button>
           ${heartButton(e.id)}
         </div>
         <div class="cover ${e.category}"><span class="badge ${e.category}">${e.category.toUpperCase()}</span></div>

@@ -268,7 +268,8 @@ private fun EventPosterRow(
                 event = event,
                 isFavorite = event.id in favoriteIds,
                 onToggleFavorite = { onToggleFavorite(event.id) },
-                onClick = { onEventClick(event) }
+                onClick = { onEventClick(event) },
+                modifier = Modifier.width(200.dp)
             )
         }
     }
