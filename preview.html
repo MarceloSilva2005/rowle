@@ -252,22 +252,6 @@
       font-size: 14px;
       cursor: pointer;
     }
-    .soon {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-    .soon h2 {
-      font-family: "Barlow Condensed", sans-serif;
-      font-weight: 900;
-      font-style: italic;
-      font-size: 40px;
-      margin: 0;
-    }
-    .soon p { color: var(--muted); margin: 0; }
     .saved-head { padding: 4px 16px 8px; }
     .saved-grid {
       display: grid;
@@ -310,6 +294,41 @@
       background: var(--primary);
       color: var(--on-primary);
       border-color: var(--primary);
+    }
+    .you-card {
+      margin: 12px 16px 8px;
+      background: #111;
+      border-radius: 16px;
+      padding: 20px;
+      cursor: pointer;
+    }
+    .you-count {
+      font-family: "Barlow Condensed", sans-serif;
+      font-weight: 900;
+      font-style: italic;
+      font-size: 64px;
+      line-height: 1;
+      color: var(--primary);
+    }
+    .you-count-label {
+      font-family: "Barlow Condensed", sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      font-size: 13px;
+    }
+    .you-hint { color: var(--muted); font-size: 13px; margin-top: 8px; }
+    .you-city {
+      font-family: "Barlow Condensed", sans-serif;
+      font-weight: 900;
+      font-style: italic;
+      font-size: 24px;
+      margin: 0;
+    }
+    .you-about {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.45;
+      margin: 0;
     }
     .nav {
       display: flex;
@@ -373,9 +392,7 @@
     <div class="screen" id="home"></div>
     <div class="screen" id="explore" hidden></div>
     <div class="screen" id="saved" hidden></div>
-    <div class="screen" id="you" hidden>
-      <div class="soon"><h2>VOCÊ</h2><p>Essa aba ainda vai entrar.</p></div>
-    </div>
+    <div class="screen" id="you" hidden></div>
     <div class="screen detail" id="detail" hidden></div>
     <div class="nav" id="nav">
       <button id="nav-home" class="on" onclick="showTab('home')">
@@ -390,7 +407,7 @@
         <svg class="icon-svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.6-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.4-7 10-7 10z"></path></svg>
         SALVOS
       </button>
-      <button id="nav-you" onclick="showTab('you')">
+      <button id="nav-you" onclick="openYou()">
         <svg class="icon-svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4zm0 2c-4 0-8 2-8 5v1h16v-1c0-3-4-5-8-5z"></path></svg>
         VOCÊ
       </button>
@@ -743,6 +760,33 @@
     function openSaved() {
       renderSaved();
       showTab("saved");
+    }
+    function renderYou() {
+      const count = favorites.size;
+      const label = count === 1 ? "ROLÊ SALVO" : "ROLÊS SALVOS";
+      const hint = count === 0
+        ? "Marca o coração num evento pra contar aqui."
+        : "Abre a lista dos que você marcou.";
+      document.getElementById("you").innerHTML = `
+        <div class="saved-head">
+          <div class="section-name">VOCÊ</div>
+          <p class="section-sub">Sem conta. Seus rolês ficam neste aparelho.</p>
+        </div>
+        <div class="you-card" id="you-saved">
+          <div class="you-count">${count}</div>
+          <div class="you-count-label">${label}</div>
+          <p class="you-hint">${hint}</p>
+        </div>
+        <div class="filter-label">SOBRE</div>
+        <p class="you-about pad">O Rowlê junta o que tá rolando em Brasília — shows, cultura e o resto da cidade — num só lugar.</p>
+        <div class="filter-label">CIDADE</div>
+        <p class="you-city pad">Brasília / DF</p>
+      `;
+      document.getElementById("you-saved").onclick = openSaved;
+    }
+    function openYou() {
+      renderYou();
+      showTab("you");
     }
     function goBackFromDetail() {
       if (detailFrom === "saved") {

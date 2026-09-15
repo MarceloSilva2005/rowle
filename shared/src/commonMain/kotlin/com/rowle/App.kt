@@ -1,8 +1,5 @@
 package com.rowle
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -22,7 +19,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -35,6 +31,7 @@ import com.rowle.ui.EventDetailScreen
 import com.rowle.ui.ExploreScreen
 import com.rowle.ui.HomeScreen
 import com.rowle.ui.SavedScreen
+import com.rowle.ui.YouScreen
 import com.rowle.ui.theme.RowleTheme
 
 private enum class MainTab(
@@ -160,32 +157,16 @@ fun App() {
                                 modifier = Modifier.padding(innerPadding)
                             )
                         }
-                        MainTab.YOU -> ComingSoon("Você", Modifier.padding(innerPadding))
+                        MainTab.YOU -> {
+                            YouScreen(
+                                savedCount = favoriteIds.size,
+                                onOpenSaved = { tab = MainTab.SAVED },
+                                modifier = Modifier.padding(innerPadding)
+                            )
+                        }
                     }
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun ComingSoon(title: String, modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Text(
-                text = title.uppercase(),
-                style = MaterialTheme.typography.displayLarge
-            )
-            Text(
-                text = "Essa aba ainda vai entrar.",
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
         }
     }
 }
