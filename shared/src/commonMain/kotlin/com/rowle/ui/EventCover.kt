@@ -1,5 +1,6 @@
 package com.rowle.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -15,16 +16,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rowle.model.Event
+import com.rowle.resources.Res
 import com.rowle.ui.theme.Ink
 import com.rowle.ui.theme.Lime
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.painterResource
 
 internal enum class PosterStyle { RAIL, LIME_TYPE, BAND }
 
@@ -35,6 +41,15 @@ internal fun posterStyle(id: String): PosterStyle {
         1 -> PosterStyle.LIME_TYPE
         else -> PosterStyle.BAND
     }
+}
+
+internal fun eventCoverRes(id: String): DrawableResource? = when (id) {
+    "1" -> Res.drawable.cover_1
+    "2" -> Res.drawable.cover_2
+    "3" -> Res.drawable.cover_3
+    "4" -> Res.drawable.cover_4
+    "5" -> Res.drawable.cover_5
+    else -> null
 }
 
 @Composable
@@ -52,13 +67,43 @@ fun EventCover(
     }
     val titleStart = if (style == PosterStyle.RAIL) 16.dp else 12.dp
 
+    val coverRes = eventCoverRes(event.id)
+
     Box(
         modifier = modifier
             .fillMaxWidth()
             .height(height)
             .background(Color.Black)
     ) {
+        if (coverRes != null) {
+            Image(
+                painter = painterResource(coverRes),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.28f))
+            )
+        }
+
         HatchOverlay()
+
+        if (coverRes != null && style != PosterStyle.BAND) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .fillMaxWidth()
+                    .height(120.dp)
+                    .background(
+                        Brush.verticalGradient(
+                            listOf(Color.Transparent, Color.Black.copy(alpha = 0.82f))
+                        )
+                    )
+            )
+        }
 
         if (mark.isNotEmpty()) {
             Text(

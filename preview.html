@@ -143,9 +143,25 @@
     .cover {
       position: relative;
       overflow: hidden;
-      background: #000;
+      background: #000 center / cover no-repeat;
       outline: 1px solid color-mix(in srgb, var(--primary) 40%, transparent);
       outline-offset: -7px;
+    }
+    .photo-scrim {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.78) 0%,
+        rgba(0, 0, 0, 0.22) 48%,
+        rgba(0, 0, 0, 0.32) 100%
+      );
+      z-index: 0;
+      pointer-events: none;
+    }
+    .poster-cover.style-2 .photo-scrim,
+    .cover.style-2 .photo-scrim {
+      background: rgba(0, 0, 0, 0.28);
     }
     .poster-cover {
       height: 248px;
@@ -592,10 +608,14 @@
       const ch = (e.title || "").trim().charAt(0);
       return ch ? ch.toUpperCase() : "";
     }
+    function coverFile(e) {
+      return "covers/cover_" + e.id + ".jpg";
+    }
     function posterHtml(e) {
       return `
         <div class="poster" data-id="${e.id}">
-          <div class="poster-cover style-${posterStyle(e)}">
+          <div class="poster-cover style-${posterStyle(e)}" style="background-image:url('${coverFile(e)}')">
+            <span class="photo-scrim" aria-hidden="true"></span>
             <span class="poster-mark" aria-hidden="true">${posterMark(e)}</span>
             <span class="badge ${e.category}">${e.category.toUpperCase()}</span>
             ${heartButton(e.id)}
@@ -929,7 +949,8 @@
           <button class="back" onclick="goBackFromDetail()">←</button>
           ${heartButton(e.id)}
         </div>
-        <div class="cover style-${posterStyle(e)}">
+        <div class="cover style-${posterStyle(e)}" style="background-image:url('${coverFile(e)}')">
+          <span class="photo-scrim" aria-hidden="true"></span>
           <span class="poster-mark" aria-hidden="true">${posterMark(e)}</span>
           <span class="badge ${e.category}">${e.category.toUpperCase()}</span>
           <div class="poster-title">${e.title}</div>
