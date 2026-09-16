@@ -1,20 +1,21 @@
 package com.rowle.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.rowle.ui.theme.Lime
 
 @Composable
 fun YouScreen(
@@ -34,6 +35,7 @@ fun YouScreen(
             style = MaterialTheme.typography.displayLarge,
             modifier = Modifier.padding(top = 20.dp)
         )
+        LimeSlash(modifier = Modifier.padding(top = 8.dp, bottom = 4.dp))
         Text(
             text = "Sem conta. Seus rolês ficam neste aparelho.",
             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -43,8 +45,8 @@ fun YouScreen(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(16.dp))
                 .background(Color(0xFF111111))
+                .border(1.dp, Lime.copy(alpha = 0.45f), RectangleShape)
                 .clickable(onClick = onOpenSaved)
                 .padding(20.dp)
         ) {
@@ -79,7 +81,7 @@ fun YouScreen(
             modifier = Modifier.padding(top = 28.dp, bottom = 8.dp)
         )
         Text(
-            text = "O Rowlê junta o que tá rolando em Brasília — shows, cultura e o resto da cidade — num só lugar.",
+            text = "A toupeira cava Brasília pra você — shows, cultura e o que não aparece no folder.",
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             fontSize = 15.sp,
             lineHeight = 22.sp

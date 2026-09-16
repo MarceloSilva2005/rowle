@@ -25,6 +25,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -121,7 +122,8 @@ fun EventDetailScreen(
                 Spacer(modifier = Modifier.height(12.dp))
                 OutlinedButton(
                     onClick = { sharer.share(eventShareText(event)) },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RectangleShape
                 ) {
                     Text("Compartilhar")
                 }
@@ -129,7 +131,8 @@ fun EventDetailScreen(
                 if (!eventLink.isNullOrBlank()) {
                     Button(
                         onClick = { uriHandler.openUri(eventLink) },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RectangleShape
                     ) {
                         Text("Saiba mais")
                     }

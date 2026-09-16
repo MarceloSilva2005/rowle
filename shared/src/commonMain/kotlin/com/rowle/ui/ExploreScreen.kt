@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
@@ -32,8 +31,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,6 +42,7 @@ import com.rowle.data.isToday
 import com.rowle.data.isTomorrow
 import com.rowle.data.sampleEvents
 import com.rowle.model.Event
+import com.rowle.ui.theme.Hairline
 
 private enum class WhenFilter(val label: String) {
     ALL("Todos"),
@@ -88,8 +88,9 @@ fun ExploreScreen(
             style = MaterialTheme.typography.displayLarge,
             modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 20.dp)
         )
+        LimeSlash(modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 4.dp))
         Text(
-            text = "Todos os rolês, do seu jeito",
+            text = "Cava a cidade do seu jeito",
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
         )
@@ -101,12 +102,12 @@ fun ExploreScreen(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 12.dp),
             singleLine = true,
-            placeholder = { Text("Buscar um evento") },
+            placeholder = { Text("Buscar um rolê") },
             leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
-            shape = RoundedCornerShape(14.dp),
+            shape = RectangleShape,
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = Color(0xFF3A3A3A),
-                unfocusedBorderColor = Color(0xFF2A2A2A),
+                unfocusedBorderColor = Hairline,
                 focusedContainerColor = Color(0xFF111111),
                 unfocusedContainerColor = Color(0xFF111111)
             )
@@ -205,12 +206,11 @@ private fun ChipRow(
                 style = MaterialTheme.typography.labelLarge,
                 color = if (on) Color.Black else Color(0xFFB3B3B3),
                 modifier = Modifier
-                    .clip(RoundedCornerShape(6.dp))
                     .background(if (on) lime else Color(0xFF111111))
                     .border(
                         width = 1.dp,
-                        color = if (on) lime else Color(0xFF2A2A2A),
-                        shape = RoundedCornerShape(6.dp)
+                        color = if (on) lime else Hairline,
+                        shape = RectangleShape
                     )
                     .clickable { onSelect(index) }
                     .padding(horizontal = 12.dp, vertical = 8.dp)
@@ -229,15 +229,15 @@ private fun EmptyExplore(
     val subtitle: String
     when {
         searchText.isNotBlank() -> {
-            title = "Nada por “${searchText.trim()}”"
+            title = "Ela ainda não achou “${searchText.trim()}”"
             subtitle = "Tenta outro nome, ou limpa a busca e os filtros."
         }
         hasFilters -> {
-            title = "Nada com esses filtros"
+            title = "Ela ainda não achou com isso"
             subtitle = "Tenta outra categoria, data ou busca."
         }
         else -> {
-            title = "Nenhum evento por aqui"
+            title = "Ela ainda não achou"
             subtitle = "Quando tiver rolê novo, aparece nessa lista."
         }
     }

@@ -36,8 +36,9 @@ fun SavedScreen(
             style = MaterialTheme.typography.displayLarge,
             modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 20.dp)
         )
+        LimeSlash(modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 4.dp))
         Text(
-            text = "Os rolês que você marcou",
+            text = "Pra não perder de vista",
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
         )
@@ -51,7 +52,7 @@ fun SavedScreen(
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        text = "Nenhum rolê salvo",
+                        text = "Nada na toca",
                         style = MaterialTheme.typography.titleLarge,
                         textAlign = TextAlign.Center
                     )

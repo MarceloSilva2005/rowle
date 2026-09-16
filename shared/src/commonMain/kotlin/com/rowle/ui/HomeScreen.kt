@@ -18,7 +18,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
@@ -35,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -44,6 +44,7 @@ import com.rowle.data.isToday
 import com.rowle.data.sampleEvents
 import com.rowle.model.Event
 import com.rowle.resources.Res
+import com.rowle.ui.theme.Hairline
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -96,15 +97,15 @@ fun HomeScreen(
                     .padding(horizontal = 16.dp, vertical = 16.dp),
                 singleLine = true,
                 placeholder = {
-                    Text("Buscar um evento")
+                    Text("Buscar um rolê")
                 },
                 leadingIcon = {
                     Icon(Icons.Filled.Search, contentDescription = null)
                 },
-                shape = RoundedCornerShape(14.dp),
+                shape = RectangleShape,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color(0xFF3A3A3A),
-                    unfocusedBorderColor = Color(0xFF2A2A2A),
+                    unfocusedBorderColor = Hairline,
                     focusedContainerColor = Color(0xFF111111),
                     unfocusedContainerColor = Color(0xFF111111)
                 )
@@ -127,7 +128,7 @@ fun HomeScreen(
                 item {
                     SectionHeader(
                         title = "EM ALTA",
-                        subtitle = "O que mais tá saindo essa semana"
+                        subtitle = "O que mais tá saindo da toca"
                     )
                 }
                 item {
@@ -183,13 +184,13 @@ private fun Header(modifier: Modifier = Modifier) {
                 style = MaterialTheme.typography.labelLarge,
                 fontSize = 12.sp,
                 modifier = Modifier
-                    .border(1.dp, lime, RoundedCornerShape(4.dp))
+                    .border(1.dp, lime)
                     .padding(horizontal = 8.dp, vertical = 4.dp)
             )
         }
 
         Text(
-            text = "O que tá rolando em Brasília hoje.",
+            text = "O que ela cavou hoje em Brasília.",
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
@@ -239,7 +240,9 @@ private fun SectionHeader(
             color = Color.White,
             style = MaterialTheme.typography.displayLarge
         )
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(8.dp))
+        LimeSlash()
+        Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = subtitle,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -282,15 +285,15 @@ private fun EmptyEvents(
     val subtitle: String
     when {
         searchText.isNotBlank() -> {
-            title = "Nada por “${searchText.trim()}”"
+            title = "Ela ainda não achou “${searchText.trim()}”"
             subtitle = "Tenta outro nome, ou limpa a busca e os filtros."
         }
         selectedArea != null -> {
-            title = "Nenhum rolê em $selectedArea"
-            subtitle = "Escolhe outro lugar ou vê todos os eventos."
+            title = "Nada cavado em $selectedArea"
+            subtitle = "Escolhe outro lugar ou vê todos os rolês."
         }
         else -> {
-            title = "Nenhum evento por aqui"
+            title = "Ela ainda não achou"
             subtitle = "Quando tiver rolê novo, aparece nessa lista."
         }
     }

@@ -1,27 +1,29 @@
 package com.rowle.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rowle.model.Event
+import com.rowle.ui.theme.Ink
 import com.rowle.ui.theme.Lime
 
 internal enum class PosterStyle { RAIL, LIME_TYPE, BAND }
@@ -56,6 +58,8 @@ fun EventCover(
             .height(height)
             .background(Color.Black)
     ) {
+        HatchOverlay()
+
         if (mark.isNotEmpty()) {
             Text(
                 text = mark,
@@ -87,6 +91,13 @@ fun EventCover(
             )
             PosterStyle.BAND -> Unit
         }
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(6.dp)
+                .border(1.dp, Lime.copy(alpha = 0.4f), RectangleShape)
+        )
 
         CategoryBadge(
             category = event.category,
@@ -123,31 +134,14 @@ fun CategoryBadge(
     category: String,
     modifier: Modifier = Modifier
 ) {
-    Surface(
-        color = categoryTint(category),
-        shape = RoundedCornerShape(4.dp),
+    Text(
+        text = category.uppercase(),
+        color = Ink,
+        fontSize = 11.sp,
+        fontWeight = FontWeight.Bold,
+        letterSpacing = 1.2.sp,
         modifier = modifier
-    ) {
-        Text(
-            text = category.uppercase(),
-            color = categoryOnTint(category),
-            fontSize = 11.sp,
-            fontWeight = FontWeight.Bold,
-            letterSpacing = 0.6.sp,
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-        )
-    }
-}
-
-internal fun categoryTint(category: String): Color {
-    return when (category) {
-        "Shows" -> Color(0xFFFF4FA3)
-        "Cultura" -> Color(0xFFC77DFF)
-        "Tecnologia" -> Lime
-        else -> Lime
-    }
-}
-
-internal fun categoryOnTint(category: String): Color {
-    return if (category == "Tecnologia") Color.Black else Color.White
+            .background(Lime)
+            .padding(horizontal = 8.dp, vertical = 4.dp)
+    )
 }

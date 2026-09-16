@@ -7,19 +7,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rowle.data.formatEventWhen
 import com.rowle.model.Event
+import com.rowle.ui.theme.Lime
 
 @Composable
 fun EventCard(
@@ -35,8 +34,7 @@ fun EventCard(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(16.dp))
-                .border(1.dp, Color(0xFF2A2A2A), RoundedCornerShape(16.dp))
+                .border(1.dp, Lime.copy(alpha = 0.35f), RectangleShape)
         ) {
             EventCover(event = event, height = 248.dp)
             FavoriteButton(

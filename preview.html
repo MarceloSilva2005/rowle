@@ -67,7 +67,6 @@
       font-weight: 700;
       letter-spacing: 0.12em;
       border: 1px solid var(--primary);
-      border-radius: 4px;
       padding: 4px 8px;
     }
     .subtitle { color: var(--muted); margin: 8px 0 0; }
@@ -99,7 +98,7 @@
       width: 100%;
       box-sizing: border-box;
       border: 1px solid #2A2A2A;
-      border-radius: 14px;
+      border-radius: 0;
       padding: 14px 14px 14px 42px;
       font-size: 16px;
       background: var(--surface);
@@ -124,7 +123,13 @@
       font-size: 40px;
       line-height: 1;
     }
-    .section-sub { color: var(--muted); margin: 6px 0 0; font-size: 13px; }
+    .slash {
+      width: 44px;
+      height: 3px;
+      background: var(--primary);
+      margin: 8px 0;
+    }
+    .section-sub { color: var(--muted); margin: 0; font-size: 13px; }
     .row-scroll {
       display: flex;
       gap: 12px;
@@ -139,11 +144,28 @@
       position: relative;
       overflow: hidden;
       background: #000;
+      outline: 1px solid color-mix(in srgb, var(--primary) 40%, transparent);
+      outline-offset: -7px;
     }
     .poster-cover {
       height: 248px;
-      border-radius: 16px;
-      border: 1px solid #2A2A2A;
+      border-radius: 0;
+      border: 1px solid color-mix(in srgb, var(--primary) 35%, transparent);
+    }
+    .poster-cover::after,
+    .cover::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 7px,
+        color-mix(in srgb, var(--primary) 7%, transparent) 7px,
+        color-mix(in srgb, var(--primary) 7%, transparent) 8px
+      );
+      pointer-events: none;
+      z-index: 0;
     }
     .poster-mark {
       position: absolute;
@@ -206,15 +228,15 @@
       left: 12px;
       top: 12px;
       z-index: 1;
+      font-family: "Barlow Condensed", sans-serif;
       font-size: 11px;
       font-weight: 700;
-      letter-spacing: .06em;
-      border-radius: 4px;
+      letter-spacing: .12em;
+      border-radius: 0;
       padding: 4px 8px;
+      background: var(--primary);
+      color: #000;
     }
-    .badge.Shows { background: #FF4FA3; color: #fff; }
-    .badge.Cultura { background: #C77DFF; color: #fff; }
-    .badge.Tecnologia { background: var(--primary); color: #000; }
     .heart {
       background: none;
       border: 0;
@@ -278,7 +300,7 @@
       border: 1px solid var(--primary);
       background: transparent;
       color: var(--primary);
-      border-radius: 10px;
+      border-radius: 0;
       padding: 10px 16px;
       font-size: 14px;
       cursor: pointer;
@@ -316,7 +338,7 @@
       border: 1px solid #2A2A2A;
       background: #111;
       color: #B3B3B3;
-      border-radius: 6px;
+      border-radius: 0;
       padding: 8px 12px;
       white-space: nowrap;
       cursor: pointer;
@@ -329,7 +351,8 @@
     .you-card {
       margin: 12px 16px 8px;
       background: #111;
-      border-radius: 16px;
+      border: 1px solid color-mix(in srgb, var(--primary) 45%, transparent);
+      border-radius: 0;
       padding: 20px;
       cursor: pointer;
     }
@@ -363,19 +386,19 @@
     }
     .nav {
       display: flex;
-      gap: 8px;
-      padding: 8px 12px 12px;
+      gap: 6px;
+      padding: 6px;
       background: var(--bg);
-      border-top: 1px solid color-mix(in srgb, var(--muted) 25%, transparent);
+      border-top: 1px solid color-mix(in srgb, var(--primary) 35%, transparent);
     }
     .nav[hidden] { display: none; }
     .nav button {
       flex: 1;
       border: 0;
-      border-radius: 12px;
+      border-radius: 0;
       padding: 10px 4px;
       font-family: "Barlow Condensed", sans-serif;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
       letter-spacing: 0.08em;
       cursor: pointer;
@@ -403,7 +426,7 @@
       margin-top: 16px;
       width: 100%;
       border: 1px solid var(--primary);
-      border-radius: 10px;
+      border-radius: 0;
       padding: 14px;
       background: transparent;
       color: var(--primary);
@@ -414,7 +437,7 @@
       margin-top: 12px;
       width: 100%;
       border: 0;
-      border-radius: 10px;
+      border-radius: 0;
       padding: 14px;
       background: var(--primary);
       color: var(--on-primary);
@@ -432,7 +455,7 @@
       font-weight: 700;
       letter-spacing: 0.08em;
       padding: 10px 16px;
-      border-radius: 8px;
+      border-radius: 0;
       z-index: 20;
       white-space: nowrap;
     }
@@ -584,14 +607,14 @@
     }
     function emptyHtml() {
       const q = (document.getElementById("q")?.value || "").trim();
-      let title = "Nenhum evento por aqui";
+      let title = "Ela ainda não achou";
       let subtitle = "Quando tiver rolê novo, aparece nessa lista.";
       if (q) {
-        title = "Nada por “" + q + "”";
+        title = "Ela ainda não achou “" + q + "”";
         subtitle = "Tenta outro nome, ou limpa a busca e os filtros.";
       } else if (selectedArea) {
-        title = "Nenhum rolê em " + selectedArea;
-        subtitle = "Escolhe outro lugar ou vê todos os eventos.";
+        title = "Nada cavado em " + selectedArea;
+        subtitle = "Escolhe outro lugar ou vê todos os rolês.";
       }
       const hasFilters = q || selectedArea;
       const btn = hasFilters ? `<button type="button" id="clear-filters">Limpar filtros</button>` : "";
@@ -623,7 +646,8 @@
           body += `
             <div class="section">
               <div class="section-name">EM ALTA</div>
-              <p class="section-sub">O que mais tá saindo essa semana</p>
+              <div class="slash"></div>
+              <p class="section-sub">O que mais tá saindo da toca</p>
             </div>
             <div class="row-scroll">${emAlta.map(posterHtml).join("")}</div>`;
         }
@@ -631,6 +655,7 @@
           body += `
             <div class="section">
               <div class="section-name">HOJE</div>
+              <div class="slash"></div>
               <p class="section-sub">Ainda dá tempo de ir</p>
             </div>
             <div class="row-scroll">${hoje.map(posterHtml).join("")}</div>`;
@@ -642,7 +667,7 @@
             <img class="wordmark" src="wordmark.png" alt="Rowlê" />
             <span class="city">BSB / DF</span>
           </div>
-          <p class="subtitle">O que tá rolando em Brasília hoje.</p>
+          <p class="subtitle">O que ela cavou hoje em Brasília.</p>
         </div>
         <div class="places">${places}</div>
         <div class="search-wrap">
@@ -652,7 +677,7 @@
               <path d="M20 20l-3.5-3.5"></path>
             </svg>
           </span>
-          <input class="search" id="q" placeholder="Buscar um evento" value="${qValue.replace(/"/g, "&quot;")}" />
+          <input class="search" id="q" placeholder="Buscar um rolê" value="${qValue.replace(/"/g, "&quot;")}" />
         </div>
         ${body}
       `;
@@ -702,13 +727,13 @@
     function emptyExploreHtml() {
       const q = exploreQuery.trim();
       const hasFilters = q || exploreCategory || exploreWhen !== "todos";
-      let title = "Nenhum evento por aqui";
+      let title = "Ela ainda não achou";
       let subtitle = "Quando tiver rolê novo, aparece nessa lista.";
       if (q) {
-        title = "Nada por “" + q + "”";
+        title = "Ela ainda não achou “" + q + "”";
         subtitle = "Tenta outro nome, ou limpa a busca e os filtros.";
       } else if (hasFilters) {
-        title = "Nada com esses filtros";
+        title = "Ela ainda não achou com isso";
         subtitle = "Tenta outra categoria, data ou busca.";
       }
       const btn = hasFilters ? `<button type="button" id="clear-explore">Limpar filtros</button>` : "";
@@ -736,7 +761,8 @@
       document.getElementById("explore").innerHTML = `
         <div class="saved-head">
           <div class="section-name">EXPLORAR</div>
-          <p class="section-sub">Todos os rolês, do seu jeito</p>
+          <div class="slash"></div>
+          <p class="section-sub">Cava a cidade do seu jeito</p>
         </div>
         <div class="search-wrap">
           <span class="icon" aria-hidden="true">
@@ -745,7 +771,7 @@
               <path d="M20 20l-3.5-3.5"></path>
             </svg>
           </span>
-          <input class="search" id="eq" placeholder="Buscar um evento" value="${qValue.replace(/"/g, "&quot;")}" />
+          <input class="search" id="eq" placeholder="Buscar um rolê" value="${qValue.replace(/"/g, "&quot;")}" />
         </div>
         <div class="filter-label">CATEGORIA</div>
         <div class="chips" id="cat-chips">${catChips}</div>
@@ -798,14 +824,15 @@
       const saved = events.filter(e => favorites.has(e.id));
       let body;
       if (!saved.length) {
-        body = `<div class="empty"><h4>Nenhum rolê salvo</h4><p>Marca o coração num evento pra achar ele aqui.</p></div>`;
+        body = `<div class="empty"><h4>Nada na toca</h4><p>Marca o coração num evento pra achar ele aqui.</p></div>`;
       } else {
         body = `<div class="saved-grid">${saved.map(posterHtml).join("")}</div>`;
       }
       document.getElementById("saved").innerHTML = `
         <div class="saved-head">
           <div class="section-name">SALVOS</div>
-          <p class="section-sub">Os rolês que você marcou</p>
+          <div class="slash"></div>
+          <p class="section-sub">Pra não perder de vista</p>
         </div>
         ${body}
       `;
@@ -834,6 +861,7 @@
       document.getElementById("you").innerHTML = `
         <div class="saved-head">
           <div class="section-name">VOCÊ</div>
+          <div class="slash"></div>
           <p class="section-sub">Sem conta. Seus rolês ficam neste aparelho.</p>
         </div>
         <div class="you-card" id="you-saved">
@@ -842,7 +870,7 @@
           <p class="you-hint">${hint}</p>
         </div>
         <div class="filter-label">SOBRE</div>
-        <p class="you-about pad">O Rowlê junta o que tá rolando em Brasília — shows, cultura e o resto da cidade — num só lugar.</p>
+        <p class="you-about pad">A toupeira cava Brasília pra você — shows, cultura e o que não aparece no folder.</p>
         <div class="filter-label">CIDADE</div>
         <p class="you-city pad">Brasília / DF</p>
       `;

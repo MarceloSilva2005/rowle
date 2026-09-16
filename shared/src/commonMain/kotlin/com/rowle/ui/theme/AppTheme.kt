@@ -1,6 +1,8 @@
 package com.rowle.ui.theme
 
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
@@ -8,12 +10,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rowle.resources.Res
 import org.jetbrains.compose.resources.Font
 
 val Lime = Color(0xFFC8FF00)
-private val Ink = Color(0xFF000000)
+val Ink = Color(0xFF000000)
+val Hairline = Color(0xFF2A2A2A)
 
 private val RowleColors = darkColorScheme(
     primary = Lime,
@@ -27,6 +31,14 @@ private val RowleColors = darkColorScheme(
     surfaceVariant = Color(0xFF141414),
     onSurfaceVariant = Color(0xFFB3B3B3),
     outline = Lime
+)
+
+private val RowleShapes = Shapes(
+    extraSmall = RoundedCornerShape(0.dp),
+    small = RoundedCornerShape(0.dp),
+    medium = RoundedCornerShape(0.dp),
+    large = RoundedCornerShape(0.dp),
+    extraLarge = RoundedCornerShape(0.dp)
 )
 
 @Composable
@@ -74,6 +86,7 @@ fun RowleTheme(content: @Composable () -> Unit) {
     MaterialTheme(
         colorScheme = RowleColors,
         typography = typography,
+        shapes = RowleShapes,
         content = content
     )
 }
