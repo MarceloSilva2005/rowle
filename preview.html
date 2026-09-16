@@ -144,21 +144,72 @@
     }
     .row-scroll::-webkit-scrollbar { display: none; }
     .poster { width: 200px; flex-shrink: 0; cursor: pointer; }
+    .poster-cover,
+    .cover {
+      position: relative;
+      overflow: hidden;
+      background: #000;
+    }
     .poster-cover {
       height: 248px;
       border-radius: 16px;
-      position: relative;
-      overflow: hidden;
-      background: #1A1A1A;
+      border: 1px solid #2A2A2A;
     }
-    .poster-cover.Shows { background: #2A1020; }
-    .poster-cover.Cultura { background: #1A1228; }
-    .poster-cover.Tecnologia { background: #102418; }
-    .poster-cover::after {
+    .poster-mark {
+      position: absolute;
+      right: -12px;
+      bottom: -36px;
+      z-index: 0;
+      font-family: "Barlow Condensed", sans-serif;
+      font-weight: 900;
+      font-style: italic;
+      font-size: 180px;
+      line-height: 1;
+      color: var(--primary);
+      opacity: 0.16;
+      pointer-events: none;
+      text-transform: uppercase;
+    }
+    .poster-cover.style-0::before,
+    .cover.style-0::before {
       content: "";
       position: absolute;
-      inset: 0;
-      background: linear-gradient(to bottom, transparent, rgba(0,0,0,.9));
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 6px;
+      background: var(--primary);
+      z-index: 1;
+    }
+    .poster-cover.style-1::before,
+    .cover.style-1::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 6px;
+      background: var(--primary);
+      z-index: 1;
+    }
+    .poster-cover.style-1 .poster-title,
+    .cover.style-1 .poster-title {
+      color: var(--primary);
+    }
+    .poster-cover.style-2 .poster-title,
+    .cover.style-2 .poster-title {
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 12px;
+      background: var(--primary);
+      color: #000;
+    }
+    .poster-cover.style-0 .poster-title,
+    .poster-cover.style-0 .badge,
+    .cover.style-0 .poster-title,
+    .cover.style-0 .badge {
+      margin-left: 4px;
     }
     .badge {
       position: absolute;
@@ -217,19 +268,8 @@
       text-overflow: ellipsis;
     }
     .cover {
-      height: 200px;
-      position: relative;
-      background: #1A1A1A;
+      height: 220px;
       margin: 0 -16px 16px;
-    }
-    .cover.Shows { background: #2A1020; }
-    .cover.Cultura { background: #1A1228; }
-    .cover.Tecnologia { background: #102418; }
-    .cover::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to bottom, transparent, rgba(0,0,0,.8));
     }
     .meta-line {
       display: flex;
@@ -532,10 +572,18 @@
       const on = favorites.has(id);
       return `<button type="button" class="heart ${on ? "on" : ""}" data-id="${id}" aria-label="${on ? "Remover dos salvos" : "Salvar evento"}">${heartSvg(on)}</button>`;
     }
+    function posterStyle(e) {
+      return Number(e.id) % 3;
+    }
+    function posterMark(e) {
+      const ch = (e.title || "").trim().charAt(0);
+      return ch ? ch.toUpperCase() : "";
+    }
     function posterHtml(e) {
       return `
         <div class="poster" data-id="${e.id}">
-          <div class="poster-cover ${e.category}">
+          <div class="poster-cover style-${posterStyle(e)}">
+            <span class="poster-mark" aria-hidden="true">${posterMark(e)}</span>
             <span class="badge ${e.category}">${e.category.toUpperCase()}</span>
             ${heartButton(e.id)}
             <div class="poster-title">${e.title}</div>
@@ -866,8 +914,11 @@
           <button class="back" onclick="goBackFromDetail()">←</button>
           ${heartButton(e.id)}
         </div>
-        <div class="cover ${e.category}"><span class="badge ${e.category}">${e.category.toUpperCase()}</span></div>
-        <h1>${e.title}</h1>
+        <div class="cover style-${posterStyle(e)}">
+          <span class="poster-mark" aria-hidden="true">${posterMark(e)}</span>
+          <span class="badge ${e.category}">${e.category.toUpperCase()}</span>
+          <div class="poster-title">${e.title}</div>
+        </div>
         <p class="meta-line">${iconCal()} ${formatWhen(e)}</p>
         <p class="meta-line">${iconPin()} ${e.location}</p>
         <p class="price" style="font-size:20px">${e.price}</p>

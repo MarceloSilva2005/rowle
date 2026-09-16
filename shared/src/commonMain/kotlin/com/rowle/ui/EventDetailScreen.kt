@@ -79,18 +79,12 @@ fun EventDetailScreen(
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
         ) {
-            EventCover(category = event.category, height = 200.dp)
+            EventCover(event = event, height = 220.dp)
 
             Column(
                 modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                Text(
-                    text = event.title,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    style = MaterialTheme.typography.displayLarge.copy(fontSize = 32.sp)
-                )
-
                 EventMetaLine(
                     icon = Icons.Filled.DateRange,
                     text = formatEventWhen(event.date, event.time)
