@@ -44,11 +44,7 @@ internal fun posterStyle(id: String): PosterStyle {
 }
 
 internal fun eventCoverRes(id: String): DrawableResource? = when (id) {
-    "1" -> Res.drawable.cover_1
-    "2" -> Res.drawable.cover_2
-    "3" -> Res.drawable.cover_3
-    "4" -> Res.drawable.cover_4
-    "5" -> Res.drawable.cover_5
+    "magal" -> Res.drawable.cover_1
     else -> null
 }
 

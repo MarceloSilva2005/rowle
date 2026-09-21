@@ -555,14 +555,50 @@
     function iconPin() {
       return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s7-7.2 7-12a7 7 0 1 0-14 0c0 4.8 7 12 7 12z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>';
     }
-    const areas = ["Norte", "Asa Sul", "Pontão", "Conic", "UnB"];
+    function ymd(y, m, d) { return startOfDay(new Date(y, m - 1, d)); }
+    function eachDay(start, end) {
+      const out = [];
+      for (let d = startOfDay(start); d.getTime() <= end.getTime(); d = addDays(d, 1)) out.push(d);
+      return out;
+    }
+    function nextSession(sessions) {
+      return sessions
+        .filter(s => s.date.getTime() >= today.getTime())
+        .sort((a, b) => a.date - b.date || a.time.localeCompare(b.time))[0] || null;
+    }
+    function withSession(session, event) {
+      if (!session) return null;
+      return Object.assign({}, event, { date: session.date, time: session.time });
+    }
+    const toysSession = nextSession(
+      eachDay(ymd(2026, 8, 18), ymd(2026, 9, 27))
+        .filter(d => d.getDay() !== 1)
+        .map(date => ({ date, time: "10:00" }))
+    );
+    const orwellSession = nextSession([
+      { date: ymd(2026, 9, 25), time: "20:00" },
+      { date: ymd(2026, 9, 27), time: "16:00" }
+    ]);
+    const aranhaSession = nextSession([
+      { date: ymd(2026, 9, 26), time: "16:00" },
+      { date: ymd(2026, 9, 27), time: "16:00" }
+    ]);
+    const choroSession = nextSession([
+      { date: ymd(2026, 9, 26), time: "10:00" },
+      { date: ymd(2026, 9, 27), time: "10:00" }
+    ]);
+    const magalSession = nextSession([
+      { date: ymd(2026, 9, 26), time: "21:00" }
+    ]);
+    const areaOrder = ["Norte", "Asa Sul", "Eixo", "Águas Claras", "Taguatinga"];
     const events = [
-      { id: "1", title: "Festival de Tecnologia de Brasília", description: "Palestras, oficinas e networking com a cena de tecnologia do DF. Aberto a estudantes, devs e curiosos.", category: "Tecnologia", date: today, time: "14:00", location: "CIC — Asa Norte", area: "Norte", price: "Grátis" },
-      { id: "2", title: "Show de Rock em Brasília", description: "Noite de bandas locais e clássicos do rock. Chegue cedo: o espaço costuma lotar no fim de semana.", category: "Shows", date: tomorrow, time: "20:00", location: "Asa Sul", area: "Asa Sul", price: "R$ 40" },
-      { id: "3", title: "Feira Cultural de Brasília", description: "Arte, cultura, gastronomia e atrações para toda a família no Plano Piloto.", category: "Cultura", date: saturday, time: "10:00", location: "Pontão do Lago Sul", area: "Pontão", price: "Grátis" },
-      { id: "4", title: "Samba no Parque", description: "Roda de samba ao ar livre com comida de boteco e espaço para dançar. Entrada franca.", category: "Shows", date: saturday, time: "16:00", location: "UnB", area: "UnB", price: "Grátis" },
-      { id: "5", title: "Mostra de Cinema no Cine Brasília", description: "Sessões de cinema brasileiro e debates com realizadores. Classificação indicativa na bilheteria.", category: "Cultura", date: sunday, time: "19:30", location: "Conic", area: "Conic", price: "R$ 20" }
-    ].sort((a, b) => a.date - b.date || a.time.localeCompare(b.time));
+      withSession(toysSession, { id: "toys", title: "O Que Nos Habita", description: "Pinturas e esculturas inéditas de Daniel Toys na Galeria Rubem Valentim. Entrada franca até 27 de setembro, de terça a domingo, das 10h às 20h.", category: "Cultura", location: "Espaço Cultural Renato Russo — 508 Sul", area: "Asa Sul", price: "Grátis", link: "https://www.correiobraziliense.com.br/divirtasemais/2026/08/7482258-daniel-toys-busca-memorias-afetivas-e-sonhos-em-pinturas-e-esculturas.html" }),
+      withSession(orwellSession, { id: "orwell", title: "2+2=5", description: "A Agrupação Teatral Amacaca reencena a peça inspirada em 1984, de George Orwell. Sexta às 20h. Domingo, 27 de setembro, às 16h e às 19h — essa sessão com Libras e audiodescrição. Inteira R$ 20, meia R$ 10. Classificação 14 anos.", category: "Teatro", location: "Teatro dos Ventos — Águas Claras", area: "Águas Claras", price: "R$ 20", link: "https://www.sympla.com.br/evento/2-2-5-da-agrupacao-teatral-amacaca/3543915" }),
+      withSession(aranhaSession, { id: "aranha", title: "Aranhaverso", description: "A Néia e Nando Cia. Teatral leva o Homem-Aranha ao multiverso. Sessões em 26 e 27 de setembro, às 16h, no Teatro Brasília Shopping. Inteira R$ 40, meia R$ 20. Classificação livre. Bilheteria do teatro a partir das 15h.", category: "Teatro", location: "Teatro Brasília Shopping — Asa Norte", area: "Norte", price: "R$ 40", link: "https://visitebrasilia.com.br/noticias/aranhaverso-leva-homem-aranha-e-aventura-pelo-multiverso-ao-teatro-brasilia-shopping" }),
+      withSession(choroSession, { id: "choro", title: "Choro Permanente", description: "Roda do grupo Saudando o Choro na Feira Permanente de Taguatinga. Sábados e domingos de setembro, das 10h às 12h. Nos dias 26 e 27, participações de Leo Araújo, Nelson Latif e Rosemaria. Entrada franca.", category: "Shows", location: "Feira Permanente de Taguatinga — QNL", area: "Taguatinga", price: "Grátis", link: "https://www.correiobraziliense.com.br/diversao-e-arte/2026/09/7497060-saudando-o-choro-ocupa-feira-em-taguatinga-ate-o-fim-de-setembro.html" }),
+      withSession(magalSession, { id: "magal", title: "Baile do Magal", description: "Sidney Magal no Auditório Master, com sucessos como Sandra Rosa Madalena, Meu Sangue Ferve por Você e Me Chama Que Eu Vou. Portões às 19h30, show às 21h. O valor do ingresso está na Blue Ticket.", category: "Shows", location: "Centro de Convenções Ulysses Guimarães", area: "Eixo", price: "Ver ingresso", link: "https://www.blueticket.com.br/evento/41228", cover: "covers/cover_1.jpg" })
+    ].filter(Boolean).sort((a, b) => a.date - b.date || a.time.localeCompare(b.time));
+    const areas = areaOrder.filter(area => events.some(e => e.area === area));
     const categories = [...new Set(events.map(e => e.category))];
     const whenFilters = [
       { id: "todos", label: "Todos" },
@@ -602,20 +638,26 @@
       return `<button type="button" class="heart ${on ? "on" : ""}" data-id="${id}" aria-label="${on ? "Remover dos salvos" : "Salvar evento"}">${heartSvg(on)}</button>`;
     }
     function posterStyle(e) {
-      return Number(e.id) % 3;
+      let h = 0;
+      const s = String(e.id);
+      for (let i = 0; i < s.length; i++) h = (Math.imul(31, h) + s.charCodeAt(i)) | 0;
+      return Math.abs(h) % 3;
     }
     function posterMark(e) {
       const ch = (e.title || "").trim().charAt(0);
       return ch ? ch.toUpperCase() : "";
     }
-    function coverFile(e) {
-      return "covers/cover_" + e.id + ".jpg";
+    function coverAttr(e) {
+      return e.cover ? ` style="background-image:url('${e.cover}')"` : "";
+    }
+    function scrimHtml(e) {
+      return e.cover ? `<span class="photo-scrim" aria-hidden="true"></span>` : "";
     }
     function posterHtml(e) {
       return `
         <div class="poster" data-id="${e.id}">
-          <div class="poster-cover style-${posterStyle(e)}" style="background-image:url('${coverFile(e)}')">
-            <span class="photo-scrim" aria-hidden="true"></span>
+          <div class="poster-cover style-${posterStyle(e)}"${coverAttr(e)}>
+            ${scrimHtml(e)}
             <span class="poster-mark" aria-hidden="true">${posterMark(e)}</span>
             <span class="badge ${e.category}">${e.category.toUpperCase()}</span>
             ${heartButton(e.id)}
@@ -949,8 +991,8 @@
           <button class="back" onclick="goBackFromDetail()">←</button>
           ${heartButton(e.id)}
         </div>
-        <div class="cover style-${posterStyle(e)}" style="background-image:url('${coverFile(e)}')">
-          <span class="photo-scrim" aria-hidden="true"></span>
+        <div class="cover style-${posterStyle(e)}"${coverAttr(e)}>
+          ${scrimHtml(e)}
           <span class="poster-mark" aria-hidden="true">${posterMark(e)}</span>
           <span class="badge ${e.category}">${e.category.toUpperCase()}</span>
           <div class="poster-title">${e.title}</div>
