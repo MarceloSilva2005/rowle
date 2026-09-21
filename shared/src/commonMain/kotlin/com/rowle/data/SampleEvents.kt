@@ -1,6 +1,7 @@
 package com.rowle.data
 
 import com.rowle.model.Event
+import com.rowle.model.EventFact
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
@@ -57,49 +58,74 @@ private fun sampleEventsList(): List<Event> {
             Event(
                 id = "toys",
                 title = "O Que Nos Habita",
-                description = "Pinturas e esculturas inéditas de Daniel Toys na Galeria Rubem Valentim. Entrada franca até 27 de setembro, de terça a domingo, das 10h às 20h.",
+                description = "Pinturas e esculturas inéditas de Daniel Toys, sobre memória e paisagem afetiva.",
                 date = session.date,
                 time = session.time,
                 location = "Espaço Cultural Renato Russo — 508 Sul",
                 area = "Asa Sul",
                 category = "Cultura",
                 price = "Grátis",
-                link = "https://www.correiobraziliense.com.br/divirtasemais/2026/08/7482258-daniel-toys-busca-memorias-afetivas-e-sonhos-em-pinturas-e-esculturas.html"
+                link = "https://www.correiobraziliense.com.br/divirtasemais/2026/08/7482258-daniel-toys-busca-memorias-afetivas-e-sonhos-em-pinturas-e-esculturas.html",
+                facts = listOf(
+                    EventFact("Até", "27 de setembro"),
+                    EventFact("Funciona", "Terça a domingo, 10h às 20h"),
+                    EventFact("Sala", "Galeria Rubem Valentim")
+                )
             )
         },
         orwell?.let { session ->
             Event(
                 id = "orwell",
                 title = "2+2=5",
-                description = "A Agrupação Teatral Amacaca reencena a peça inspirada em 1984, de George Orwell. Sexta às 20h. Domingo, 27 de setembro, às 16h e às 19h — essa sessão com Libras e audiodescrição. Inteira R$ 20, meia R$ 10. Classificação 14 anos.",
+                description = "Peça da Agrupação Teatral Amacaca, inspirada em 1984, de George Orwell. Direção de Felipe Vidal.",
                 date = session.date,
                 time = session.time,
                 location = "Teatro dos Ventos — Águas Claras",
                 area = "Águas Claras",
                 category = "Teatro",
                 price = "R$ 20",
-                link = "https://www.sympla.com.br/evento/2-2-5-da-agrupacao-teatral-amacaca/3543915"
+                link = "https://www.sympla.com.br/evento/2-2-5-da-agrupacao-teatral-amacaca/3543915",
+                ageRating = "14 anos",
+                facts = listOf(
+                    EventFact("Meia", "R$ 10"),
+                    EventFact("Também", "Domingo 27, 16h e 19h"),
+                    EventFact("Acesso", "Libras e audiodescrição no dia 27"),
+                    EventFact("Quem", "Agrupação Teatral Amacaca")
+                )
             )
         },
         aranha?.let { session ->
             Event(
                 id = "aranha",
                 title = "Aranhaverso",
-                description = "A Néia e Nando Cia. Teatral leva o Homem-Aranha ao multiverso. Sessões em 26 e 27 de setembro, às 16h, no Teatro Brasília Shopping. Inteira R$ 40, meia R$ 20. Classificação livre. Bilheteria do teatro a partir das 15h.",
+                description = "O Homem-Aranha cai no multiverso. Espetáculo da Néia e Nando Cia. Teatral, para a família.",
                 date = session.date,
                 time = session.time,
                 location = "Teatro Brasília Shopping — Asa Norte",
                 area = "Norte",
                 category = "Teatro",
                 price = "R$ 40",
-                link = "https://visitebrasilia.com.br/noticias/aranhaverso-leva-homem-aranha-e-aventura-pelo-multiverso-ao-teatro-brasilia-shopping"
+                link = "https://visitebrasilia.com.br/noticias/aranhaverso-leva-homem-aranha-e-aventura-pelo-multiverso-ao-teatro-brasilia-shopping",
+                ageRating = "Livre",
+                facts = listOf(
+                    EventFact("Meia", "R$ 20"),
+                    EventFact("Sessões", "26 e 27 de setembro, às 16h"),
+                    EventFact("Bilheteria", "A partir das 15h, no teatro"),
+                    EventFact("Quem", "Néia e Nando Cia. Teatral")
+                )
             )
         },
         choro?.let { session ->
             Event(
                 id = "choro",
                 title = "Choro Permanente",
-                description = "Roda do grupo Saudando o Choro na Feira Permanente de Taguatinga. Sábados e domingos de setembro, das 10h às 12h. Nos dias 26 e 27, participações de Leo Araújo, Nelson Latif e Rosemaria. Entrada franca.",
+                description = "Roda ao ar livre na feira, com o grupo Saudando o Choro. Clássicos, autorais e convidados.",
+                facts = listOf(
+                    EventFact("Até", "12h"),
+                    EventFact("Também", "Domingo, no mesmo horário"),
+                    EventFact("Com", "Leo Araújo, Nelson Latif e Rosemaria"),
+                    EventFact("Quem", "Saudando o Choro")
+                ),
                 date = session.date,
                 time = session.time,
                 location = "Feira Permanente de Taguatinga — QNL",
@@ -113,7 +139,12 @@ private fun sampleEventsList(): List<Event> {
             Event(
                 id = "magal",
                 title = "Baile do Magal",
-                description = "Sidney Magal no Auditório Master, com sucessos como Sandra Rosa Madalena, Meu Sangue Ferve por Você e Me Chama Que Eu Vou. Portões às 19h30, show às 21h. O valor do ingresso está na Blue Ticket.",
+                description = "Sidney Magal canta Sandra Rosa Madalena, Meu Sangue Ferve por Você, Me Chama Que Eu Vou e clássicos para dançar. O valor do ingresso está na Blue Ticket.",
+                facts = listOf(
+                    EventFact("Portões", "19h30"),
+                    EventFact("Sala", "Auditório Master"),
+                    EventFact("Quem", "Sidney Magal")
+                ),
                 date = session.date,
                 time = session.time,
                 location = "Centro de Convenções Ulysses Guimarães",

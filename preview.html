@@ -296,8 +296,68 @@
       text-overflow: ellipsis;
     }
     .cover {
-      height: 220px;
-      margin: 0 -16px 16px;
+      height: 300px;
+      margin: 0 -16px 0;
+    }
+    .sheet { margin: 12px -16px 0; border-top: 1px solid #2A2A2A; }
+    .fact {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 16px;
+      border-bottom: 1px solid #2A2A2A;
+    }
+    .fact-label {
+      width: 112px;
+      flex-shrink: 0;
+      font-family: "Barlow Condensed", sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      font-size: 11px;
+      text-transform: uppercase;
+      color: #8A8A8A;
+    }
+    .fact-value {
+      color: #fff;
+      font-family: "Barlow Condensed", sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      line-height: 1.15;
+      flex: 1;
+      min-width: 0;
+    }
+    .fact-value.lime {
+      color: var(--primary);
+      font-size: 22px;
+      flex: 0 1 auto;
+    }
+    .rating {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+      font-family: "Barlow Condensed", sans-serif;
+      font-weight: 900;
+      font-style: italic;
+      font-size: 22px;
+      line-height: 1;
+    }
+    .rating.r-l { background: #00A651; color: #fff; }
+    .rating.r-10 { background: #0096D6; color: #fff; }
+    .rating.r-12 { background: #FFCC00; color: #000; }
+    .rating.r-14 { background: #F58220; color: #fff; }
+    .rating.r-16 { background: #ED1C24; color: #fff; }
+    .rating.r-18 { background: #000; color: #fff; box-shadow: inset 0 0 0 1px #fff; }
+    .detail-body { padding-top: 20px; }
+    .detail-body h2 {
+      font-family: "Barlow Condensed", sans-serif;
+      font-weight: 900;
+      font-style: italic;
+      font-size: 22px;
+      margin: 0 0 8px;
+      letter-spacing: 0.04em;
     }
     .meta-line {
       display: flex;
@@ -446,6 +506,9 @@
       padding: 14px;
       background: transparent;
       color: var(--primary);
+      font-family: "Barlow Condensed", sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.12em;
       font-size: 16px;
       cursor: pointer;
     }
@@ -457,6 +520,9 @@
       padding: 14px;
       background: var(--primary);
       color: var(--on-primary);
+      font-family: "Barlow Condensed", sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.12em;
       font-size: 16px;
       cursor: pointer;
     }
@@ -592,11 +658,11 @@
     ]);
     const areaOrder = ["Norte", "Asa Sul", "Eixo", "Águas Claras", "Taguatinga"];
     const events = [
-      withSession(toysSession, { id: "toys", title: "O Que Nos Habita", description: "Pinturas e esculturas inéditas de Daniel Toys na Galeria Rubem Valentim. Entrada franca até 27 de setembro, de terça a domingo, das 10h às 20h.", category: "Cultura", location: "Espaço Cultural Renato Russo — 508 Sul", area: "Asa Sul", price: "Grátis", link: "https://www.correiobraziliense.com.br/divirtasemais/2026/08/7482258-daniel-toys-busca-memorias-afetivas-e-sonhos-em-pinturas-e-esculturas.html" }),
-      withSession(orwellSession, { id: "orwell", title: "2+2=5", description: "A Agrupação Teatral Amacaca reencena a peça inspirada em 1984, de George Orwell. Sexta às 20h. Domingo, 27 de setembro, às 16h e às 19h — essa sessão com Libras e audiodescrição. Inteira R$ 20, meia R$ 10. Classificação 14 anos.", category: "Teatro", location: "Teatro dos Ventos — Águas Claras", area: "Águas Claras", price: "R$ 20", link: "https://www.sympla.com.br/evento/2-2-5-da-agrupacao-teatral-amacaca/3543915" }),
-      withSession(aranhaSession, { id: "aranha", title: "Aranhaverso", description: "A Néia e Nando Cia. Teatral leva o Homem-Aranha ao multiverso. Sessões em 26 e 27 de setembro, às 16h, no Teatro Brasília Shopping. Inteira R$ 40, meia R$ 20. Classificação livre. Bilheteria do teatro a partir das 15h.", category: "Teatro", location: "Teatro Brasília Shopping — Asa Norte", area: "Norte", price: "R$ 40", link: "https://visitebrasilia.com.br/noticias/aranhaverso-leva-homem-aranha-e-aventura-pelo-multiverso-ao-teatro-brasilia-shopping" }),
-      withSession(choroSession, { id: "choro", title: "Choro Permanente", description: "Roda do grupo Saudando o Choro na Feira Permanente de Taguatinga. Sábados e domingos de setembro, das 10h às 12h. Nos dias 26 e 27, participações de Leo Araújo, Nelson Latif e Rosemaria. Entrada franca.", category: "Shows", location: "Feira Permanente de Taguatinga — QNL", area: "Taguatinga", price: "Grátis", link: "https://www.correiobraziliense.com.br/diversao-e-arte/2026/09/7497060-saudando-o-choro-ocupa-feira-em-taguatinga-ate-o-fim-de-setembro.html" }),
-      withSession(magalSession, { id: "magal", title: "Baile do Magal", description: "Sidney Magal no Auditório Master, com sucessos como Sandra Rosa Madalena, Meu Sangue Ferve por Você e Me Chama Que Eu Vou. Portões às 19h30, show às 21h. O valor do ingresso está na Blue Ticket.", category: "Shows", location: "Centro de Convenções Ulysses Guimarães", area: "Eixo", price: "Ver ingresso", link: "https://www.blueticket.com.br/evento/41228", cover: "covers/cover_1.jpg" })
+      withSession(toysSession, { id: "toys", title: "O Que Nos Habita", description: "Pinturas e esculturas inéditas de Daniel Toys, sobre memória e paisagem afetiva.", category: "Cultura", location: "Espaço Cultural Renato Russo — 508 Sul", area: "Asa Sul", price: "Grátis", link: "https://www.correiobraziliense.com.br/divirtasemais/2026/08/7482258-daniel-toys-busca-memorias-afetivas-e-sonhos-em-pinturas-e-esculturas.html", facts: [{ label: "Até", value: "27 de setembro" }, { label: "Funciona", value: "Terça a domingo, 10h às 20h" }, { label: "Sala", value: "Galeria Rubem Valentim" }] }),
+      withSession(orwellSession, { id: "orwell", title: "2+2=5", description: "Peça da Agrupação Teatral Amacaca, inspirada em 1984, de George Orwell. Direção de Felipe Vidal.", category: "Teatro", location: "Teatro dos Ventos — Águas Claras", area: "Águas Claras", price: "R$ 20", link: "https://www.sympla.com.br/evento/2-2-5-da-agrupacao-teatral-amacaca/3543915", ageRating: "14 anos", facts: [{ label: "Meia", value: "R$ 10" }, { label: "Também", value: "Domingo 27, 16h e 19h" }, { label: "Acesso", value: "Libras e audiodescrição no dia 27" }, { label: "Quem", value: "Agrupação Teatral Amacaca" }] }),
+      withSession(aranhaSession, { id: "aranha", title: "Aranhaverso", description: "O Homem-Aranha cai no multiverso. Espetáculo da Néia e Nando Cia. Teatral, para a família.", category: "Teatro", location: "Teatro Brasília Shopping — Asa Norte", area: "Norte", price: "R$ 40", link: "https://visitebrasilia.com.br/noticias/aranhaverso-leva-homem-aranha-e-aventura-pelo-multiverso-ao-teatro-brasilia-shopping", ageRating: "Livre", facts: [{ label: "Meia", value: "R$ 20" }, { label: "Sessões", value: "26 e 27 de setembro, às 16h" }, { label: "Bilheteria", value: "A partir das 15h, no teatro" }, { label: "Quem", value: "Néia e Nando Cia. Teatral" }] }),
+      withSession(choroSession, { id: "choro", title: "Choro Permanente", description: "Roda ao ar livre na feira, com o grupo Saudando o Choro. Clássicos, autorais e convidados.", category: "Shows", location: "Feira Permanente de Taguatinga — QNL", area: "Taguatinga", price: "Grátis", link: "https://www.correiobraziliense.com.br/diversao-e-arte/2026/09/7497060-saudando-o-choro-ocupa-feira-em-taguatinga-ate-o-fim-de-setembro.html", facts: [{ label: "Até", value: "12h" }, { label: "Também", value: "Domingo, no mesmo horário" }, { label: "Com", value: "Leo Araújo, Nelson Latif e Rosemaria" }, { label: "Quem", value: "Saudando o Choro" }] }),
+      withSession(magalSession, { id: "magal", title: "Baile do Magal", description: "Sidney Magal canta Sandra Rosa Madalena, Meu Sangue Ferve por Você, Me Chama Que Eu Vou e clássicos para dançar. O valor do ingresso está na Blue Ticket.", category: "Shows", location: "Centro de Convenções Ulysses Guimarães", area: "Eixo", price: "Ver ingresso", link: "https://www.blueticket.com.br/evento/41228", cover: "covers/cover_1.jpg", facts: [{ label: "Portões", value: "19h30" }, { label: "Sala", value: "Auditório Master" }, { label: "Quem", value: "Sidney Magal" }] })
     ].filter(Boolean).sort((a, b) => a.date - b.date || a.time.localeCompare(b.time));
     const areas = areaOrder.filter(area => events.some(e => e.area === area));
     const categories = [...new Set(events.map(e => e.category))];
@@ -953,8 +1019,36 @@
         goHome();
       }
     }
+    function eventFacts(e) {
+      const rows = [
+        { label: "Quando", value: formatWhen(e) },
+        { label: "Onde", value: e.location },
+        { label: "Preço", value: e.price, kind: "price" }
+      ];
+      if (e.ageRating) rows.push({ label: "Classificação", value: e.ageRating, kind: "stamp" });
+      (e.facts || []).forEach(fact => rows.push(fact));
+      return rows;
+    }
+    function ratingKey(value) {
+      const text = String(value || "").trim();
+      if (/^livre$|^l$/i.test(text)) return "l";
+      const digits = (text.match(/\d+/) || [])[0];
+      if (digits === "10" || digits === "12" || digits === "14" || digits === "16" || digits === "18") return digits;
+      return "";
+    }
+    function factHtml(fact) {
+      if (fact.kind === "stamp") {
+        const key = ratingKey(fact.value);
+        const mark = key === "l" ? "L" : (key || fact.value);
+        const cls = key ? " r-" + key : "";
+        return `<div class="fact"><span class="fact-label">${fact.label}</span><span class="rating${cls}">${mark}</span></div>`;
+      }
+      const value = `<span class="fact-value${fact.kind === "price" ? " lime" : ""}">${fact.value}</span>`;
+      return `<div class="fact"><span class="fact-label">${fact.label}</span>${value}</div>`;
+    }
     function eventShareText(e) {
-      let text = e.title + "\n" + formatWhen(e) + "\n" + e.location + "  ·  " + e.price;
+      let text = e.title;
+      eventFacts(e).forEach(fact => { text += "\n" + fact.label + ": " + fact.value; });
       if (e.link) text += "\n" + e.link;
       return text + "\n\nRowlê — Brasília";
     }
@@ -984,7 +1078,7 @@
       const e = events.find(x => x.id === id);
       if (!e) return;
       const more = e.link
-        ? `<button class="ticket" type="button" id="open-link">Saiba mais</button>`
+        ? `<button class="ticket" type="button" id="open-link">SAIBA MAIS</button>`
         : "";
       document.getElementById("detail").innerHTML = `
         <div class="detail-bar">
@@ -997,13 +1091,14 @@
           <span class="badge ${e.category}">${e.category.toUpperCase()}</span>
           <div class="poster-title">${e.title}</div>
         </div>
-        <p class="meta-line">${iconCal()} ${formatWhen(e)}</p>
-        <p class="meta-line">${iconPin()} ${e.location}</p>
-        <p class="price" style="font-size:20px">${e.price}</p>
-        <h2 style="font-size:18px;margin:16px 0 8px">Sobre</h2>
-        <p class="desc">${e.description}</p>
-        <button class="share" type="button" id="share-event">Compartilhar</button>
-        ${more}
+        <div class="sheet">${eventFacts(e).map(factHtml).join("")}</div>
+        <div class="detail-body">
+          <h2>SOBRE</h2>
+          <div class="slash"></div>
+          <p class="desc">${e.description}</p>
+          <button class="share" type="button" id="share-event">COMPARTILHAR</button>
+          ${more}
+        </div>
       `;
       document.querySelectorAll("#detail .heart").forEach(btn => {
         btn.onclick = (ev) => {
