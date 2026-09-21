@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.sp
 import com.rowle.data.eventAreas
 import com.rowle.data.isToday
 import com.rowle.data.sampleEvents
+import com.rowle.data.weekTitle
 import com.rowle.model.Event
 import com.rowle.resources.Res
 import com.rowle.ui.theme.Hairline
@@ -67,7 +68,7 @@ fun HomeScreen(
             event.area.contains(query, ignoreCase = true)
         matchesArea && matchesSearch
     }
-    val emAlta = filteredEvents.filter { !isToday(it.date) }
+    val nestaSemana = filteredEvents.filter { !isToday(it.date) }
     val hoje = filteredEvents.filter { isToday(it.date) }
 
     LazyColumn(
@@ -124,26 +125,8 @@ fun HomeScreen(
                 )
             }
         } else {
-            if (emAlta.isNotEmpty()) {
-                item {
-                    SectionHeader(
-                        title = "EM ALTA",
-                        subtitle = "O que mais tá saindo da toca"
-                    )
-                }
-                item {
-                    EventPosterRow(
-                        events = emAlta,
-                        favoriteIds = favoriteIds,
-                        onEventClick = onEventClick,
-                        onToggleFavorite = onToggleFavorite
-                    )
-                }
-            }
-
             if (hoje.isNotEmpty()) {
                 item {
-                    Spacer(modifier = Modifier.height(8.dp))
                     SectionHeader(
                         title = "HOJE",
                         subtitle = "Ainda dá tempo de ir"
@@ -152,6 +135,26 @@ fun HomeScreen(
                 item {
                     EventPosterRow(
                         events = hoje,
+                        favoriteIds = favoriteIds,
+                        onEventClick = onEventClick,
+                        onToggleFavorite = onToggleFavorite
+                    )
+                }
+            }
+
+            if (nestaSemana.isNotEmpty()) {
+                item {
+                    if (hoje.isNotEmpty()) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+                    SectionHeader(
+                        title = weekTitle(),
+                        subtitle = "O que ela cavou nesta semana"
+                    )
+                }
+                item {
+                    EventPosterRow(
+                        events = nestaSemana,
                         favoriteIds = favoriteIds,
                         onEventClick = onEventClick,
                         onToggleFavorite = onToggleFavorite

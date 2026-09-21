@@ -606,6 +606,17 @@
       if (dow === 0) return { sat: addDays(today, -1), sun: today };
       return { sat: saturday, sun: sunday };
     }
+    function weekTitle() {
+      const dow = today.getDay();
+      const monday = addDays(today, dow === 0 ? -6 : 1 - dow);
+      const sunday = addDays(monday, 6);
+      const startMonth = months[monday.getMonth()];
+      const endMonth = months[sunday.getMonth()];
+      const label = monday.getMonth() === sunday.getMonth()
+        ? monday.getDate() + "–" + sunday.getDate() + " " + startMonth
+        : monday.getDate() + " " + startMonth + " – " + sunday.getDate() + " " + endMonth;
+      return label.toUpperCase();
+    }
     function dateLabel(date) {
       const w = thisWeekend();
       if (sameDay(date, today)) return "Hoje";
@@ -759,7 +770,7 @@
         const qOk = !q || e.title.toLowerCase().includes(q) || e.category.toLowerCase().includes(q) || e.location.toLowerCase().includes(q) || e.area.toLowerCase().includes(q);
         return areaOk && qOk;
       });
-      const emAlta = filtered.filter(e => !sameDay(e.date, today));
+      const nestaSemana = filtered.filter(e => !sameDay(e.date, today));
       const hoje = filtered.filter(e => sameDay(e.date, today));
       const places = areas.map((area, i) => {
         const dot = i === 0 ? "" : `<span class="dot">·</span>`;
@@ -770,15 +781,6 @@
         body = emptyHtml();
       } else {
         body = "";
-        if (emAlta.length) {
-          body += `
-            <div class="section">
-              <div class="section-name">EM ALTA</div>
-              <div class="slash"></div>
-              <p class="section-sub">O que mais tá saindo da toca</p>
-            </div>
-            <div class="row-scroll">${emAlta.map(posterHtml).join("")}</div>`;
-        }
         if (hoje.length) {
           body += `
             <div class="section">
@@ -787,6 +789,15 @@
               <p class="section-sub">Ainda dá tempo de ir</p>
             </div>
             <div class="row-scroll">${hoje.map(posterHtml).join("")}</div>`;
+        }
+        if (nestaSemana.length) {
+          body += `
+            <div class="section">
+              <div class="section-name">${weekTitle()}</div>
+              <div class="slash"></div>
+              <p class="section-sub">O que ela cavou nesta semana</p>
+            </div>
+            <div class="row-scroll">${nestaSemana.map(posterHtml).join("")}</div>`;
         }
       }
       document.getElementById("home").innerHTML = `

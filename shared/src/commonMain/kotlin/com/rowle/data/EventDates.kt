@@ -40,6 +40,19 @@ fun isThisWeekend(date: LocalDate): Boolean {
     return date == saturday || date == sunday
 }
 
+fun weekTitle(from: LocalDate = today()): String {
+    val daysFromMonday = from.dayOfWeek.ordinal
+    val monday = from.minus(daysFromMonday, DateTimeUnit.DAY)
+    val sunday = monday.plus(6, DateTimeUnit.DAY)
+    val startMonth = monthAbbr(monday.monthNumber)
+    val endMonth = monthAbbr(sunday.monthNumber)
+    return if (monday.monthNumber == sunday.monthNumber) {
+        "${monday.day}–${sunday.day} $startMonth"
+    } else {
+        "${monday.day} $startMonth – ${sunday.day} $endMonth"
+    }.uppercase()
+}
+
 fun thisWeekend(from: LocalDate = today()): Pair<LocalDate, LocalDate> {
     return when (from.dayOfWeek) {
         DayOfWeek.SATURDAY -> from to from.plus(1, DateTimeUnit.DAY)
