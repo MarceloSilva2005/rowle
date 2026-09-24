@@ -132,7 +132,11 @@ fun App() {
         ) { innerPadding ->
             when (val current = screen) {
                 is AppScreen.EventDetail -> {
-                    val event = eventById(current.eventId)
+                    val stored = eventById(current.eventId)
+                    val event = stored?.copy(
+                        date = current.date ?: stored.date,
+                        time = current.time ?: stored.time
+                    )
                     if (event != null) {
                         EventDetailScreen(
                             event = event,
@@ -143,7 +147,7 @@ fun App() {
                     } else {
                         HomeScreen(
                             onEventClick = { clicked ->
-                                screen = AppScreen.EventDetail(clicked.id)
+                                screen = AppScreen.EventDetail(clicked.id, clicked.date, clicked.time)
                             },
                             favoriteIds = favoriteIds,
                             onToggleFavorite = { toggleFavorite(it) },
@@ -157,7 +161,7 @@ fun App() {
                         MainTab.HOME -> {
                             HomeScreen(
                                 onEventClick = { event ->
-                                    screen = AppScreen.EventDetail(event.id)
+                                    screen = AppScreen.EventDetail(event.id, event.date, event.time)
                                 },
                                 favoriteIds = favoriteIds,
                                 onToggleFavorite = { toggleFavorite(it) },
@@ -168,7 +172,7 @@ fun App() {
                             ExploreScreen(
                                 favoriteIds = favoriteIds,
                                 onEventClick = { event ->
-                                    screen = AppScreen.EventDetail(event.id)
+                                    screen = AppScreen.EventDetail(event.id, event.date, event.time)
                                 },
                                 onToggleFavorite = { toggleFavorite(it) },
                                 modifier = Modifier.padding(innerPadding)
@@ -178,7 +182,7 @@ fun App() {
                             SavedScreen(
                                 favoriteIds = favoriteIds,
                                 onEventClick = { event ->
-                                    screen = AppScreen.EventDetail(event.id)
+                                    screen = AppScreen.EventDetail(event.id, event.date, event.time)
                                 },
                                 onToggleFavorite = { toggleFavorite(it) },
                                 modifier = Modifier.padding(innerPadding)

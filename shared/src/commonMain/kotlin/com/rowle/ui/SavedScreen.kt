@@ -19,7 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rowle.data.agendaReady
-import com.rowle.data.sampleEvents
+import com.rowle.data.nextEvents
 import com.rowle.model.Event
 
 @Composable
@@ -29,7 +29,7 @@ fun SavedScreen(
     onToggleFavorite: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val saved = sampleEvents.filter { it.id in favoriteIds }
+    val saved = nextEvents.filter { it.id in favoriteIds }
 
     Column(modifier = modifier.fillMaxSize()) {
         Text(

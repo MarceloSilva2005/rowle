@@ -41,7 +41,7 @@ import com.rowle.data.eventCategories
 import com.rowle.data.isThisWeekend
 import com.rowle.data.isToday
 import com.rowle.data.isTomorrow
-import com.rowle.data.sampleEvents
+import com.rowle.data.nextEvents
 import com.rowle.model.Event
 import com.rowle.ui.theme.Hairline
 
@@ -63,7 +63,7 @@ fun ExploreScreen(
     var selectedCategory by remember { mutableStateOf<String?>(null) }
     var whenFilter by remember { mutableStateOf(WhenFilter.ALL) }
 
-    val filtered = sampleEvents.filter { event ->
+    val filtered = nextEvents.filter { event ->
         val matchesCategory = selectedCategory == null || event.category == selectedCategory
         val matchesWhen = when (whenFilter) {
             WhenFilter.ALL -> true

@@ -31,6 +31,19 @@ fun dateLabel(date: LocalDate): String {
     }
 }
 
+fun dayTitle(date: LocalDate): String {
+    val current = today()
+    val tomorrow = current.plus(1, DateTimeUnit.DAY)
+    val (saturday, sunday) = thisWeekend(current)
+    return when (date) {
+        current -> "HOJE"
+        tomorrow -> "AMANHÃ"
+        saturday -> "SÁBADO ${date.day}"
+        sunday -> "DOMINGO ${date.day}"
+        else -> "${date.day} ${monthAbbr(date.monthNumber)}".uppercase()
+    }
+}
+
 fun isToday(date: LocalDate): Boolean = date == today()
 
 fun isTomorrow(date: LocalDate): Boolean = date == today().plus(1, DateTimeUnit.DAY)

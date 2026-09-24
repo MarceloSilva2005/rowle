@@ -40,10 +40,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rowle.data.agendaReady
+import com.rowle.data.dayTitle
 import com.rowle.data.eventAreas
 import com.rowle.data.isToday
 import com.rowle.data.sampleEvents
-import com.rowle.data.weekTitle
 import com.rowle.model.Event
 import com.rowle.resources.Res
 import com.rowle.ui.theme.Hairline
@@ -69,8 +69,7 @@ fun HomeScreen(
             event.area.contains(query, ignoreCase = true)
         matchesArea && matchesSearch
     }
-    val nestaSemana = filteredEvents.filter { !isToday(it.date) }
-    val hoje = filteredEvents.filter { isToday(it.date) }
+    val days = filteredEvents.map { it.date }.distinct().sorted()
 
     LazyColumn(
         modifier = modifier.fillMaxSize(),
@@ -128,36 +127,20 @@ fun HomeScreen(
                 )
             }
         } else {
-            if (hoje.isNotEmpty()) {
+            days.forEachIndexed { index, date ->
+                val sessions = filteredEvents.filter { it.date == date }
                 item {
-                    SectionHeader(
-                        title = "HOJE",
-                        subtitle = "Ainda dá tempo de ir"
-                    )
-                }
-                item {
-                    EventPosterRow(
-                        events = hoje,
-                        favoriteIds = favoriteIds,
-                        onEventClick = onEventClick,
-                        onToggleFavorite = onToggleFavorite
-                    )
-                }
-            }
-
-            if (nestaSemana.isNotEmpty()) {
-                item {
-                    if (hoje.isNotEmpty()) {
+                    if (index > 0) {
                         Spacer(modifier = Modifier.height(8.dp))
                     }
                     SectionHeader(
-                        title = weekTitle(),
-                        subtitle = "O que ela cavou nesta semana"
+                        title = dayTitle(date),
+                        subtitle = if (isToday(date)) "Ainda dá tempo de ir" else null
                     )
                 }
                 item {
                     EventPosterRow(
-                        events = nestaSemana,
+                        events = sessions,
                         favoriteIds = favoriteIds,
                         onEventClick = onEventClick,
                         onToggleFavorite = onToggleFavorite
@@ -238,7 +221,7 @@ private fun PlaceStrip(
 @Composable
 private fun SectionHeader(
     title: String,
-    subtitle: String
+    subtitle: String? = null
 ) {
     Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
         Text(
@@ -248,12 +231,14 @@ private fun SectionHeader(
         )
         Spacer(modifier = Modifier.height(8.dp))
         LimeSlash()
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = subtitle,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            fontSize = 13.sp
-        )
+        if (!subtitle.isNullOrBlank()) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = subtitle,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = 13.sp
+            )
+        }
     }
 }
 
@@ -268,7 +253,7 @@ private fun EventPosterRow(
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        items(events, key = { it.id }) { event ->
+        items(events, key = { "${it.id}-${it.date}-${it.time}" }) { event ->
             EventCard(
                 event = event,
                 isFavorite = event.id in favoriteIds,

@@ -44,8 +44,8 @@ object Agenda {
 
 internal fun parseAgenda(raw: String, from: LocalDate = today()): List<Event> {
     val file = agendaJson.decodeFromString<AgendaFile>(raw)
-    return file.events.mapNotNull { it.toEvent(from) }
-        .sortedWith(compareBy({ it.date }, { it.time }))
+    return file.events.flatMap { it.toEvents(from) }
+        .sortedWith(compareBy({ it.date }, { it.time }, { it.title }))
 }
 
 @Serializable
@@ -81,28 +81,29 @@ private data class AgendaFact(
     val kind: String = "TEXT"
 )
 
-private fun AgendaEntry.toEvent(from: LocalDate): Event? {
-    val next = sessions
+private fun AgendaEntry.toEvents(from: LocalDate): List<Event> {
+    val upcoming = sessions
         .map { AgendaSlot(LocalDate.parse(it.date), parseAgendaTime(it.time)) }
         .filter { it.date >= from }
-        .minWithOrNull(compareBy({ it.date }, { it.time }))
-        ?: return null
-    return Event(
-        id = id,
-        title = title,
-        description = description,
-        date = next.date,
-        time = next.time,
-        location = location,
-        area = area,
-        category = category,
-        price = price,
-        link = link,
-        ageRating = ageRating,
-        facts = facts.map { fact ->
-            EventFact(fact.label, fact.value, factKind(fact.kind))
-        }
-    )
+        .sortedWith(compareBy({ it.date }, { it.time }))
+    return upcoming.map { slot ->
+        Event(
+            id = id,
+            title = title,
+            description = description,
+            date = slot.date,
+            time = slot.time,
+            location = location,
+            area = area,
+            category = category,
+            price = price,
+            link = link,
+            ageRating = ageRating,
+            facts = facts.map { fact ->
+                EventFact(fact.label, fact.value, factKind(fact.kind))
+            }
+        )
+    }
 }
 
 private data class AgendaSlot(val date: LocalDate, val time: LocalTime)

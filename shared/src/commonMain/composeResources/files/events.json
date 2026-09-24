@@ -188,16 +188,16 @@
         {
           "date": "2026-09-27",
           "time": "16:00"
+        },
+        {
+          "date": "2026-09-27",
+          "time": "19:00"
         }
       ],
       "facts": [
         {
           "label": "Meia",
           "value": "R$ 10"
-        },
-        {
-          "label": "Também",
-          "value": "Domingo 27, 16h e 19h"
         },
         {
           "label": "Acesso",
@@ -235,10 +235,6 @@
           "value": "R$ 20"
         },
         {
-          "label": "Sessões",
-          "value": "26 e 27 de setembro, às 16h"
-        },
-        {
           "label": "Bilheteria",
           "value": "A partir das 15h, no teatro"
         },
@@ -271,10 +267,6 @@
         {
           "label": "Até",
           "value": "12h"
-        },
-        {
-          "label": "Também",
-          "value": "Domingo, no mesmo horário"
         },
         {
           "label": "Com",

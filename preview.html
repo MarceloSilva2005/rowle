@@ -647,19 +647,43 @@
     let areas = [];
     let categories = [];
     function publishEvents(file) {
-      events = (file.events || []).map(raw => {
+      const built = [];
+      (file.events || []).forEach(raw => {
         const sessions = (raw.sessions || []).map(s => {
           const parts = s.date.split("-").map(Number);
           return { date: ymd(parts[0], parts[1], parts[2]), time: s.time };
+        }).filter(s => s.date.getTime() >= today.getTime())
+          .sort((a, b) => a.date - b.date || a.time.localeCompare(b.time));
+        sessions.forEach(session => {
+          const event = withSession(session, raw);
+          if (!event) return;
+          if (!event.facts) event.facts = [];
+          if (event.id === "magal") event.cover = "covers/cover_1.jpg";
+          built.push(event);
         });
-        const event = withSession(nextSession(sessions), raw);
-        if (!event) return null;
-        if (!event.facts) event.facts = [];
-        if (event.id === "magal") event.cover = "covers/cover_1.jpg";
-        return event;
-      }).filter(Boolean).sort((a, b) => a.date - b.date || a.time.localeCompare(b.time));
+      });
+      events = built.sort((a, b) => a.date - b.date || a.time.localeCompare(b.time) || a.title.localeCompare(b.title));
       areas = areaOrder.filter(area => events.some(e => e.area === area));
       categories = [...new Set(events.map(e => e.category))];
+    }
+    function catalogEvents() {
+      const seen = new Set();
+      return events.filter(e => {
+        if (seen.has(e.id)) return false;
+        seen.add(e.id);
+        return true;
+      });
+    }
+    function dayTitle(date) {
+      if (sameDay(date, today)) return "HOJE";
+      if (sameDay(date, tomorrow)) return "AMANHÃ";
+      const weekend = thisWeekend();
+      if (sameDay(date, weekend.sat)) return "SÁBADO " + date.getDate();
+      if (sameDay(date, weekend.sun)) return "DOMINGO " + date.getDate();
+      return (date.getDate() + " " + months[date.getMonth()]).toUpperCase();
+    }
+    function dayKey(date) {
+      return date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate();
     }
     const whenFilters = [
       { id: "todos", label: "Todos" },
@@ -716,7 +740,7 @@
     }
     function posterHtml(e) {
       return `
-        <div class="poster" data-id="${e.id}">
+        <div class="poster" data-id="${e.id}" data-date="${e.date.getFullYear()}-${e.date.getMonth() + 1}-${e.date.getDate()}" data-time="${e.time}">
           <div class="poster-cover style-${posterStyle(e)}"${coverAttr(e)}>
             ${scrimHtml(e)}
             <span class="poster-mark" aria-hidden="true">${posterMark(e)}</span>
@@ -754,8 +778,16 @@
         const qOk = !q || e.title.toLowerCase().includes(q) || e.category.toLowerCase().includes(q) || e.location.toLowerCase().includes(q) || e.area.toLowerCase().includes(q);
         return areaOk && qOk;
       });
-      const nestaSemana = filtered.filter(e => !sameDay(e.date, today));
-      const hoje = filtered.filter(e => sameDay(e.date, today));
+      const days = [];
+      filtered.forEach(e => {
+        const key = dayKey(e.date);
+        let group = days.find(day => day.key === key);
+        if (!group) {
+          group = { key, date: e.date, events: [] };
+          days.push(group);
+        }
+        group.events.push(e);
+      });
       const places = areas.map((area, i) => {
         const dot = i === 0 ? "" : `<span class="dot">·</span>`;
         return `${dot}<button class="place ${selectedArea === area ? "on" : ""}" data-area="${area}">${area.toUpperCase()}</button>`;
@@ -764,25 +796,16 @@
       if (!filtered.length) {
         body = emptyHtml();
       } else {
-        body = "";
-        if (hoje.length) {
-          body += `
+        body = days.map(day => {
+          const sub = sameDay(day.date, today) ? `<p class="section-sub">Ainda dá tempo de ir</p>` : "";
+          return `
             <div class="section">
-              <div class="section-name">HOJE</div>
+              <div class="section-name">${dayTitle(day.date)}</div>
               <div class="slash"></div>
-              <p class="section-sub">Ainda dá tempo de ir</p>
+              ${sub}
             </div>
-            <div class="row-scroll">${hoje.map(posterHtml).join("")}</div>`;
-        }
-        if (nestaSemana.length) {
-          body += `
-            <div class="section">
-              <div class="section-name">${weekTitle()}</div>
-              <div class="slash"></div>
-              <p class="section-sub">O que ela cavou nesta semana</p>
-            </div>
-            <div class="row-scroll">${nestaSemana.map(posterHtml).join("")}</div>`;
-        }
+            <div class="row-scroll">${day.events.map(posterHtml).join("")}</div>`;
+        }).join("");
       }
       document.getElementById("home").innerHTML = `
         <div class="brand pad">
@@ -812,7 +835,7 @@
         };
       });
       document.querySelectorAll(".poster").forEach(card => {
-        card.onclick = () => openDetail(card.getAttribute("data-id"), "home");
+        card.onclick = () => openDetail(card.getAttribute("data-id"), "home", card.getAttribute("data-date"), card.getAttribute("data-time"));
       });
       document.querySelectorAll("#home .heart").forEach(btn => {
         btn.onclick = (ev) => {
@@ -869,7 +892,7 @@
       const q = qValue.trim().toLowerCase();
       const keepFocus = document.activeElement === prev;
       const caret = prev && typeof prev.selectionStart === "number" ? prev.selectionStart : qValue.length;
-      const filtered = events.filter(e => {
+      const filtered = catalogEvents().filter(e => {
         const catOk = !exploreCategory || e.category === exploreCategory;
         const whenOk = matchesWhen(e);
         const qOk = !q || e.title.toLowerCase().includes(q) || e.category.toLowerCase().includes(q) || e.location.toLowerCase().includes(q) || e.area.toLowerCase().includes(q);
@@ -944,7 +967,7 @@
       showTab("explore");
     }
     function renderSaved() {
-      const saved = events.filter(e => favorites.has(e.id));
+      const saved = catalogEvents().filter(e => favorites.has(e.id));
       let body;
       if (!saved.length) {
         body = `<div class="empty"><h4>Nada na toca</h4><p>Marca o coração num evento pra achar ele aqui.</p></div>`;
@@ -1068,9 +1091,13 @@
         showCopied();
       }
     }
-    function openDetail(id, from) {
+    function sessionStamp(date) {
+      return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+    }
+    function openDetail(id, from, date, time) {
       if (from) detailFrom = from;
-      const e = events.find(x => x.id === id);
+      const e = events.find(x => x.id === id && (!date || (sessionStamp(x.date) === date && x.time === time)))
+        || events.find(x => x.id === id);
       if (!e) return;
       const more = e.link
         ? `<button class="ticket" type="button" id="open-link">SAIBA MAIS</button>`

@@ -5,6 +5,9 @@ import com.rowle.model.Event
 val sampleEvents: List<Event>
     get() = Agenda.events
 
+val nextEvents: List<Event>
+    get() = sampleEvents.distinctBy { it.id }
+
 fun eventById(id: String): Event? = sampleEvents.find { it.id == id }
 
 val eventCategories: List<String>
