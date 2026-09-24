@@ -39,6 +39,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.rowle.data.agendaReady
 import com.rowle.data.eventAreas
 import com.rowle.data.isToday
 import com.rowle.data.sampleEvents
@@ -113,7 +114,9 @@ fun HomeScreen(
             )
         }
 
-        if (filteredEvents.isEmpty()) {
+        if (!agendaReady) {
+            item { Spacer(modifier = Modifier.height(1.dp)) }
+        } else if (filteredEvents.isEmpty()) {
             item {
                 EmptyEvents(
                     searchText = searchText,

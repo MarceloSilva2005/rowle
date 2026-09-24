@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.rowle.data.agendaReady
 import com.rowle.data.sampleEvents
 import com.rowle.model.Event
 
@@ -43,7 +44,9 @@ fun SavedScreen(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
         )
 
-        if (saved.isEmpty()) {
+        if (!agendaReady) {
+            Box(modifier = Modifier.fillMaxSize())
+        } else if (saved.isEmpty()) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()

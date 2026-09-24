@@ -36,6 +36,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.rowle.data.agendaReady
 import com.rowle.data.eventCategories
 import com.rowle.data.isThisWeekend
 import com.rowle.data.isToday
@@ -130,7 +131,9 @@ fun ExploreScreen(
             }
         )
 
-        if (filtered.isEmpty()) {
+        if (!agendaReady) {
+            Box(modifier = Modifier.fillMaxSize())
+        } else if (filtered.isEmpty()) {
             EmptyExplore(
                 searchText = searchText,
                 hasFilters = hasFilters,

@@ -21,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +33,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.rowle.data.Agenda
 import com.rowle.data.eventById
 import com.rowle.data.rememberFavoriteStore
 import com.rowle.ui.AppScreen
@@ -55,6 +57,9 @@ private enum class MainTab(
 @Composable
 fun App() {
     val favoriteStore = rememberFavoriteStore()
+    LaunchedEffect(Unit) {
+        Agenda.load()
+    }
     var screen by remember { mutableStateOf<AppScreen>(AppScreen.Home) }
     var tab by remember { mutableStateOf(MainTab.HOME) }
     var favoriteIds by remember { mutableStateOf(favoriteStore.load()) }

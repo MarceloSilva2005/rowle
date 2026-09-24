@@ -633,11 +633,6 @@
       return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s7-7.2 7-12a7 7 0 1 0-14 0c0 4.8 7 12 7 12z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>';
     }
     function ymd(y, m, d) { return startOfDay(new Date(y, m - 1, d)); }
-    function eachDay(start, end) {
-      const out = [];
-      for (let d = startOfDay(start); d.getTime() <= end.getTime(); d = addDays(d, 1)) out.push(d);
-      return out;
-    }
     function nextSession(sessions) {
       return sessions
         .filter(s => s.date.getTime() >= today.getTime())
@@ -647,36 +642,25 @@
       if (!session) return null;
       return Object.assign({}, event, { date: session.date, time: session.time });
     }
-    const toysSession = nextSession(
-      eachDay(ymd(2026, 8, 18), ymd(2026, 9, 27))
-        .filter(d => d.getDay() !== 1)
-        .map(date => ({ date, time: "10:00" }))
-    );
-    const orwellSession = nextSession([
-      { date: ymd(2026, 9, 25), time: "20:00" },
-      { date: ymd(2026, 9, 27), time: "16:00" }
-    ]);
-    const aranhaSession = nextSession([
-      { date: ymd(2026, 9, 26), time: "16:00" },
-      { date: ymd(2026, 9, 27), time: "16:00" }
-    ]);
-    const choroSession = nextSession([
-      { date: ymd(2026, 9, 26), time: "10:00" },
-      { date: ymd(2026, 9, 27), time: "10:00" }
-    ]);
-    const magalSession = nextSession([
-      { date: ymd(2026, 9, 26), time: "21:00" }
-    ]);
     const areaOrder = ["Norte", "Asa Sul", "Eixo", "Águas Claras", "Taguatinga"];
-    const events = [
-      withSession(toysSession, { id: "toys", title: "O Que Nos Habita", description: "Pinturas e esculturas inéditas de Daniel Toys, sobre memória e paisagem afetiva.", category: "Cultura", location: "Espaço Cultural Renato Russo — 508 Sul", area: "Asa Sul", price: "Grátis", link: "https://www.correiobraziliense.com.br/divirtasemais/2026/08/7482258-daniel-toys-busca-memorias-afetivas-e-sonhos-em-pinturas-e-esculturas.html", facts: [{ label: "Até", value: "27 de setembro" }, { label: "Funciona", value: "Terça a domingo, 10h às 20h" }, { label: "Sala", value: "Galeria Rubem Valentim" }] }),
-      withSession(orwellSession, { id: "orwell", title: "2+2=5", description: "Peça da Agrupação Teatral Amacaca, inspirada em 1984, de George Orwell. Direção de Felipe Vidal.", category: "Teatro", location: "Teatro dos Ventos — Águas Claras", area: "Águas Claras", price: "R$ 20", link: "https://www.sympla.com.br/evento/2-2-5-da-agrupacao-teatral-amacaca/3543915", ageRating: "14 anos", facts: [{ label: "Meia", value: "R$ 10" }, { label: "Também", value: "Domingo 27, 16h e 19h" }, { label: "Acesso", value: "Libras e audiodescrição no dia 27" }, { label: "Quem", value: "Agrupação Teatral Amacaca" }] }),
-      withSession(aranhaSession, { id: "aranha", title: "Aranhaverso", description: "O Homem-Aranha cai no multiverso. Espetáculo da Néia e Nando Cia. Teatral, para a família.", category: "Teatro", location: "Teatro Brasília Shopping — Asa Norte", area: "Norte", price: "R$ 40", link: "https://visitebrasilia.com.br/noticias/aranhaverso-leva-homem-aranha-e-aventura-pelo-multiverso-ao-teatro-brasilia-shopping", ageRating: "Livre", facts: [{ label: "Meia", value: "R$ 20" }, { label: "Sessões", value: "26 e 27 de setembro, às 16h" }, { label: "Bilheteria", value: "A partir das 15h, no teatro" }, { label: "Quem", value: "Néia e Nando Cia. Teatral" }] }),
-      withSession(choroSession, { id: "choro", title: "Choro Permanente", description: "Roda ao ar livre na feira, com o grupo Saudando o Choro. Clássicos, autorais e convidados.", category: "Shows", location: "Feira Permanente de Taguatinga — QNL", area: "Taguatinga", price: "Grátis", link: "https://www.correiobraziliense.com.br/diversao-e-arte/2026/09/7497060-saudando-o-choro-ocupa-feira-em-taguatinga-ate-o-fim-de-setembro.html", facts: [{ label: "Até", value: "12h" }, { label: "Também", value: "Domingo, no mesmo horário" }, { label: "Com", value: "Leo Araújo, Nelson Latif e Rosemaria" }, { label: "Quem", value: "Saudando o Choro" }] }),
-      withSession(magalSession, { id: "magal", title: "Baile do Magal", description: "Sidney Magal canta Sandra Rosa Madalena, Meu Sangue Ferve por Você, Me Chama Que Eu Vou e clássicos para dançar. O valor do ingresso está na Blue Ticket.", category: "Shows", location: "Centro de Convenções Ulysses Guimarães", area: "Eixo", price: "Ver ingresso", link: "https://www.blueticket.com.br/evento/41228", cover: "covers/cover_1.jpg", facts: [{ label: "Portões", value: "19h30" }, { label: "Sala", value: "Auditório Master" }, { label: "Quem", value: "Sidney Magal" }] })
-    ].filter(Boolean).sort((a, b) => a.date - b.date || a.time.localeCompare(b.time));
-    const areas = areaOrder.filter(area => events.some(e => e.area === area));
-    const categories = [...new Set(events.map(e => e.category))];
+    let events = [];
+    let areas = [];
+    let categories = [];
+    function publishEvents(file) {
+      events = (file.events || []).map(raw => {
+        const sessions = (raw.sessions || []).map(s => {
+          const parts = s.date.split("-").map(Number);
+          return { date: ymd(parts[0], parts[1], parts[2]), time: s.time };
+        });
+        const event = withSession(nextSession(sessions), raw);
+        if (!event) return null;
+        if (!event.facts) event.facts = [];
+        if (event.id === "magal") event.cover = "covers/cover_1.jpg";
+        return event;
+      }).filter(Boolean).sort((a, b) => a.date - b.date || a.time.localeCompare(b.time));
+      areas = areaOrder.filter(area => events.some(e => e.area === area));
+      categories = [...new Set(events.map(e => e.category))];
+    }
     const whenFilters = [
       { id: "todos", label: "Todos" },
       { id: "hoje", label: "Hoje" },
@@ -1138,7 +1122,12 @@
       document.getElementById("nav-saved").classList.toggle("on", id === "saved");
       document.getElementById("nav-you").classList.toggle("on", id === "you");
     }
-    renderHome();
+    fetch("shared/src/commonMain/composeResources/files/events.json")
+      .then(response => response.json())
+      .then(file => {
+        publishEvents(file);
+        renderHome();
+      });
   </script>
 </body>
 </html>

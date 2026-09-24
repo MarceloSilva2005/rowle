@@ -1,4 +1,5 @@
 Rolês desta semana. Data, hora, preço e link conferidos na fonte.
+A lista publicada é shared/src/commonMain/composeResources/files/events.json.
 A lista some sozinha depois da última sessão.
 
 O Que Nos Habita — Daniel Toys
