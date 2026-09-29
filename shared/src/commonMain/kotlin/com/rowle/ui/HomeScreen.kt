@@ -284,8 +284,8 @@ private fun EmptyEvents(
             subtitle = "Escolhe outro lugar ou vê todos os rolês."
         }
         else -> {
-            title = "Ela ainda não achou"
-            subtitle = "Quando tiver rolê novo, aparece nessa lista."
+            title = "A semana ainda está sendo cavada"
+            subtitle = "Quando ela achar, o rolê aparece aqui."
         }
     }
 
