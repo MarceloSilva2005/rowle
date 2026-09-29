@@ -892,7 +892,8 @@
       const q = qValue.trim().toLowerCase();
       const keepFocus = document.activeElement === prev;
       const caret = prev && typeof prev.selectionStart === "number" ? prev.selectionStart : qValue.length;
-      const filtered = catalogEvents().filter(e => {
+      const pool = exploreWhen === "todos" ? catalogEvents() : events;
+      const filtered = pool.filter(e => {
         const catOk = !exploreCategory || e.category === exploreCategory;
         const whenOk = matchesWhen(e);
         const qOk = !q || e.title.toLowerCase().includes(q) || e.category.toLowerCase().includes(q) || e.location.toLowerCase().includes(q) || e.area.toLowerCase().includes(q);
@@ -939,7 +940,12 @@
         };
       });
       document.querySelectorAll("#explore .poster").forEach(card => {
-        card.onclick = () => openDetail(card.getAttribute("data-id"), "explore");
+        card.onclick = () => openDetail(
+          card.getAttribute("data-id"),
+          "explore",
+          card.getAttribute("data-date"),
+          card.getAttribute("data-time")
+        );
       });
       document.querySelectorAll("#explore .heart").forEach(btn => {
         btn.onclick = (ev) => {
