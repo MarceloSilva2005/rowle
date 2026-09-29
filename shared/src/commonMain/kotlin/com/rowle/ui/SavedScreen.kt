@@ -1,15 +1,13 @@
 package com.rowle.ui
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,7 +17,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rowle.data.agendaReady
-import com.rowle.data.nextEvents
+import com.rowle.data.dayTitle
+import com.rowle.data.isToday
+import com.rowle.data.sampleEvents
 import com.rowle.model.Event
 
 @Composable
@@ -29,7 +29,8 @@ fun SavedScreen(
     onToggleFavorite: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val saved = nextEvents.filter { it.id in favoriteIds }
+    val saved = sampleEvents.filter { it.id in favoriteIds }
+    val days = saved.map { it.date }.distinct().sorted()
 
     Column(modifier = modifier.fillMaxSize()) {
         Text(
@@ -69,21 +70,29 @@ fun SavedScreen(
                 }
             }
         } else {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
+            LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                contentPadding = PaddingValues(bottom = 24.dp)
             ) {
-                items(saved, key = { it.id }) { event ->
-                    EventCard(
-                        event = event,
-                        isFavorite = true,
-                        onToggleFavorite = { onToggleFavorite(event.id) },
-                        onClick = { onEventClick(event) },
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                days.forEachIndexed { index, date ->
+                    val sessions = saved.filter { it.date == date }
+                    item {
+                        if (index > 0) {
+                            Spacer(modifier = Modifier.height(8.dp))
+                        }
+                        SectionHeader(
+                            title = dayTitle(date),
+                            subtitle = if (isToday(date)) "Ainda dá tempo de ir" else null
+                        )
+                    }
+                    item {
+                        EventPosterRow(
+                            events = sessions,
+                            favoriteIds = favoriteIds,
+                            onEventClick = onEventClick,
+                            onToggleFavorite = onToggleFavorite
+                        )
+                    }
                 }
             }
         }

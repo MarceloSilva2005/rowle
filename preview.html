@@ -973,12 +973,31 @@
       showTab("explore");
     }
     function renderSaved() {
-      const saved = catalogEvents().filter(e => favorites.has(e.id));
+      const saved = events.filter(e => favorites.has(e.id));
+      const days = [];
+      saved.forEach(e => {
+        const key = dayKey(e.date);
+        let group = days.find(day => day.key === key);
+        if (!group) {
+          group = { key, date: e.date, events: [] };
+          days.push(group);
+        }
+        group.events.push(e);
+      });
       let body;
       if (!saved.length) {
         body = `<div class="empty"><h4>Nada na toca</h4><p>Marca o coração num evento pra achar ele aqui.</p></div>`;
       } else {
-        body = `<div class="saved-grid">${saved.map(posterHtml).join("")}</div>`;
+        body = days.map(day => {
+          const sub = sameDay(day.date, today) ? `<p class="section-sub">Ainda dá tempo de ir</p>` : "";
+          return `
+            <div class="section">
+              <div class="section-name">${dayTitle(day.date)}</div>
+              <div class="slash"></div>
+              ${sub}
+            </div>
+            <div class="row-scroll">${day.events.map(posterHtml).join("")}</div>`;
+        }).join("");
       }
       document.getElementById("saved").innerHTML = `
         <div class="saved-head">
@@ -989,7 +1008,12 @@
         ${body}
       `;
       document.querySelectorAll("#saved .poster").forEach(card => {
-        card.onclick = () => openDetail(card.getAttribute("data-id"), "saved");
+        card.onclick = () => openDetail(
+          card.getAttribute("data-id"),
+          "saved",
+          card.getAttribute("data-date"),
+          card.getAttribute("data-time")
+        );
       });
       document.querySelectorAll("#saved .heart").forEach(btn => {
         btn.onclick = (ev) => {
@@ -1133,7 +1157,7 @@
           ev.stopPropagation();
           const favId = btn.getAttribute("data-id");
           toggleFav(favId);
-          openDetail(favId);
+          openDetail(favId, detailFrom, sessionStamp(e.date), e.time);
         };
       });
       document.getElementById("share-event").onclick = () => shareEvent(e);

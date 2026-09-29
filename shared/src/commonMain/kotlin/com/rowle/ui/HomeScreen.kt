@@ -219,7 +219,7 @@ private fun PlaceStrip(
 }
 
 @Composable
-private fun SectionHeader(
+fun SectionHeader(
     title: String,
     subtitle: String? = null
 ) {
@@ -243,7 +243,7 @@ private fun SectionHeader(
 }
 
 @Composable
-private fun EventPosterRow(
+fun EventPosterRow(
     events: List<Event>,
     favoriteIds: Set<String>,
     onEventClick: (Event) -> Unit,
