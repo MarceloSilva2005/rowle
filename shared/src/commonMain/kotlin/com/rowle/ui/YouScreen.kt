@@ -1,33 +1,28 @@
 package com.rowle.ui
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.rowle.ui.theme.Lime
+
+private const val APP_VERSION = "0.1.0"
 
 @Composable
 fun YouScreen(
-    savedCount: Int,
-    onOpenSaved: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val lime = MaterialTheme.colorScheme.primary
-
     Column(
         modifier = modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(horizontal = 16.dp)
     ) {
         Text(
@@ -37,66 +32,57 @@ fun YouScreen(
         )
         LimeSlash(modifier = Modifier.padding(top = 8.dp, bottom = 4.dp))
         Text(
-            text = "Sem conta. Seus rolês ficam neste aparelho.",
+            text = "A toupeira cava Brasília pra você.",
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(top = 4.dp, bottom = 20.dp)
+            modifier = Modifier.padding(top = 4.dp)
         )
 
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color(0xFF111111))
-                .border(1.dp, Lime.copy(alpha = 0.45f), RectangleShape)
-                .clickable(onClick = onOpenSaved)
-                .padding(20.dp)
-        ) {
-            Text(
-                text = savedCount.toString(),
-                color = lime,
-                style = MaterialTheme.typography.displayLarge,
-                fontSize = 64.sp,
-                lineHeight = 64.sp
-            )
-            Text(
-                text = if (savedCount == 1) "ROLÊ SALVO" else "ROLÊS SALVOS",
-                style = MaterialTheme.typography.labelLarge,
-                color = Color.White
-            )
-            Text(
-                text = if (savedCount == 0) {
-                    "Marca o coração num evento pra contar aqui."
-                } else {
-                    "Abre a lista dos que você marcou."
-                },
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontSize = 13.sp,
-                modifier = Modifier.padding(top = 8.dp)
-            )
-        }
+        YouLabel("O APP")
+        YouBody("Rowlê mostra a semana de Brasília. De graça, sem anúncio. Horário, lugar, preço e classificação entram quando a fonte escreve.")
 
-        Text(
-            text = "SOBRE",
-            style = MaterialTheme.typography.labelLarge,
-            color = Color(0xFF8A8A8A),
-            modifier = Modifier.padding(top = 28.dp, bottom = 8.dp)
-        )
-        Text(
-            text = "A toupeira cava Brasília pra você — shows, cultura e o que não aparece no folder.",
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            fontSize = 15.sp,
-            lineHeight = 22.sp
-        )
+        YouLabel("NESTE APARELHO")
+        YouBody("Os rolês marcados ficam só neste celular. Sem conta.")
 
+        YouLabel("VERSÃO")
         Text(
-            text = "CIDADE",
-            style = MaterialTheme.typography.labelLarge,
-            color = Color(0xFF8A8A8A),
-            modifier = Modifier.padding(top = 24.dp, bottom = 8.dp)
-        )
-        Text(
-            text = "Brasília / DF",
+            text = APP_VERSION,
             color = Color.White,
             style = MaterialTheme.typography.titleLarge
         )
+
+        YouLabel("CRÉDITOS")
+        YouBody("Cada rolê é conferido numa fonte publicada. O link fica na ficha.")
+        YouBody(
+            "Foto do Centro de Convenções Ulysses Guimarães: Borowskki, 2012, domínio público.",
+            modifier = Modifier.padding(top = 8.dp)
+        )
+        YouBody(
+            "Barlow Condensed, licença SIL Open Font.",
+            modifier = Modifier.padding(top = 8.dp, bottom = 24.dp)
+        )
     }
+}
+
+@Composable
+private fun YouLabel(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.labelLarge,
+        color = Color(0xFF8A8A8A),
+        modifier = Modifier.padding(top = 24.dp, bottom = 8.dp)
+    )
+}
+
+@Composable
+private fun YouBody(
+    text: String,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = text,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        fontSize = 15.sp,
+        lineHeight = 22.sp,
+        modifier = modifier
+    )
 }

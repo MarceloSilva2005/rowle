@@ -190,8 +190,6 @@ fun App() {
                         }
                         MainTab.YOU -> {
                             YouScreen(
-                                savedCount = favoriteIds.size,
-                                onOpenSaved = { tab = MainTab.SAVED },
                                 modifier = Modifier.padding(innerPadding)
                             )
                         }

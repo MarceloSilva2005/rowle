@@ -424,41 +424,19 @@
       color: var(--on-primary);
       border-color: var(--primary);
     }
-    .you-card {
-      margin: 12px 16px 8px;
-      background: #111;
-      border: 1px solid color-mix(in srgb, var(--primary) 45%, transparent);
-      border-radius: 0;
-      padding: 20px;
-      cursor: pointer;
-    }
-    .you-count {
-      font-family: "Barlow Condensed", sans-serif;
-      font-weight: 900;
-      font-style: italic;
-      font-size: 64px;
-      line-height: 1;
-      color: var(--primary);
-    }
-    .you-count-label {
-      font-family: "Barlow Condensed", sans-serif;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      font-size: 13px;
-    }
-    .you-hint { color: var(--muted); font-size: 13px; margin-top: 8px; }
-    .you-city {
-      font-family: "Barlow Condensed", sans-serif;
-      font-weight: 900;
-      font-style: italic;
-      font-size: 24px;
-      margin: 0;
-    }
     .you-about {
       color: var(--muted);
       font-size: 15px;
       line-height: 1.45;
       margin: 0;
+    }
+    .you-about + .you-about { margin-top: 8px; }
+    .you-version {
+      font-family: "Barlow Condensed", sans-serif;
+      font-weight: 900;
+      font-style: italic;
+      font-size: 24px;
+      margin: 0 0 8px;
     }
     .nav {
       display: flex;
@@ -1029,28 +1007,23 @@
       showTab("saved");
     }
     function renderYou() {
-      const count = favorites.size;
-      const label = count === 1 ? "ROLÊ SALVO" : "ROLÊS SALVOS";
-      const hint = count === 0
-        ? "Marca o coração num evento pra contar aqui."
-        : "Abre a lista dos que você marcou.";
       document.getElementById("you").innerHTML = `
         <div class="saved-head">
           <div class="section-name">VOCÊ</div>
           <div class="slash"></div>
-          <p class="section-sub">Sem conta. Seus rolês ficam neste aparelho.</p>
+          <p class="section-sub">A toupeira cava Brasília pra você.</p>
         </div>
-        <div class="you-card" id="you-saved">
-          <div class="you-count">${count}</div>
-          <div class="you-count-label">${label}</div>
-          <p class="you-hint">${hint}</p>
-        </div>
-        <div class="filter-label">SOBRE</div>
-        <p class="you-about pad">A toupeira cava Brasília pra você — shows, cultura e o que não aparece no folder.</p>
-        <div class="filter-label">CIDADE</div>
-        <p class="you-city pad">Brasília / DF</p>
+        <div class="filter-label">O APP</div>
+        <p class="you-about pad">Rowlê mostra a semana de Brasília. De graça, sem anúncio. Horário, lugar, preço e classificação entram quando a fonte escreve.</p>
+        <div class="filter-label">NESTE APARELHO</div>
+        <p class="you-about pad">Os rolês marcados ficam só neste celular. Sem conta.</p>
+        <div class="filter-label">VERSÃO</div>
+        <p class="you-version pad">0.1.0</p>
+        <div class="filter-label">CRÉDITOS</div>
+        <p class="you-about pad">Cada rolê é conferido numa fonte publicada. O link fica na ficha.</p>
+        <p class="you-about pad">Foto do Centro de Convenções Ulysses Guimarães: Borowskki, 2012, domínio público.</p>
+        <p class="you-about pad">Barlow Condensed, licença SIL Open Font.</p>
       `;
-      document.getElementById("you-saved").onclick = openSaved;
     }
     function openYou() {
       renderYou();
