@@ -13,6 +13,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rowle.resources.Res
+import com.rowle.resources.barlow_condensed_black_italic
+import com.rowle.resources.barlow_condensed_bold
 import org.jetbrains.compose.resources.Font
 
 val Lime = Color(0xFFC8FF00)

@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rowle.model.Event
 import com.rowle.resources.Res
+import com.rowle.resources.cover_1
 import com.rowle.ui.theme.Ink
 import com.rowle.ui.theme.Lime
 import org.jetbrains.compose.resources.DrawableResource

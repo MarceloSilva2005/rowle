@@ -27,7 +27,7 @@ fun dateLabel(date: LocalDate): String {
         tomorrow -> "Amanhã"
         saturday -> "Sábado"
         sunday -> "Domingo"
-        else -> "${date.day} ${monthAbbr(date.monthNumber)}"
+        else -> "${date.dayOfMonth} ${monthAbbr(date.monthNumber)}"
     }
 }
 
@@ -38,9 +38,9 @@ fun dayTitle(date: LocalDate): String {
     return when (date) {
         current -> "HOJE"
         tomorrow -> "AMANHÃ"
-        saturday -> "SÁBADO ${date.day}"
-        sunday -> "DOMINGO ${date.day}"
-        else -> "${date.day} ${monthAbbr(date.monthNumber)}".uppercase()
+        saturday -> "SÁBADO ${date.dayOfMonth}"
+        sunday -> "DOMINGO ${date.dayOfMonth}"
+        else -> "${date.dayOfMonth} ${monthAbbr(date.monthNumber)}".uppercase()
     }
 }
 
@@ -60,9 +60,9 @@ fun weekTitle(from: LocalDate = today()): String {
     val startMonth = monthAbbr(monday.monthNumber)
     val endMonth = monthAbbr(sunday.monthNumber)
     return if (monday.monthNumber == sunday.monthNumber) {
-        "${monday.day}–${sunday.day} $startMonth"
+        "${monday.dayOfMonth}–${sunday.dayOfMonth} $startMonth"
     } else {
-        "${monday.day} $startMonth – ${sunday.day} $endMonth"
+        "${monday.dayOfMonth} $startMonth – ${sunday.dayOfMonth} $endMonth"
     }.uppercase()
 }
 

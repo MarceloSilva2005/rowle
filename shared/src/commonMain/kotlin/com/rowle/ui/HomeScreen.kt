@@ -46,6 +46,7 @@ import com.rowle.data.isToday
 import com.rowle.data.sampleEvents
 import com.rowle.model.Event
 import com.rowle.resources.Res
+import com.rowle.resources.rowle_wordmark
 import com.rowle.ui.theme.Hairline
 import org.jetbrains.compose.resources.painterResource
 
