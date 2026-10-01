@@ -1017,6 +1017,7 @@
         <p class="you-about pad">Rowlê mostra a semana de Brasília. De graça, sem anúncio. Horário, lugar, preço e classificação entram quando a fonte escreve.</p>
         <div class="filter-label">NESTE APARELHO</div>
         <p class="you-about pad">Os rolês marcados ficam só neste celular. Sem conta.</p>
+        <p class="you-about pad">Da ficha, o lugar abre no mapa deste celular e o começo entra na agenda. O fim fica de fora enquanto a fonte não escreve.</p>
         <div class="filter-label">VERSÃO</div>
         <p class="you-version pad">0.1.0</p>
         <div class="filter-label">CRÉDITOS</div>
@@ -1066,6 +1067,34 @@
       }
       const value = `<span class="fact-value${fact.kind === "price" ? " lime" : ""}">${fact.value}</span>`;
       return `<div class="fact"><span class="fact-label">${fact.label}</span>${value}</div>`;
+    }
+    function venueQuery(location) {
+      const place = String(location || "").trim();
+      const lower = place.toLowerCase();
+      if (lower.indexOf("brasília") >= 0 || lower.indexOf("brasilia") >= 0) return place;
+      return place + ", Brasília";
+    }
+    function mapsSearchUrl(location) {
+      return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(venueQuery(location));
+    }
+    function calendarNote(e) {
+      let text = e.location + "\nA fonte marca o começo às " + e.time + ". O fim não está escrito.\n";
+      if (e.link) text += e.link + "\n";
+      return text + "Rowlê — Brasília";
+    }
+    function calendarStamp(date, time) {
+      const p = (n) => String(n).padStart(2, "0");
+      const hm = String(time).split(":");
+      return "" + date.getFullYear() + p(date.getMonth() + 1) + p(date.getDate()) +
+        "T" + p(Number(hm[0]) || 0) + p(Number(hm[1]) || 0) + "00";
+    }
+    function calendarPageUrl(e) {
+      const stamp = calendarStamp(e.date, e.time);
+      return "https://calendar.google.com/calendar/render?action=TEMPLATE" +
+        "&text=" + encodeURIComponent(e.title) +
+        "&dates=" + stamp + "/" + stamp +
+        "&location=" + encodeURIComponent(e.location) +
+        "&details=" + encodeURIComponent(calendarNote(e));
     }
     function eventShareText(e) {
       let text = e.title;
@@ -1121,6 +1150,8 @@
           <h2>SOBRE</h2>
           <div class="slash"></div>
           <p class="desc">${e.description}</p>
+          ${e.location ? `<button class="share" type="button" id="open-maps">COMO CHEGAR</button>` : ""}
+          <button class="share" type="button" id="add-calendar">NA AGENDA</button>
           <button class="share" type="button" id="share-event">COMPARTILHAR</button>
           ${more}
         </div>
@@ -1134,6 +1165,9 @@
         };
       });
       document.getElementById("share-event").onclick = () => shareEvent(e);
+      const mapsBtn = document.getElementById("open-maps");
+      if (mapsBtn) mapsBtn.onclick = () => window.open(mapsSearchUrl(e.location), "_blank");
+      document.getElementById("add-calendar").onclick = () => window.open(calendarPageUrl(e), "_blank");
       const linkBtn = document.getElementById("open-link");
       if (linkBtn) linkBtn.onclick = () => window.open(e.link, "_blank");
       showTab("detail");

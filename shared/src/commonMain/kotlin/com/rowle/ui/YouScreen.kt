@@ -42,6 +42,10 @@ fun YouScreen(
 
         YouLabel("NESTE APARELHO")
         YouBody("Os rolês marcados ficam só neste celular. Sem conta.")
+        YouBody(
+            "Da ficha, o lugar abre no mapa deste celular e o começo entra na agenda. O fim fica de fora enquanto a fonte não escreve.",
+            modifier = Modifier.padding(top = 8.dp)
+        )
 
         YouLabel("VERSÃO")
         Text(

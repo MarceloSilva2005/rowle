@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rowle.data.eventShareText
 import com.rowle.data.eventSheet
+import com.rowle.data.rememberPlanner
 import com.rowle.data.rememberSharer
 import com.rowle.model.Event
 import com.rowle.model.EventFact
@@ -57,6 +58,7 @@ fun EventDetailScreen(
 ) {
     val uriHandler = LocalUriHandler.current
     val sharer = rememberSharer()
+    val planner = rememberPlanner()
     val eventLink = event.link
 
     Scaffold(
@@ -119,6 +121,30 @@ fun EventDetailScreen(
                     lineHeight = 22.sp
                 )
                 Spacer(modifier = Modifier.height(4.dp))
+                if (event.location.isNotBlank()) {
+                    OutlinedButton(
+                        onClick = { planner.openMaps(event) },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RectangleShape
+                    ) {
+                        Text(
+                            text = "COMO CHEGAR",
+                            letterSpacing = 1.2.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+                OutlinedButton(
+                    onClick = { planner.addToCalendar(event) },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RectangleShape
+                ) {
+                    Text(
+                        text = "NA AGENDA",
+                        letterSpacing = 1.2.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
                 OutlinedButton(
                     onClick = { sharer.share(eventShareText(event)) },
                     modifier = Modifier.fillMaxWidth(),
