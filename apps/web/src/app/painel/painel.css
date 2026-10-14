@@ -207,14 +207,18 @@
   white-space: nowrap;
 }
 
-.selo-published {
+.selo-published,
+.selo-accepted,
+.selo-resolved {
   background: var(--brand);
   color: #0b0d0c;
   border-color: var(--brand);
 }
 
 .selo-in_review,
-.selo-changes_requested {
+.selo-changes_requested,
+.selo-needs_info,
+.selo-investigating {
   background: var(--warning);
   color: #0b0d0c;
   border-color: var(--warning);
@@ -222,9 +226,38 @@
 
 .selo-cancelled,
 .selo-rejected,
-.selo-suspended {
+.selo-suspended,
+.selo-urgente {
   color: var(--danger);
   border-color: var(--danger);
+}
+
+.ficha {
+  display: grid;
+  grid-template-columns: minmax(120px, max-content) 1fr;
+  gap: 8px 16px;
+  margin: 0;
+}
+
+.ficha dt {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.ficha dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+}
+
+@media (max-width: 560px) {
+  .ficha {
+    grid-template-columns: 1fr;
+  }
+
+  .ficha dd {
+    margin-bottom: 8px;
+  }
 }
 
 .filtros {

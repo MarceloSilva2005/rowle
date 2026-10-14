@@ -17,7 +17,10 @@ export default function GestaoLayout({ children }: LayoutProps<"/painel">) {
         <nav aria-label="Painel">
           <Link href="/painel/eventos">Eventos</Link>
           <Link href="/painel/eventos/novo">Novo evento</Link>
+          <Link href="/painel/sugestoes">Sugestões</Link>
+          <Link href="/painel/denuncias">Denúncias</Link>
           <Link href="/painel/locais">Locais</Link>
+          <Link href="/painel/organizacoes">Organizações</Link>
         </nav>
         <Suspense fallback={<span className="muted">…</span>}>
           <StaffBadge />

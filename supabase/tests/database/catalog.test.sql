@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(22);
+select plan(24);
 
 -- Fixtures (como superusuário, sem RLS). O catálogo começa vazio mesmo que o banco
 -- local tenha dados cadastrados à mão; o rollback do fim devolve tudo.
@@ -85,6 +85,8 @@ select throws_ok(
 select throws_ok($$ select * from public.sources $$, '42501', null, 'visitante não lê fontes');
 select throws_ok($$ select * from public.organization_contacts $$, '42501', null, 'visitante não lê contatos');
 select throws_ok($$ select * from public.audit_log $$, '42501', null, 'visitante não lê auditoria');
+select throws_ok($$ select * from public.submissions $$, '42501', null, 'visitante não lê sugestões');
+select throws_ok($$ select * from public.reports $$, '42501', null, 'visitante não lê denúncias');
 reset role;
 
 -- Equipe (curadoria)

@@ -1,4 +1,4 @@
-import { EVENT_STATUS_LABELS, type EventStatus } from "@rowle/core";
+import { EVENT_STATUS_LABELS, OPEN_REPORT_STATUSES, OPEN_SUBMISSION_STATUSES, type EventStatus } from "@rowle/core";
 import Link from "next/link";
 import { Suspense } from "react";
 import { requireStaff } from "@/lib/auth";
@@ -26,10 +26,22 @@ async function Counts() {
       return { status, count: count ?? 0 };
     }),
   );
-  const { count: venues } = await supabase.from("venues").select("id", { count: "exact", head: true });
+  const [{ count: venues }, { count: submissions }, { count: reports }] = await Promise.all([
+    supabase.from("venues").select("id", { count: "exact", head: true }),
+    supabase.from("submissions").select("id", { count: "exact", head: true }).in("status", [...OPEN_SUBMISSION_STATUSES]),
+    supabase.from("reports").select("id", { count: "exact", head: true }).in("status", [...OPEN_REPORT_STATUSES]),
+  ]);
 
   return (
-    <section className="numeros" aria-label="Eventos por situação">
+    <section className="numeros" aria-label="Filas e eventos por situação">
+      <Link href="/painel/sugestoes" className="cartao numero">
+        <strong>{submissions ?? 0}</strong>
+        <span>Sugestões na fila</span>
+      </Link>
+      <Link href="/painel/denuncias" className="cartao numero">
+        <strong>{reports ?? 0}</strong>
+        <span>Denúncias abertas</span>
+      </Link>
       {counts.map(({ status, count }) => (
         <Link key={status} href={`/painel/eventos?status=${status}`} className="cartao numero">
           <strong>{count}</strong>
