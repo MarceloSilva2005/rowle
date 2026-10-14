@@ -54,3 +54,18 @@ jobs:
           name: rowle-debug-apk
           path: apps/mobile/android/app/build/outputs/apk/debug/*.apk
           retention-days: 7
+
+  database:
+    name: Banco de dados (migrations e testes de acesso)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Subir Postgres local com as migrations
+        run: npx supabase db start
+      - name: Testes de acesso e regras
+        run: npm run test:db

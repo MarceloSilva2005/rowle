@@ -30,4 +30,5 @@ Checagens:
 npm run lint
 npm run typecheck
 npm test
+npm run test:db       # testes do banco (requer Docker)
 ```
