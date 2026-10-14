@@ -1,0 +1,35 @@
+# Dependências
+node_modules/
+
+# Builds
+.next/
+out/
+dist/
+build/
+*.tsbuildinfo
+next-env.d.ts
+
+# Expo / Android (projeto nativo gerado pelo prebuild)
+.expo/
+apps/mobile/android/
+apps/mobile/ios/
+*.apk
+*.aab
+*.keystore
+*.jks
+
+# Supabase local
+supabase/.branches/
+supabase/.temp/
+
+# Ambiente e segredos
+.env
+.env.*
+!.env.example
+
+# Sistema e editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log

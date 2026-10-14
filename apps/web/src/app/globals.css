@@ -1,0 +1,31 @@
+/* Tokens provisórios; o design system definitivo sai do marco de identidade visual. */
+:root {
+  --bg: #0b0d0c;
+  --surface: #171a18;
+  --border: #303630;
+  --brand: #c6ff36;
+  --text: #f3f5f0;
+  --text-muted: #a9b1a8;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+}

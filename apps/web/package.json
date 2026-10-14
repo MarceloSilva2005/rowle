@@ -1,0 +1,25 @@
+{
+  "name": "@rowle/web",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "typecheck": "next typegen && tsc --noEmit"
+  },
+  "dependencies": {
+    "next": "16.4.1",
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "~19.2.2",
+    "@types/react-dom": "~19.2.0",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.1",
+    "typescript": "^5"
+  }
+}
