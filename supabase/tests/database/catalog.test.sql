@@ -2,7 +2,9 @@ begin;
 create extension if not exists pgtap with schema extensions;
 select plan(22);
 
--- Fixtures (como superusuário, sem RLS)
+-- Fixtures (como superusuário, sem RLS). O catálogo começa vazio mesmo que o banco
+-- local tenha dados cadastrados à mão; o rollback do fim devolve tudo.
+truncate public.events, public.venues, public.organizations, public.audit_log cascade;
 insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-0000000000a1', 'curadoria@exemplo.test'),
   ('00000000-0000-0000-0000-0000000000a2', 'sem-papel@exemplo.test');

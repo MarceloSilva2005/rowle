@@ -67,3 +67,31 @@ export function formatPrice(price: Price): string {
       return 'Preço não informado';
   }
 }
+
+/**
+ * Converte um valor digitado em reais ("30", "30,50", "1.200,00", "R$ 25")
+ * para centavos. Devolve null se não for um valor válido.
+ */
+export function parseReaisToCents(input: string): number | null {
+  const cleaned = input.replace(/R\$/i, '').replace(/\s/g, '');
+  if (!/^\d{1,3}(\.\d{3})*(,\d{1,2})?$|^\d+(,\d{1,2})?$/.test(cleaned)) return null;
+  const value = Number(cleaned.replace(/\./g, '').replace(',', '.'));
+  return Number.isFinite(value) ? Math.round(value * 100) : null;
+}
+
+/** Monta o preço a partir das colunas da sessão no banco. */
+export function priceFromColumns(
+  kind: Price['kind'],
+  minCents: number | null,
+  maxCents: number | null,
+): Price {
+  switch (kind) {
+    case 'fixed':
+    case 'from':
+      return { kind, amountCents: minCents ?? 0 };
+    case 'range':
+      return { kind, minCents: minCents ?? 0, maxCents: maxCents ?? 0 };
+    default:
+      return { kind };
+  }
+}

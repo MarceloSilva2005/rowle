@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatPrice, InvalidPriceError } from './price';
+import { formatPrice, InvalidPriceError, parseReaisToCents, priceFromColumns } from './price';
 
 // Intl usa espaço não separável entre "R$" e o valor.
 const nb = (s: string) => s.replace(/R\$ /g, 'R$ ');
@@ -32,5 +32,28 @@ describe('formatPrice', () => {
     expect(() => formatPrice({ kind: 'range', minCents: 8000, maxCents: 5000 })).toThrow(
       InvalidPriceError,
     );
+  });
+});
+
+describe('parseReaisToCents', () => {
+  it('entende os formatos que a curadoria digita', () => {
+    expect(parseReaisToCents('30')).toBe(3000);
+    expect(parseReaisToCents('30,5')).toBe(3050);
+    expect(parseReaisToCents('R$ 25,90')).toBe(2590);
+    expect(parseReaisToCents('1.200,00')).toBe(120000);
+  });
+
+  it('recusa o que não é valor', () => {
+    expect(parseReaisToCents('')).toBeNull();
+    expect(parseReaisToCents('trinta')).toBeNull();
+    expect(parseReaisToCents('30.5')).toBeNull();
+  });
+});
+
+describe('priceFromColumns', () => {
+  it('reconstrói o preço a partir das colunas', () => {
+    expect(priceFromColumns('from', 3000, null)).toEqual({ kind: 'from', amountCents: 3000 });
+    expect(priceFromColumns('range', 2000, 5000)).toEqual({ kind: 'range', minCents: 2000, maxCents: 5000 });
+    expect(priceFromColumns('unknown', null, null)).toEqual({ kind: 'unknown' });
   });
 });

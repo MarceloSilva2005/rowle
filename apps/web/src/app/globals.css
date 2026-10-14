@@ -6,6 +6,9 @@
   --brand: #c6ff36;
   --text: #f3f5f0;
   --text-muted: #a9b1a8;
+  --surface-raised: #1f2420;
+  --warning: #ffb020;
+  --danger: #ff6b5e;
 }
 
 * {

@@ -1,4 +1,4 @@
-export { formatPrice, validatePrice, InvalidPriceError } from './price';
+export { formatPrice, validatePrice, InvalidPriceError, parseReaisToCents, priceFromColumns } from './price';
 export type { Price } from './price';
 export {
   canTransition,
@@ -9,3 +9,6 @@ export {
   STATUSES_REQUIRING_NOTE,
 } from './event-status';
 export type { EventStatus } from './event-status';
+export type { Database, Json } from './database.types';
+export { slugify } from './slug';
+export { TIME_ZONE, brasiliaLocalToIso, isoToBrasiliaLocal, formatSessionDate } from './datetime';
