@@ -3,16 +3,23 @@
   "version": "0.0.0",
   "main": "index.ts",
   "dependencies": {
+    "@expo-google-fonts/anton": "^0.4.2",
+    "@expo-google-fonts/archivo": "^0.4.2",
     "expo": "~57.0.29",
+    "expo-font": "~57.0.4",
+    "expo-splash-screen": "~57.0.10",
     "expo-status-bar": "~57.0.1",
     "react": "19.2.3",
-    "react-native": "0.86.3"
+    "react-native": "0.86.3",
+    "react-native-svg": "15.15.4",
+    "@rowle/design": "*",
+    "@rowle/core": "*"
   },
   "devDependencies": {
     "@types/react": "~19.2.2",
-    "typescript": "~6.0.3",
     "eslint": "^9",
-    "eslint-config-expo": "~57.0.2"
+    "eslint-config-expo": "~57.0.2",
+    "typescript": "~6.0.3"
   },
   "scripts": {
     "start": "expo start",

@@ -1,0 +1,22 @@
+{
+  "name": "@rowle/design",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "build:assets": "node scripts/build-assets.mjs"
+  },
+  "devDependencies": {
+    "@expo-google-fonts/anton": "^0.4.2",
+    "@expo-google-fonts/bungee": "^0.4.1",
+    "@resvg/resvg-js": "^2.6.2",
+    "@types/node": "^24",
+    "opentype.js": "^2.0.0",
+    "typescript": "~6.0.3",
+    "vitest": "^5.0.4"
+  }
+}
