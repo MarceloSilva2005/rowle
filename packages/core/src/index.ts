@@ -31,3 +31,14 @@ export {
 export type { SubmissionStatus, ReportStatus, ReportReason, SubmissionPayload } from './queues';
 export { duplicateReasons, dismissalPair, localDay } from './duplicates';
 export type { DuplicateCandidate } from './duplicates';
+export {
+  extractFromHtml,
+  extractFromText,
+  combineExtractions,
+  findDate,
+  findTimes,
+  findPrice,
+  guessCategory,
+  isTicketingUrl,
+} from './extract';
+export type { ExtractedEvent, Extraction, ExtractionOrigin } from './extract';

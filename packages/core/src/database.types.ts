@@ -59,6 +59,26 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"event_entry_timings": {
+                  Row: {
+                    "created_by": string | null,"event_id": string,"finished_at": string,"method": string,"started_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_by"?: string | null,"event_id": string,"finished_at"?: string,"method": string,"started_at": string
+                  }
+                  Update: {
+                    "created_by"?: string | null,"event_id"?: string,"finished_at"?: string,"method"?: string,"started_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "event_entry_timings_event_id_fkey"
+      columns: ["event_id"]
+isOneToOne: true
+      referencedRelation: "events"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"events": {
                   Row: {
                     "accessibility_notes": string | null,"age_rating": Database["public"]['Enums']["age_rating"] | null,"category_id": number,"cover_credit": string | null,"cover_path": string | null,"cover_rights": Database["public"]['Enums']["image_rights"] | null,"created_at": string,"created_by": string | null,"description": string | null,"id": string,"is_sponsored": boolean,"organization_id": string | null,"published_at": string | null,"slug": string,"status": Database["public"]['Enums']["event_status"],"status_note": string | null,"title": string,"updated_at": string
@@ -306,6 +326,14 @@ isOneToOne: false
             "comparable_title":
 { Args: { "t": string }; Returns: string
                            },
+"create_event_from_assistant":
+{ Args: { "p_accessibility_notes"?: string,"p_age_rating"?: Database["public"]['Enums']["age_rating"],"p_category_id": number,"p_description"?: string,"p_ends_at"?: string,"p_is_sponsored"?: boolean,"p_new_venue_address"?: string,"p_new_venue_name"?: string,"p_new_venue_region"?: number,"p_organization_id"?: string,"p_price_kind"?: Database["public"]['Enums']["price_kind"],"p_price_max_cents"?: number,"p_price_min_cents"?: number,"p_slug": string,"p_source_description"?: string,"p_source_kind"?: Database["public"]['Enums']["source_kind"],"p_source_url"?: string,"p_started_at"?: string,"p_starts_at"?: string,"p_ticket_url"?: string,"p_time_confirmed"?: boolean,"p_title": string,"p_venue_id"?: string }; Returns: string
+                           },
+"entry_time_stats":
+{ Args: Record<PropertyKey, never>; Returns: {
+              "entries": number,"median_seconds": number,"method": string
+            }[]
+                           },
 "event_transition_allowed":
 { Args: { "from_status": Database["public"]['Enums']["event_status"],"to_status": Database["public"]['Enums']["event_status"] }; Returns: boolean
                            },
@@ -323,6 +351,11 @@ isOneToOne: false
 "possible_duplicates_of_event":
 { Args: { "p_event_id": string }; Returns: {
               "event_id": string,"next_starts_at": string,"same_day": boolean,"same_venue": boolean,"status": Database["public"]['Enums']["event_status"],"strong": boolean,"title": string,"title_similarity": number
+            }[]
+                           },
+"suggest_venues":
+{ Args: { "p_name": string }; Returns: {
+              "address": string,"id": string,"name": string,"region_name": string,"similarity": number
             }[]
                            }
           }

@@ -4,12 +4,9 @@ import {
   brasiliaLocalToIso,
   canTransition,
   dismissalPair,
-  parseReaisToCents,
   requiresNote,
   slugify,
-  validatePrice,
   type EventStatus,
-  type Price,
 } from "@rowle/core";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -17,32 +14,7 @@ import { requireStaff } from "@/lib/auth";
 import { friendlyError } from "@/lib/errors";
 import { createClient } from "@/lib/supabase/server";
 import type { FormState } from "../../action-form";
-
-const text = (fd: FormData, key: string) => String(fd.get(key) ?? "").trim();
-const optional = (fd: FormData, key: string) => text(fd, key) || null;
-
-function eventFields(fd: FormData) {
-  const title = text(fd, "titulo");
-  const categoryId = Number(fd.get("categoria"));
-  const organizationId = optional(fd, "organizacao");
-  const ageRating = optional(fd, "classificacao");
-  return {
-    title,
-    category_id: categoryId,
-    organization_id: organizationId,
-    description: optional(fd, "descricao"),
-    age_rating: ageRating as "L" | "10" | "12" | "14" | "16" | "18" | null,
-    accessibility_notes: optional(fd, "acessibilidade"),
-    is_sponsored: fd.get("patrocinado") === "on",
-  };
-}
-
-function checkEventFields(fields: ReturnType<typeof eventFields>): string | null {
-  if (fields.title.length < 3) return "O título precisa de pelo menos 3 caracteres.";
-  if (fields.title.length > 140) return "O título pode ter no máximo 140 caracteres.";
-  if (!Number.isInteger(fields.category_id) || fields.category_id < 1) return "Escolha uma categoria.";
-  return null;
-}
+import { checkEventFields, entryStartedAt, eventFields, optional, priceColumns, readPrice, text } from "./form-data";
 
 export async function createEvent(_state: FormState, formData: FormData): Promise<FormState> {
   await requireStaff();
@@ -61,6 +33,9 @@ export async function createEvent(_state: FormState, formData: FormData): Promis
     .single();
   if (error || !data) return { error: friendlyError(error) };
 
+  const startedAt = entryStartedAt(formData);
+  if (startedAt) await supabase.from("event_entry_timings").insert({ event_id: data.id, method: "manual", started_at: startedAt });
+
   redirect(`/painel/eventos/${data.id}`);
 }
 
@@ -76,36 +51,6 @@ export async function updateEvent(eventId: string, _state: FormState, formData: 
 
   revalidatePath(`/painel/eventos/${eventId}`);
   return { ok: "Alterações salvas." };
-}
-
-function readPrice(formData: FormData): Price | string {
-  const kind = text(formData, "preco_tipo") as Price["kind"];
-  const min = parseReaisToCents(text(formData, "preco_min"));
-  const max = parseReaisToCents(text(formData, "preco_max"));
-  let price: Price;
-  switch (kind) {
-    case "fixed":
-    case "from":
-      if (min === null) return "Informe o valor em reais (ex.: 30 ou 30,50).";
-      price = { kind, amountCents: min };
-      break;
-    case "range":
-      if (min === null || max === null) return "Informe o menor e o maior valor da faixa.";
-      price = { kind, minCents: min, maxCents: max };
-      break;
-    case "free":
-    case "on_request":
-    case "unknown":
-      price = { kind };
-      break;
-    default:
-      return "Escolha o tipo de preço.";
-  }
-  try {
-    return validatePrice(price);
-  } catch (e) {
-    return e instanceof Error ? e.message : "Preço inválido.";
-  }
 }
 
 export async function addSession(eventId: string, _state: FormState, formData: FormData): Promise<FormState> {
@@ -137,9 +82,7 @@ export async function addSession(eventId: string, _state: FormState, formData: F
     starts_at: startsAt,
     ends_at: endsAt,
     time_confirmed: formData.get("horario_confirmado") === "on",
-    price_kind: price.kind,
-    price_min_cents: "amountCents" in price ? price.amountCents : "minCents" in price ? price.minCents : null,
-    price_max_cents: "maxCents" in price ? price.maxCents : null,
+    ...priceColumns(price),
     ticket_url: ticketUrl,
   });
   if (error) return { error: friendlyError(error) };

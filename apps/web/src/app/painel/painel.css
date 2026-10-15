@@ -359,3 +359,43 @@
 .lista-duplicatas .acoes {
   margin-top: 0;
 }
+
+.painel h3 {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.painel fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.painel legend {
+  font-family: var(--font-display), sans-serif;
+  font-size: 22px;
+  margin-bottom: 12px;
+  padding: 0;
+}
+
+.origem {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--brand);
+  border: 1px solid var(--brand);
+}
+
+.avisos {
+  display: grid;
+  gap: 6px;
+  padding-left: 18px;
+}
+
+.aviso-forte {
+  color: var(--danger);
+  font-weight: 700;
+}

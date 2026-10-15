@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Suspense } from "react";
 import { requireStaff } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
@@ -10,7 +11,8 @@ export default function NovoEventoPage() {
     <>
       <h1>Novo evento</h1>
       <p className="muted">
-        O evento nasce como rascunho. Depois você adiciona sessões e a fonte, envia para revisão e publica.
+        O evento nasce como rascunho. Depois você adiciona sessões e a fonte, envia para revisão e publica. Tem o link ou o
+        texto da divulgação? O <Link href="/painel/eventos/assistente">assistente</Link> preenche quase tudo sozinho.
       </p>
       <Suspense fallback={<p className="muted">Carregando…</p>}>
         <NewEventForm />
@@ -29,6 +31,7 @@ async function NewEventForm() {
   return (
     <section className="cartao">
       <ActionForm action={createEvent} submitLabel="Criar rascunho" pendingLabel="Criando…">
+        <input type="hidden" name="inicio_cadastro" value={new Date().toISOString()} />
         <EventFields categories={categories ?? []} organizations={organizations ?? []} withSlug />
       </ActionForm>
     </section>
