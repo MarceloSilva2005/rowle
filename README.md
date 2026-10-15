@@ -31,4 +31,5 @@ npm run lint
 npm run typecheck
 npm test
 npm run test:db       # testes do banco (requer Docker)
+npm run test:e2e      # painel no navegador (requer o Supabase local; na primeira vez: npx -w @rowle/web playwright install chromium)
 ```
