@@ -5,13 +5,17 @@ import { createClient } from "@/lib/supabase/server";
 import { ActionForm } from "../../action-form";
 import { createOrganization } from "./actions";
 import { ContactFields, OrganizationFields } from "./organization-fields";
+import { Carregando, EstadoVazio } from "../../ui";
 
 export default function OrganizacoesPage() {
   return (
     <>
-      <h1>Organizações</h1>
-      <p className="muted">Produtoras, coletivos e casas que organizam os eventos.</p>
-      <Suspense fallback={<p className="muted">Carregando…</p>}>
+      <div className="cabecalho-pagina">
+        <div>
+          <h1>Organizações</h1>
+        </div>
+      </div>
+      <Suspense fallback={<Carregando />}>
         <Organizations />
       </Suspense>
     </>
@@ -35,7 +39,7 @@ async function Organizations() {
             <OrganizationFields />
           </div>
           <details style={{ marginTop: 16 }}>
-            <summary>Contato interno (opcional, só a equipe vê)</summary>
+            <summary>Contato (só a equipe vê)</summary>
             <div className="grade-campos" style={{ marginTop: 12 }}>
               <ContactFields />
             </div>
@@ -71,7 +75,7 @@ async function Organizations() {
             </table>
           </div>
         ) : (
-          <p className="muted">Nenhuma organização cadastrada ainda.</p>
+          <EstadoVazio titulo="Nenhuma organização ainda." />
         )}
       </section>
     </>

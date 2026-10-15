@@ -5,16 +5,20 @@ import { createClient } from "@/lib/supabase/server";
 import { ActionForm } from "../../../action-form";
 import { createEvent } from "../actions";
 import { EventFields } from "../event-fields";
+import { Carregando } from "../../../ui";
 
 export default function NovoEventoPage() {
   return (
     <>
-      <h1>Novo evento</h1>
-      <p className="muted">
-        O evento nasce como rascunho. Depois você adiciona sessões e a fonte, envia para revisão e publica. Tem o link ou o
-        texto da divulgação? O <Link href="/painel/eventos/assistente">assistente</Link> preenche quase tudo sozinho.
-      </p>
-      <Suspense fallback={<p className="muted">Carregando…</p>}>
+      <div className="cabecalho-pagina">
+        <div>
+          <h1>Novo evento</h1>
+          <p className="muted">
+            Tem o link ou o post? <Link href="/painel/eventos/assistente">Use o assistente</Link>.
+          </p>
+        </div>
+      </div>
+      <Suspense fallback={<Carregando />}>
         <NewEventForm />
       </Suspense>
     </>

@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { futureLocal, publicRows, signIn, uniqueId, statusForm } from "./helpers";
+import { futureLocal, publicRows, signIn, statusPanel, uniqueId } from "./helpers";
 
 test.describe("acesso ao painel", () => {
   test("visitante sem login vai para a tela de entrada", async ({ page }) => {
@@ -12,7 +12,7 @@ test.describe("acesso ao painel", () => {
     await page.locator("[name=email]").fill("curadoria@rowle.test");
     await page.locator("[name=senha]").fill("senha-errada");
     await page.getByRole("button", { name: "Entrar" }).click();
-    await expect(page.getByRole("alert").filter({ hasText: "E-mail" })).toHaveText("E-mail ou senha incorretos.");
+    await expect(page.getByRole("alert").filter({ hasText: "E-mail" })).toHaveText("E-mail ou senha não conferem.");
     await expect(page).toHaveURL(/\/painel\/entrar/);
   });
 });
@@ -72,13 +72,14 @@ test("cadastra, revisa, publica e cancela um evento sem SQL", async ({ page }) =
   expect(visible).toEqual([expect.objectContaining({ title, price_min_cents: 3000 })]);
 
   // Cancelamento com motivo
-  await page.getByRole("button", { name: "Cancelar evento" }).click();
+  const cancel = statusPanel(page, "Cancelar…");
+  await cancel.locator("summary").click();
+  await cancel.getByRole("button", { name: "Cancelar evento" }).click();
   await expect(page.locator(".selo").first()).toHaveText("Publicado");
-  const cancel = statusForm(page, "Cancelar evento");
   await cancel.locator("[name=motivo]").fill("Produção cancelou por causa da chuva.");
   await cancel.getByRole("button", { name: "Cancelar evento" }).click();
   await expect(page.locator(".selo").first()).toHaveText("Cancelado");
-  await expect(page.getByText("Motivo registrado: Produção cancelou por causa da chuva.")).toBeVisible();
+  await expect(page.getByText("Motivo: Produção cancelou por causa da chuva.")).toBeVisible();
   await expect(page.getByText("Publicado → Cancelado")).toBeVisible();
 
   // Sai da descoberta, mas continua consultável com o aviso de cancelamento.

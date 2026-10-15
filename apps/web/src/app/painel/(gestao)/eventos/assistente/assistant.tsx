@@ -1,6 +1,6 @@
 "use client";
 
-import { formatPrice, type ExtractedEvent, type Extraction } from "@rowle/core";
+import type { ExtractedEvent, Extraction } from "@rowle/core";
 import { useActionState, useState } from "react";
 import { DuplicateList } from "../duplicates";
 import { EventFields } from "../event-fields";
@@ -32,15 +32,21 @@ export function Assistant({ startedAt, ...lists }: Lists & { startedAt: string }
   return (
     <>
       <section className="cartao" aria-labelledby="passo-1">
-        <h2 id="passo-1">1. Cole a divulgação</h2>
+        <h2 id="passo-1">Divulgação</h2>
         <form action={readAction} className="grade-campos">
           <label className="campo campo-largo">
-            Link oficial <small>página do evento, da bilheteria ou do local (https://)</small>
+            Link
             <input name="link" type="url" placeholder="https://" defaultValue={read.link} />
           </label>
           <label className="campo campo-largo">
-            Texto da divulgação <small>legenda do post, mensagem do produtor, release…</small>
-            <textarea name="texto" maxLength={10000} rows={6} defaultValue={read.text} />
+            Texto
+            <textarea
+              name="texto"
+              maxLength={10000}
+              rows={6}
+              defaultValue={read.text}
+              placeholder="Legenda do post, mensagem do produtor…"
+            />
           </label>
           <div className="acoes campo-largo">
             <button type="submit" className="botao" disabled={reading}>
@@ -73,32 +79,24 @@ function Review({ read, extraction, startedAt, categories, organizations, venues
     best && best.similarity >= 0.5 ? best.id : data.venueName ? "novo" : "",
   );
   const price = data.price;
-  const found = Object.keys(origins).length;
 
   const origin = (key: keyof ExtractedEvent) =>
-    origins[key] ? <small className="origem">lido {origins[key] === "página" ? "da página" : "do texto"}</small> : null;
+    origins[key] ? <small className="origem">{origins[key] === "página" ? "da página" : "do texto"}</small> : null;
 
   return (
     <>
       <section className="cartao" aria-labelledby="leitura">
-        <h2 id="leitura">2. Confira o que foi lido</h2>
+        <h2 id="leitura">Confira</h2>
         <ul className="avisos">
-          {read.pageError ? <li>Não consegui usar o link: {read.pageError} Os campos vieram só do texto.</li> : null}
-          {data.cancelled ? <li className="aviso-forte">A página diz que este evento foi cancelado ou adiado.</li> : null}
-          {!data.startsAtLocal ? <li>Não encontrei a data. Sem data, o rascunho é criado sem sessão.</li> : null}
-          {data.startsAtLocal && data.timeConfirmed === false ? <li>Achei a data, mas não o horário: confira na fonte.</li> : null}
-          {!price ? <li>Não encontrei o preço; ele fica como “não informado”, nunca como gratuito.</li> : null}
-          <li>
-            {found} {found === 1 ? "campo preenchido" : "campos preenchidos"} automaticamente. Tudo é sugestão: confira na fonte
-            oficial antes de publicar.
-          </li>
+          {read.pageError ? <li>O link não abriu: {read.pageError}</li> : null}
+          {data.cancelled ? <li className="aviso-forte">A página diz que o evento foi cancelado ou adiado.</li> : null}
+          {!data.startsAtLocal ? <li>Sem data: o rascunho fica sem sessão.</li> : null}
+          {data.startsAtLocal && data.timeConfirmed === false ? <li>Horário não encontrado.</li> : null}
+          {!price ? <li>Preço não encontrado.</li> : null}
         </ul>
         {read.duplicates?.length ? (
           <div className="cartao cartao-aviso" style={{ marginTop: 16 }}>
-            <h3>Pode já estar no catálogo</h3>
-            <p className="muted" style={{ marginBottom: 12 }}>
-              Se for o mesmo rolê, abra o evento existente e complete por lá em vez de criar outro.
-            </p>
+            <h3>Parecidos no catálogo</h3>
             <DuplicateList candidates={read.duplicates} />
           </div>
         ) : null}
@@ -120,7 +118,7 @@ function Review({ read, extraction, startedAt, categories, organizations, venues
           />
           {data.organizerName && !read.organizationId ? (
             <p className="muted" style={{ marginTop: 8 }}>
-              Produção citada: “{data.organizerName}” (não está nas organizações cadastradas).
+              Organização no texto: {data.organizerName} (não cadastrada)
             </p>
           ) : null}
         </div>
@@ -149,7 +147,7 @@ function Review({ read, extraction, startedAt, categories, organizations, venues
                     </option>
                   ))}
               </optgroup>
-              <option value="novo">+ Cadastrar novo local</option>
+              <option value="novo">+ Novo local</option>
             </select>
           </label>
           {venueChoice === "novo" ? (
@@ -182,7 +180,7 @@ function Review({ read, extraction, startedAt, categories, organizations, venues
             <input name="inicio" type="datetime-local" defaultValue={data.startsAtLocal} required={Boolean(venueChoice)} />
           </label>
           <label className="campo">
-            Término {origin("endsAtLocal")} <small>(opcional)</small>
+            Término {origin("endsAtLocal")} <small>opcional</small>
             <input name="fim" type="datetime-local" defaultValue={data.endsAtLocal} />
           </label>
           <label className="campo-check">
@@ -199,10 +197,9 @@ function Review({ read, extraction, startedAt, categories, organizations, venues
               <option value="range">Faixa de preço</option>
               <option value="on_request">Sob consulta</option>
             </select>
-            {price ? <small>Lido: {formatPrice(price)}</small> : null}
           </label>
           <label className="campo">
-            Valor (ou mínimo) <small>em reais</small>
+            Valor (R$)
             <input
               name="preco_min"
               inputMode="decimal"
@@ -210,11 +207,11 @@ function Review({ read, extraction, startedAt, categories, organizations, venues
             />
           </label>
           <label className="campo">
-            Valor máximo <small>só para faixa</small>
+            Valor máximo (R$)
             <input name="preco_max" inputMode="decimal" defaultValue={reais(price && "maxCents" in price ? price.maxCents : undefined)} />
           </label>
           <label className="campo campo-largo">
-            Link oficial de ingresso {origin("ticketUrl")} <small>(opcional, https://)</small>
+            Link do ingresso {origin("ticketUrl")} <small>opcional</small>
             <input name="ingresso" type="url" defaultValue={data.ticketUrl} placeholder="https://" />
           </label>
         </fieldset>
@@ -236,8 +233,13 @@ function Review({ read, extraction, startedAt, categories, organizations, venues
             <input name="fonte_url" type="url" defaultValue={data.sourceUrl} placeholder="https://" />
           </label>
           <label className="campo campo-largo">
-            Descrição <small>(se não houver link: de onde veio a informação)</small>
-            <input name="fonte_descricao" maxLength={1000} defaultValue={data.sourceUrl ? "" : "Texto de divulgação colado no assistente"} />
+            De onde veio <small>se não tiver link</small>
+            <input
+              name="fonte_descricao"
+              maxLength={1000}
+              placeholder="Ex.: cartaz no local, mensagem do produtor"
+              defaultValue={data.sourceUrl ? "" : "Texto colado no assistente"}
+            />
           </label>
         </fieldset>
 

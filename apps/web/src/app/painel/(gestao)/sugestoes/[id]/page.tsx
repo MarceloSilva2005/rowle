@@ -15,19 +15,21 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { requireStaff } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
+import { AcaoComMotivo } from "../../../acao-com-motivo";
 import { ActionForm } from "../../../action-form";
 import { DuplicateList } from "../../eventos/duplicates";
 import { changeSubmissionStatus, createDraftFromSubmission } from "../actions";
+import { Carregando } from "../../../ui";
 
 const ACTION_LABELS: Partial<Record<SubmissionStatus, string>> = {
   in_review: "Começar análise",
-  needs_info: "Pedir mais informações",
-  rejected: "Recusar",
+  needs_info: "Pedir informações…",
+  rejected: "Recusar…",
 };
 
 export default function SugestaoPage({ params }: PageProps<"/painel/sugestoes/[id]">) {
   return (
-    <Suspense fallback={<p className="muted">Carregando sugestão…</p>}>
+    <Suspense fallback={<Carregando texto="Carregando sugestão…" />}>
       <SubmissionDetail params={params} />
     </Suspense>
   );
@@ -58,7 +60,7 @@ async function SubmissionDetail({ params }: { params: PageProps<"/painel/sugesto
   return (
     <>
       <div style={{ display: "grid", gap: 8 }}>
-        <Link href="/painel/sugestoes" className="muted">
+        <Link href="/painel/sugestoes" className="voltar">
           ← Sugestões
         </Link>
         <h1>{payload.title ?? `Sugestão ${submission.protocol}`}</h1>
@@ -85,26 +87,25 @@ async function SubmissionDetail({ params }: { params: PageProps<"/painel/sugesto
             <dd>{submission.contact_email ?? <span className="muted">Não informado</span>}</dd>
           </dl>
         ) : (
-          <p className="muted">A sugestão chegou sem campos reconhecíveis.</p>
+          <p className="muted">Sugestão sem dados.</p>
         )}
         <p className="muted" style={{ marginTop: 16 }}>
-          Confira tudo numa fonte oficial antes de publicar. Links enviados aqui não foram verificados.
+          Links não verificados.
         </p>
       </section>
 
       {isOpen && payload.title ? (
         <section className={duplicates.length ? "cartao cartao-aviso" : "cartao"} aria-labelledby="duplicatas">
-          <h2 id="duplicatas">{duplicates.length ? "Já pode estar no catálogo" : "Duplicatas"}</h2>
+          <h2 id="duplicatas">{duplicates.length ? "Parecidos no catálogo" : "Duplicatas"}</h2>
           {duplicates.length ? (
             <>
               <p className="muted" style={{ marginBottom: 12 }}>
-                Antes de aceitar, veja se algum destes é o mesmo rolê. Se for, complete o evento existente e recuse a sugestão
-                explicando que ele já está no app.
+                Se for o mesmo rolê, complete o existente e recuse esta.
               </p>
               <DuplicateList candidates={duplicates} />
             </>
           ) : (
-            <p className="muted">Nenhum evento parecido no catálogo.</p>
+            <p className="muted">Nenhum parecido.</p>
           )}
         </section>
       ) : null}
@@ -113,7 +114,7 @@ async function SubmissionDetail({ params }: { params: PageProps<"/painel/sugesto
         <h2 id="situacao">Situação</h2>
         {submission.public_note ? (
           <p>
-            <span className="muted">Mensagem atual para o produtor:</span> {submission.public_note}
+            <span className="muted">Mensagem para o produtor:</span> {submission.public_note}
           </p>
         ) : null}
         {submission.event_id ? (
@@ -122,27 +123,34 @@ async function SubmissionDetail({ params }: { params: PageProps<"/painel/sugesto
           </p>
         ) : null}
         {SUBMISSION_TRANSITIONS[status].length ? (
-          <div style={{ display: "grid", gap: 16 }}>
+          <div className="acoes-situacao">
             <ActionForm
               action={createDraftFromSubmission.bind(null, submission.id)}
               submitLabel="Aceitar e criar rascunho"
               pendingLabel="Criando…"
             />
-            {nextStatuses.map((to) => (
-              <ActionForm
-                key={to}
-                action={changeSubmissionStatus.bind(null, submission.id, status, to)}
-                submitLabel={ACTION_LABELS[to] ?? SUBMISSION_STATUS_LABELS[to]}
-                variant={to === "rejected" ? "perigo" : "secundario"}
-              >
-                {SUBMISSION_STATUSES_REQUIRING_NOTE.includes(to) ? (
-                  <label className="campo">
-                    Mensagem para o produtor <small>(obrigatória; aparece na consulta do protocolo)</small>
-                    <input name="nota" maxLength={1000} required />
-                  </label>
-                ) : null}
-              </ActionForm>
-            ))}
+            {nextStatuses.map((to) =>
+              SUBMISSION_STATUSES_REQUIRING_NOTE.includes(to) ? (
+                <AcaoComMotivo
+                  key={to}
+                  label={ACTION_LABELS[to] ?? SUBMISSION_STATUS_LABELS[to]}
+                  confirmLabel={to === "rejected" ? "Recusar sugestão" : "Enviar pedido"}
+                  action={changeSubmissionStatus.bind(null, submission.id, status, to)}
+                  fieldName="nota"
+                  fieldLabel="Mensagem para o produtor"
+                  hint="o produtor vê ao consultar o protocolo"
+                  maxLength={1000}
+                  variant={to === "rejected" ? "perigo" : "secundario"}
+                />
+              ) : (
+                <ActionForm
+                  key={to}
+                  action={changeSubmissionStatus.bind(null, submission.id, status, to)}
+                  submitLabel={ACTION_LABELS[to] ?? SUBMISSION_STATUS_LABELS[to]}
+                  variant="secundario"
+                />
+              ),
+            )}
           </div>
         ) : (
           <p className="muted">Sugestão encerrada.</p>

@@ -2,16 +2,18 @@ import { Suspense } from "react";
 import { requireStaff } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { Assistant } from "./assistant";
+import { Carregando } from "../../../ui";
 
 export default function AssistentePage() {
   return (
     <>
-      <h1>Assistente de cadastro</h1>
-      <p className="muted">
-        Cole o link oficial e/ou o texto da divulgação. O assistente lê data, horário, local, preço e links e monta o rascunho
-        para você conferir. Nada é publicado sem revisão.
-      </p>
-      <Suspense fallback={<p className="muted">Carregando…</p>}>
+      <div className="cabecalho-pagina">
+        <div>
+          <h1>Assistente de cadastro</h1>
+          <p className="muted">Cole o link ou o texto do post e confira o que for preenchido.</p>
+        </div>
+      </div>
+      <Suspense fallback={<Carregando />}>
         <AssistantLoader />
       </Suspense>
     </>

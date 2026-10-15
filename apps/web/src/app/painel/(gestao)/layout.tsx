@@ -1,8 +1,9 @@
-import { symbolSvg } from "@rowle/design";
+import { logoSvg } from "@rowle/design";
 import Link from "next/link";
 import { Suspense } from "react";
 import { requireStaff } from "@/lib/auth";
 import { signOut } from "../(sessao)/entrar/actions";
+import { NavLinks, PainelNav } from "./nav";
 
 const asImage = (svg: string) => `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 
@@ -10,27 +11,26 @@ export default function GestaoLayout({ children }: LayoutProps<"/painel">) {
   return (
     <>
       <header className="painel-topo">
-        <Link href="/painel" aria-label="Início do painel">
-          {/* eslint-disable-next-line @next/next/no-img-element -- SVG estático da marca */}
-          <img src={asImage(symbolSvg)} alt="" width={34} height={38} />
-        </Link>
-        <nav aria-label="Painel">
-          <Link href="/painel/eventos">Eventos</Link>
-          <Link href="/painel/eventos/assistente">Assistente</Link>
-          <Link href="/painel/eventos/novo">Novo evento</Link>
-          <Link href="/painel/sugestoes">Sugestões</Link>
-          <Link href="/painel/denuncias">Denúncias</Link>
-          <Link href="/painel/locais">Locais</Link>
-          <Link href="/painel/organizacoes">Organizações</Link>
-        </nav>
-        <Suspense fallback={<span className="muted">…</span>}>
-          <StaffBadge />
-        </Suspense>
-        <form action={signOut}>
-          <button type="submit" className="botao botao-secundario">
-            Sair
-          </button>
-        </form>
+        <div className="painel-topo-linha">
+          <Link href="/painel" className="painel-marca" aria-label="Rowlê · início do painel">
+            {/* eslint-disable-next-line @next/next/no-img-element -- SVG estático da marca */}
+            <img src={asImage(logoSvg)} alt="" width={96} height={30} />
+            <span className="etiqueta-fita">Curadoria</span>
+          </Link>
+          <Suspense fallback={<NavLinks />}>
+            <PainelNav />
+          </Suspense>
+          <div className="painel-conta">
+            <Suspense fallback={<span className="muted">…</span>}>
+              <StaffBadge />
+            </Suspense>
+            <form action={signOut}>
+              <button type="submit" className="botao botao-fantasma">
+                Sair
+              </button>
+            </form>
+          </div>
+        </div>
       </header>
       <main className="painel-conteudo">{children}</main>
     </>

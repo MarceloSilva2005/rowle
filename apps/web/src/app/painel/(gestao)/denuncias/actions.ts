@@ -15,9 +15,9 @@ export async function changeReportStatus(
   formData: FormData,
 ): Promise<FormState> {
   const staff = await requireStaff();
-  if (!canChangeReport(from, to)) return { error: "Essa mudança de situação não é permitida." };
+  if (!canChangeReport(from, to)) return { error: "Essa mudança não é permitida." };
   const note = String(formData.get("nota") ?? "").trim() || null;
-  if (reportRequiresNote(to) && !note) return { error: "Registre o que foi feito com a denúncia." };
+  if (reportRequiresNote(to) && !note) return { error: "Escreva o que foi feito." };
 
   const closing = reportRequiresNote(to);
   const supabase = await createClient();

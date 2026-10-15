@@ -14,9 +14,9 @@ export async function createVenue(_state: FormState, formData: FormData): Promis
   const regionId = Number(formData.get("regiao"));
   const accessibility = String(formData.get("acessibilidade") ?? "").trim();
 
-  if (name.length < 2) return { error: "Informe o nome do local." };
-  if (address.length < 5) return { error: "Informe o endereço completo." };
-  if (!Number.isInteger(regionId) || regionId < 1) return { error: "Escolha a região administrativa." };
+  if (name.length < 2) return { error: "Preencha o nome do local." };
+  if (address.length < 5) return { error: "Preencha o endereço." };
+  if (!Number.isInteger(regionId) || regionId < 1) return { error: "Escolha a região." };
 
   const supabase = await createClient();
   const { error } = await supabase.from("venues").insert({

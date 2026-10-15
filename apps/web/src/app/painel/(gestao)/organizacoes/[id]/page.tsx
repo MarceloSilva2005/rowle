@@ -7,10 +7,11 @@ import { createClient } from "@/lib/supabase/server";
 import { ActionForm } from "../../../action-form";
 import { saveContact, updateOrganization } from "../actions";
 import { ContactFields, OrganizationFields } from "../organization-fields";
+import { Carregando } from "../../../ui";
 
 export default function OrganizacaoPage({ params, searchParams }: PageProps<"/painel/organizacoes/[id]">) {
   return (
-    <Suspense fallback={<p className="muted">Carregando organização…</p>}>
+    <Suspense fallback={<Carregando texto="Carregando organização…" />}>
       <OrganizationDetail params={params} searchParams={searchParams} />
     </Suspense>
   );
@@ -34,7 +35,7 @@ async function OrganizationDetail({
   return (
     <>
       <div style={{ display: "grid", gap: 8 }}>
-        <Link href="/painel/organizacoes" className="muted">
+        <Link href="/painel/organizacoes" className="voltar">
           ← Organizações
         </Link>
         <h1>{organization.name}</h1>
@@ -51,7 +52,7 @@ async function OrganizationDetail({
       ) : null}
 
       <section className="cartao" aria-labelledby="dados">
-        <h2 id="dados">Dados públicos</h2>
+        <h2 id="dados">Dados</h2>
         <ActionForm action={updateOrganization.bind(null, organization.id)} submitLabel="Salvar alterações">
           <div className="grade-campos">
             <OrganizationFields defaults={organization} />
@@ -66,8 +67,7 @@ async function OrganizationDetail({
       </section>
 
       <section className="cartao" aria-labelledby="contato">
-        <h2 id="contato">Contato interno</h2>
-        <p className="muted">Só a equipe vê. Não aparece no app nem no site.</p>
+        <h2 id="contato">Contato (só a equipe vê)</h2>
         <ActionForm action={saveContact.bind(null, organization.id)} submitLabel="Salvar contato">
           <div className="grade-campos" style={{ marginTop: 12 }}>
             <ContactFields defaults={contact ?? {}} />
@@ -87,7 +87,7 @@ async function OrganizationDetail({
             ))}
           </ul>
         ) : (
-          <p className="muted">Nenhum evento ligado a esta organização.</p>
+          <p className="muted">Nenhum evento.</p>
         )}
       </section>
     </>

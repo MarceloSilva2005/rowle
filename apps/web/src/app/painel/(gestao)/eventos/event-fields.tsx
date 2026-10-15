@@ -32,8 +32,8 @@ export function EventFields({
       </label>
       {withSlug ? (
         <label className="campo campo-largo">
-          Endereço (slug) <small>opcional: se ficar vazio, é gerado a partir do título</small>
-          <input name="slug" maxLength={80} pattern="[a-z0-9]+(-[a-z0-9]+)*" placeholder="ex.: samba-na-laje" />
+          Endereço na web <small>opcional</small>
+          <input name="slug" maxLength={80} pattern="[a-z0-9]+(-[a-z0-9]+)*" placeholder="gerado a partir do título" />
         </label>
       ) : null}
       <label className="campo">
@@ -50,7 +50,7 @@ export function EventFields({
         </select>
       </label>
       <label className="campo">
-        Organização <small>(opcional)</small>
+        Organização
         <select name="organizacao" defaultValue={defaults.organization_id ?? ""}>
           <option value="">Sem organização</option>
           {organizations.map((o) => (
@@ -72,16 +72,16 @@ export function EventFields({
         </select>
       </label>
       <label className="campo campo-largo">
-        Descrição <small>português natural, sem exagero publicitário</small>
+        Descrição
         <textarea name="descricao" maxLength={5000} defaultValue={defaults.description ?? ""} />
       </label>
       <label className="campo campo-largo">
-        Acessibilidade <small>(opcional)</small>
+        Acessibilidade <small>opcional</small>
         <input name="acessibilidade" maxLength={500} defaultValue={defaults.accessibility_notes ?? ""} />
       </label>
       <label className="campo-check campo-largo">
         <input type="checkbox" name="patrocinado" defaultChecked={defaults.is_sponsored ?? false} />
-        Conteúdo patrocinado (aparece sinalizado no app)
+        Patrocinado
       </label>
     </div>
   );

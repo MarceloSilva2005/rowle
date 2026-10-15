@@ -12,21 +12,30 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { requireStaff } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
+import { AcaoComMotivo } from "../../../acao-com-motivo";
 import { ActionForm } from "../../../action-form";
 import { addSession, addSource, changeStatus, removeSession, updateEvent } from "../actions";
 import { DuplicateList } from "../duplicates";
 import { EventFields } from "../event-fields";
+import { Carregando } from "../../../ui";
 
 const ACTION_LABELS: Record<EventStatus, string> = {
   draft: "Voltar para rascunho",
   in_review: "Enviar para revisão",
   changes_requested: "Pedir correção",
   published: "Publicar",
-  rejected: "Rejeitar",
-  postponed: "Marcar como adiado",
-  cancelled: "Cancelar evento",
-  suspended: "Suspender",
+  rejected: "Rejeitar…",
+  postponed: "Adiar…",
+  cancelled: "Cancelar…",
+  suspended: "Suspender…",
   archived: "Arquivar",
+};
+
+const CONFIRM_LABELS: Partial<Record<EventStatus, string>> = {
+  rejected: "Rejeitar evento",
+  postponed: "Adiar evento",
+  cancelled: "Cancelar evento",
+  suspended: "Suspender evento",
 };
 
 const SOURCE_KINDS: Record<string, string> = {
@@ -47,7 +56,7 @@ const SESSION_STATUS: Record<string, string> = {
 
 export default function EventoPage({ params }: PageProps<"/painel/eventos/[id]">) {
   return (
-    <Suspense fallback={<p className="muted">Carregando evento…</p>}>
+    <Suspense fallback={<Carregando texto="Carregando evento…" />}>
       <EventDetail params={params} />
     </Suspense>
   );
@@ -94,7 +103,7 @@ async function EventDetail({ params }: { params: PageProps<"/painel/eventos/[id]
   return (
     <>
       <div style={{ display: "grid", gap: 8 }}>
-        <Link href="/painel/eventos" className="muted">
+        <Link href="/painel/eventos" className="voltar">
           ← Eventos
         </Link>
         <h1>{event.title}</h1>
@@ -102,15 +111,14 @@ async function EventDetail({ params }: { params: PageProps<"/painel/eventos/[id]
           <span className={`selo selo-${status}`}>{EVENT_STATUS_LABELS[status]}</span>
           <span className="muted">/{event.slug}</span>
         </div>
-        {event.status_note ? <p className="muted">Motivo registrado: {event.status_note}</p> : null}
+        {event.status_note ? <p className="muted">Motivo: {event.status_note}</p> : null}
       </div>
 
       {duplicates?.length ? (
         <section className="cartao cartao-aviso" aria-labelledby="duplicatas">
           <h2 id="duplicatas">Pode ser duplicata</h2>
           <p className="muted" style={{ marginBottom: 12 }}>
-            Estes eventos parecem ser o mesmo rolê. Confira antes de publicar: se for o mesmo, complete um deles e arquive o
-            outro.
+            Se for o mesmo rolê, complete um e arquive o outro.
           </p>
           <DuplicateList candidates={duplicates} eventId={event.id} />
         </section>
@@ -119,28 +127,38 @@ async function EventDetail({ params }: { params: PageProps<"/painel/eventos/[id]
       <section className="cartao" aria-labelledby="situacao">
         <h2 id="situacao">Situação</h2>
         {nextStatuses.length ? (
-          <div style={{ display: "grid", gap: 16 }}>
+          <>
             {status === "in_review" ? (
-              <p className="muted">Para publicar, o evento precisa de pelo menos uma sessão e uma fonte.</p>
+              <p className="muted" style={{ marginBottom: 14 }}>
+                Para publicar, precisa de uma sessão e uma fonte.
+              </p>
             ) : null}
-            {nextStatuses.map((to) => (
-              <ActionForm
-                key={to}
-                action={changeStatus.bind(null, event.id, status, to)}
-                submitLabel={ACTION_LABELS[to]}
-                variant={to === "published" || to === "in_review" ? "primario" : to === "archived" || to === "draft" ? "secundario" : "perigo"}
-              >
-                {requiresNote(to) ? (
-                  <label className="campo">
-                    Motivo <small>(obrigatório; aparece para o público ou para o produtor)</small>
-                    <input name="motivo" maxLength={500} required />
-                  </label>
-                ) : null}
-              </ActionForm>
-            ))}
-          </div>
+            <div className="acoes-situacao">
+              {nextStatuses.map((to) =>
+                requiresNote(to) ? (
+                  <AcaoComMotivo
+                    key={to}
+                    label={ACTION_LABELS[to]}
+                    confirmLabel={CONFIRM_LABELS[to] ?? "Confirmar"}
+                    action={changeStatus.bind(null, event.id, status, to)}
+                    fieldName="motivo"
+                    fieldLabel="Motivo"
+                    hint="aparece no app"
+                    maxLength={500}
+                  />
+                ) : (
+                  <ActionForm
+                    key={to}
+                    action={changeStatus.bind(null, event.id, status, to)}
+                    submitLabel={ACTION_LABELS[to]}
+                    variant={to === "published" || to === "in_review" ? "primario" : "secundario"}
+                  />
+                ),
+              )}
+            </div>
+          </>
         ) : (
-          <p className="muted">Evento arquivado: não há próximas mudanças.</p>
+          <p className="muted">Evento arquivado.</p>
         )}
       </section>
 
@@ -186,7 +204,7 @@ async function EventDetail({ params }: { params: PageProps<"/painel/eventos/[id]
             </table>
           </div>
         ) : (
-          <p className="muted">Nenhuma sessão ainda.</p>
+          <p className="muted">Nenhuma sessão.</p>
         )}
 
         <h2 style={{ marginTop: 24 }}>Adicionar sessão</h2>
@@ -211,7 +229,7 @@ async function EventDetail({ params }: { params: PageProps<"/painel/eventos/[id]
                 <input name="inicio" type="datetime-local" required />
               </label>
               <label className="campo">
-                Término <small>(opcional)</small>
+                Término <small>opcional</small>
                 <input name="fim" type="datetime-local" />
               </label>
               <label className="campo-check">
@@ -230,15 +248,15 @@ async function EventDetail({ params }: { params: PageProps<"/painel/eventos/[id]
                 </select>
               </label>
               <label className="campo">
-                Valor (ou mínimo) <small>em reais, ex.: 30,00</small>
-                <input name="preco_min" inputMode="decimal" />
+                Valor (R$)
+                <input name="preco_min" inputMode="decimal" placeholder="30,00" />
               </label>
               <label className="campo">
-                Valor máximo <small>só para faixa</small>
+                Valor máximo (R$)
                 <input name="preco_max" inputMode="decimal" />
               </label>
               <label className="campo campo-largo">
-                Link oficial de ingresso <small>(opcional, https://)</small>
+                Link do ingresso <small>opcional</small>
                 <input name="ingresso" type="url" placeholder="https://" />
               </label>
             </div>
@@ -270,7 +288,7 @@ async function EventDetail({ params }: { params: PageProps<"/painel/eventos/[id]
             ))}
           </ul>
         ) : (
-          <p className="muted">Nenhuma fonte registrada. Sem fonte, o evento não pode ser publicado.</p>
+          <p className="muted">Nenhuma fonte. Sem fonte não dá para publicar.</p>
         )}
         <ActionForm action={addSource.bind(null, event.id)} submitLabel="Registrar fonte">
           <div className="grade-campos" style={{ marginTop: 12 }}>
@@ -289,8 +307,8 @@ async function EventDetail({ params }: { params: PageProps<"/painel/eventos/[id]
               <input name="fonte_url" type="url" placeholder="https://" />
             </label>
             <label className="campo campo-largo">
-              Descrição <small>(se não houver link: de onde veio a informação)</small>
-              <input name="fonte_descricao" maxLength={1000} />
+              De onde veio <small>se não tiver link</small>
+              <input name="fonte_descricao" maxLength={1000} placeholder="Ex.: cartaz no local, mensagem do produtor" />
             </label>
           </div>
         </ActionForm>
@@ -324,7 +342,7 @@ async function EventDetail({ params }: { params: PageProps<"/painel/eventos/[id]
             })}
           </ul>
         ) : (
-          <p className="muted">Sem registros.</p>
+          <p className="muted">Nada ainda.</p>
         )}
       </section>
     </>

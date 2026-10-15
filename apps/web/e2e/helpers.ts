@@ -36,7 +36,7 @@ export async function publicRows(path: string): Promise<unknown[]> {
   return (await response.json()) as unknown[];
 }
 
-/** Formulário de mudança de situação que contém o botão indicado. */
-export function statusForm(page: Page, button: string) {
-  return page.locator("form", { has: page.getByRole("button", { name: button, exact: true }) });
+/** Ação de situação que pede motivo: abre com o clique no rótulo e confirma no botão de dentro. */
+export function statusPanel(page: Page, label: string) {
+  return page.locator("details.acao-com-motivo", { has: page.locator("summary", { hasText: label }) });
 }

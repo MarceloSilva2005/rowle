@@ -72,7 +72,7 @@ export async function fetchPublicPage(raw: string): Promise<PageResult> {
     }
     if (!response.ok) return { error: `O site respondeu com erro (${response.status}).` };
     const type = response.headers.get("content-type") ?? "";
-    if (!/text\/html|application\/xhtml/i.test(type)) return { error: "O link não leva a uma página (pode ser imagem ou arquivo)." };
+    if (!/text\/html|application\/xhtml/i.test(type)) return { error: "O link não é de uma página." };
 
     const reader = response.body?.getReader();
     if (!reader) return { error: "A página veio vazia." };

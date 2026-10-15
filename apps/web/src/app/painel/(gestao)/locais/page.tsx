@@ -3,12 +3,17 @@ import { requireStaff } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { ActionForm } from "../../action-form";
 import { createVenue } from "./actions";
+import { Carregando, EstadoVazio } from "../../ui";
 
 export default function LocaisPage() {
   return (
     <>
-      <h1>Locais</h1>
-      <Suspense fallback={<p className="muted">Carregando…</p>}>
+      <div className="cabecalho-pagina">
+        <div>
+          <h1>Locais</h1>
+        </div>
+      </div>
+      <Suspense fallback={<Carregando />}>
         <Venues />
       </Suspense>
     </>
@@ -51,8 +56,8 @@ async function Venues() {
               <input name="endereco" required minLength={5} maxLength={200} placeholder="Ex.: SCS Quadra 2, Bloco C, Asa Sul" />
             </label>
             <label className="campo campo-largo">
-              Acessibilidade <small>(opcional: rampa, banheiro adaptado, intérprete de Libras…)</small>
-              <input name="acessibilidade" maxLength={500} />
+              Acessibilidade <small>opcional</small>
+              <input name="acessibilidade" maxLength={500} placeholder="Ex.: rampa, banheiro adaptado" />
             </label>
           </div>
         </ActionForm>
@@ -82,7 +87,7 @@ async function Venues() {
             </table>
           </div>
         ) : (
-          <p className="muted">Nenhum local cadastrado ainda.</p>
+          <EstadoVazio titulo="Nenhum local ainda." />
         )}
       </section>
     </>

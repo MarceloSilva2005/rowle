@@ -23,10 +23,10 @@ export async function changeSubmissionStatus(
 ): Promise<FormState> {
   await requireStaff();
   if (to === "accepted") return { error: "Para aceitar, crie o rascunho a partir da sugestão." };
-  if (!canChangeSubmission(from, to)) return { error: "Essa mudança de situação não é permitida." };
+  if (!canChangeSubmission(from, to)) return { error: "Essa mudança não é permitida." };
   const note = String(formData.get("nota") ?? "").trim() || null;
   if (SUBMISSION_STATUSES_REQUIRING_NOTE.includes(to) && !note)
-    return { error: "Escreva a explicação; o produtor lê essa mensagem ao consultar o protocolo." };
+    return { error: "Escreva a mensagem para o produtor." };
 
   const supabase = await createClient();
   const { error } = await supabase

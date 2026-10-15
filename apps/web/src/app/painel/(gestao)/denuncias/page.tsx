@@ -15,6 +15,7 @@ import { requireStaff } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { ActionForm } from "../../action-form";
 import { changeReportStatus } from "./actions";
+import { Carregando, EstadoVazio } from "../../ui";
 
 const STATUSES = Object.keys(REPORT_TRANSITIONS) as ReportStatus[];
 
@@ -28,12 +29,13 @@ const ACTION_LABELS: Record<ReportStatus, string> = {
 export default function DenunciasPage({ searchParams }: PageProps<"/painel/denuncias">) {
   return (
     <>
-      <h1>Denúncias</h1>
-      <p className="muted">
-        Enviadas por quem usa o app, sem identificação. Golpe e link suspeito aparecem primeiro. Para tirar um evento do ar,
-        use &quot;Suspender&quot; na página dele.
-      </p>
-      <Suspense fallback={<p className="muted">Carregando denúncias…</p>}>
+      <div className="cabecalho-pagina">
+        <div>
+          <h1>Denúncias</h1>
+          <p className="muted">Anônimas. Golpe e link suspeito aparecem primeiro.</p>
+        </div>
+      </div>
+      <Suspense fallback={<Carregando texto="Carregando denúncias…" />}>
         <ReportList searchParams={searchParams} />
       </Suspense>
     </>
@@ -99,7 +101,7 @@ async function ReportList({ searchParams }: { searchParams: PageProps<"/painel/d
               >
                 {reportRequiresNote(to) ? (
                   <label className="campo">
-                    O que foi feito <small>(obrigatório, só a equipe vê)</small>
+                    O que foi feito <small>só a equipe vê</small>
                     <input name="nota" maxLength={1000} required />
                   </label>
                 ) : null}
@@ -109,7 +111,10 @@ async function ReportList({ searchParams }: { searchParams: PageProps<"/painel/d
         ))
       ) : (
         <section className="cartao">
-          <p className="muted">{filter ? "Nenhuma denúncia nessa situação." : "Fila vazia: nenhuma denúncia aberta."}</p>
+          <EstadoVazio
+            pose={filter ? "procurando" : "dormindo"}
+            titulo={filter ? "Nenhuma denúncia nessa situação." : "Nenhuma denúncia aberta."}
+          />
         </section>
       )}
     </>

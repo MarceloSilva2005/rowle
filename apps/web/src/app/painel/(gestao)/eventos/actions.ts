@@ -23,7 +23,7 @@ export async function createEvent(_state: FormState, formData: FormData): Promis
   if (problem) return { error: problem };
 
   const slug = slugify(text(formData, "slug") || fields.title);
-  if (!slug) return { error: "Não foi possível gerar o endereço a partir do título." };
+  if (!slug) return { error: "Use letras ou números no título." };
 
   const supabase = await createClient();
   const { data, error } = await supabase
@@ -60,7 +60,7 @@ export async function addSession(eventId: string, _state: FormState, formData: F
   const endsRaw = text(formData, "fim");
   const ticketUrl = optional(formData, "ingresso");
   if (!venueId) return { error: "Escolha o local da sessão." };
-  if (!startsRaw) return { error: "Informe a data e a hora de início." };
+  if (!startsRaw) return { error: "Preencha a data e a hora de início." };
   if (ticketUrl && !ticketUrl.startsWith("https://")) return { error: "O link de ingresso precisa começar com https://" };
 
   const price = readPrice(formData);
@@ -72,7 +72,7 @@ export async function addSession(eventId: string, _state: FormState, formData: F
     startsAt = brasiliaLocalToIso(startsRaw);
     if (endsRaw) endsAt = brasiliaLocalToIso(endsRaw);
   } catch {
-    return { error: "Data ou hora em formato inválido." };
+    return { error: "Confira a data e a hora." };
   }
 
   const supabase = await createClient();
@@ -105,7 +105,7 @@ export async function addSource(eventId: string, _state: FormState, formData: Fo
   const kind = text(formData, "fonte_tipo");
   const url = optional(formData, "fonte_url");
   const description = optional(formData, "fonte_descricao");
-  if (!url && !description) return { error: "Informe o link da fonte ou descreva de onde veio a informação." };
+  if (!url && !description) return { error: "Coloque o link ou diga de onde veio a informação." };
   if (url && !/^https?:\/\//.test(url)) return { error: "O link precisa começar com http:// ou https://" };
 
   const supabase = await createClient();
@@ -130,9 +130,9 @@ export async function changeStatus(
   formData: FormData,
 ): Promise<FormState> {
   await requireStaff();
-  if (!canTransition(from, to)) return { error: "Essa mudança de situação não é permitida." };
+  if (!canTransition(from, to)) return { error: "Essa mudança não é permitida." };
   const note = optional(formData, "motivo");
-  if (requiresNote(to) && !note) return { error: "Escreva o motivo; ele aparece para o público ou para o produtor." };
+  if (requiresNote(to) && !note) return { error: "Escreva o motivo." };
 
   const supabase = await createClient();
   const { error } = await supabase
@@ -163,5 +163,5 @@ export async function dismissDuplicate(eventId: string, otherEventId: string): P
 
   revalidatePath(`/painel/eventos/${eventId}`);
   revalidatePath(`/painel/eventos/${otherEventId}`);
-  return { ok: "Registrado: são eventos diferentes." };
+  return { ok: "Marcado como outro evento." };
 }

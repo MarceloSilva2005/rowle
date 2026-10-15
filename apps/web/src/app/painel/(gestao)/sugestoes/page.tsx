@@ -9,15 +9,20 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { requireStaff } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
+import { Carregando, EstadoVazio } from "../../ui";
 
 const STATUSES = Object.keys(SUBMISSION_TRANSITIONS) as SubmissionStatus[];
 
 export default function SugestoesPage({ searchParams }: PageProps<"/painel/sugestoes">) {
   return (
     <>
-      <h1>Sugestões</h1>
-      <p className="muted">Rolês enviados por produtores no formulário &quot;Divulgue seu rolê&quot;.</p>
-      <Suspense fallback={<p className="muted">Carregando sugestões…</p>}>
+      <div className="cabecalho-pagina">
+        <div>
+          <h1>Sugestões</h1>
+          <p className="muted">Enviadas pelos produtores.</p>
+        </div>
+      </div>
+      <Suspense fallback={<Carregando texto="Carregando sugestões…" />}>
         <SubmissionList searchParams={searchParams} />
       </Suspense>
     </>
@@ -82,7 +87,10 @@ async function SubmissionList({ searchParams }: { searchParams: PageProps<"/pain
             </table>
           </div>
         ) : (
-          <p className="muted">{filter ? "Nenhuma sugestão nessa situação." : "Fila vazia: nenhuma sugestão esperando."}</p>
+          <EstadoVazio
+            pose={filter ? "procurando" : "dormindo"}
+            titulo={filter ? "Nenhuma sugestão nessa situação." : "Nenhuma sugestão na fila."}
+          />
         )}
       </section>
     </>

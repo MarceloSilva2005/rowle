@@ -3,19 +3,27 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { requireStaff } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
+import { Carregando, EstadoVazio } from "../../ui";
 
 const STATUSES = Object.keys(EVENT_TRANSITIONS) as EventStatus[];
 
 export default function EventosPage({ searchParams }: PageProps<"/painel/eventos">) {
   return (
     <>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "center", justifyContent: "space-between" }}>
-        <h1>Eventos</h1>
-        <Link href="/painel/eventos/novo" className="botao" style={{ textDecoration: "none" }}>
-          Novo evento
-        </Link>
+      <div className="cabecalho-pagina">
+        <div>
+          <h1>Eventos</h1>
+        </div>
+        <div className="acoes" style={{ marginTop: 0 }}>
+          <Link href="/painel/eventos/novo" className="botao botao-secundario">
+            Novo evento
+          </Link>
+          <Link href="/painel/eventos/assistente" className="botao">
+            Colar divulgação
+          </Link>
+        </div>
       </div>
-      <Suspense fallback={<p className="muted">Carregando eventos…</p>}>
+      <Suspense fallback={<Carregando texto="Carregando eventos…" />}>
         <EventList searchParams={searchParams} />
       </Suspense>
     </>
@@ -80,7 +88,14 @@ async function EventList({ searchParams }: { searchParams: PageProps<"/painel/ev
             </table>
           </div>
         ) : (
-          <p className="muted">{filter ? "Nenhum evento nessa situação." : "Nenhum evento cadastrado ainda."}</p>
+          <EstadoVazio
+            titulo={filter ? "Nenhum evento nessa situação." : "Nenhum evento ainda."}
+            acao={
+              <Link href="/painel/eventos/assistente" className="botao">
+                Colar divulgação
+              </Link>
+            }
+          />
         )}
       </section>
     </>

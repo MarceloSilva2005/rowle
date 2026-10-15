@@ -20,11 +20,11 @@ export function OrganizationFields({ defaults = {} }: { defaults?: OrganizationD
         <input name="nome" required minLength={2} maxLength={120} defaultValue={defaults.name} />
       </label>
       <label className="campo">
-        Site oficial <small>(opcional, https://)</small>
+        Site <small>opcional</small>
         <input name="site" type="url" placeholder="https://" defaultValue={defaults.website_url ?? ""} />
       </label>
       <label className="campo">
-        Instagram <small>(opcional: @perfil ou link)</small>
+        Instagram <small>opcional</small>
         <input name="instagram" maxLength={80} placeholder="@perfil" defaultValue={defaults.instagram_handle ?? ""} />
       </label>
     </>

@@ -46,7 +46,7 @@ export async function readAnnouncement(_state: ReadState, formData: FormData): P
   await requireStaff();
   const link = text(formData, "link");
   const pasted = text(formData, "texto").slice(0, MAX_TEXT);
-  if (!link && !pasted) return { error: "Cole o link oficial, o texto da divulgação, ou os dois." };
+  if (!link && !pasted) return { error: "Cole um link ou um texto." };
   const echo = { link, text: pasted };
 
   let page: ExtractedEvent | null = null;
@@ -115,7 +115,7 @@ export async function createFromAssistant(_state: FormState, formData: FormData)
   const problem = checkEventFields(fields);
   if (problem) return { error: problem };
   const slug = slugify(fields.title);
-  if (!slug) return { error: "Não foi possível gerar o endereço a partir do título." };
+  if (!slug) return { error: "Use letras ou números no título." };
 
   // Sessão: opcional, mas se tiver início precisa de local e preço válidos.
   const startsRaw = text(formData, "inicio");
@@ -130,22 +130,22 @@ export async function createFromAssistant(_state: FormState, formData: FormData)
       startsAt = brasiliaLocalToIso(startsRaw);
       if (endsRaw) endsAt = brasiliaLocalToIso(endsRaw);
     } catch {
-      return { error: "Data ou hora em formato inválido." };
+      return { error: "Confira a data e a hora." };
     }
     if (ticketUrl && !ticketUrl.startsWith("https://")) return { error: "O link de ingresso precisa começar com https://" };
     const price = readPrice(formData);
     if (typeof price === "string") return { error: price };
     const columns = priceColumns(price);
 
-    if (!venueChoice) return { error: "Escolha o local da sessão ou cadastre um novo." };
+    if (!venueChoice) return { error: "Escolha o local ou cadastre um novo." };
     let venue: Record<string, unknown>;
     if (venueChoice === "novo") {
       const name = text(formData, "novo_local_nome");
       const address = text(formData, "novo_local_endereco");
       const region = Number(formData.get("novo_local_regiao"));
       if (name.length < 2) return { error: "Informe o nome do novo local." };
-      if (address.length < 5) return { error: "Informe o endereço completo do novo local." };
-      if (!Number.isInteger(region) || region < 1) return { error: "Escolha a região administrativa do novo local." };
+      if (address.length < 5) return { error: "Preencha o endereço do novo local." };
+      if (!Number.isInteger(region) || region < 1) return { error: "Escolha a região do novo local." };
       venue = { p_new_venue_name: name, p_new_venue_address: address, p_new_venue_region: region };
     } else {
       venue = { p_venue_id: venueChoice };
