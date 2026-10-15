@@ -14,6 +14,7 @@ import { requireStaff } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { ActionForm } from "../../../action-form";
 import { addSession, addSource, changeStatus, removeSession, updateEvent } from "../actions";
+import { DuplicateList } from "../duplicates";
 import { EventFields } from "../event-fields";
 
 const ACTION_LABELS: Record<EventStatus, string> = {
@@ -66,7 +67,7 @@ async function EventDetail({ params }: { params: PageProps<"/painel/eventos/[id]
     .maybeSingle();
   if (!event) notFound();
 
-  const [{ data: categories }, { data: organizations }, { data: venues }, { data: sessions }, { data: sources }, { data: history }] =
+  const [{ data: categories }, { data: organizations }, { data: venues }, { data: sessions }, { data: sources }, { data: history }, { data: duplicates }] =
     await Promise.all([
       supabase.from("categories").select("id, name").order("sort_order"),
       supabase.from("organizations").select("id, name").order("name"),
@@ -84,6 +85,7 @@ async function EventDetail({ params }: { params: PageProps<"/painel/eventos/[id]
         .eq("row_id", id)
         .order("changed_at", { ascending: false })
         .limit(10),
+      supabase.rpc("possible_duplicates_of_event", { p_event_id: id }),
     ]);
 
   const status = event.status as EventStatus;
@@ -102,6 +104,17 @@ async function EventDetail({ params }: { params: PageProps<"/painel/eventos/[id]
         </div>
         {event.status_note ? <p className="muted">Motivo registrado: {event.status_note}</p> : null}
       </div>
+
+      {duplicates?.length ? (
+        <section className="cartao cartao-aviso" aria-labelledby="duplicatas">
+          <h2 id="duplicatas">Pode ser duplicata</h2>
+          <p className="muted" style={{ marginBottom: 12 }}>
+            Estes eventos parecem ser o mesmo rolê. Confira antes de publicar: se for o mesmo, complete um deles e arquive o
+            outro.
+          </p>
+          <DuplicateList candidates={duplicates} eventId={event.id} />
+        </section>
+      ) : null}
 
       <section className="cartao" aria-labelledby="situacao">
         <h2 id="situacao">Situação</h2>

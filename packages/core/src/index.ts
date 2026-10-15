@@ -29,3 +29,5 @@ export {
   readSubmissionPayload,
 } from './queues';
 export type { SubmissionStatus, ReportStatus, ReportReason, SubmissionPayload } from './queues';
+export { duplicateReasons, dismissalPair, localDay } from './duplicates';
+export type { DuplicateCandidate } from './duplicates';

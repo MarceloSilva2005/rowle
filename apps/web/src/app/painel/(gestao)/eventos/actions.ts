@@ -3,6 +3,7 @@
 import {
   brasiliaLocalToIso,
   canTransition,
+  dismissalPair,
   parseReaisToCents,
   requiresNote,
   slugify,
@@ -201,4 +202,23 @@ export async function changeStatus(
   revalidatePath(`/painel/eventos/${eventId}`);
   revalidatePath("/painel/eventos");
   return { ok: "Situação atualizada." };
+}
+
+/** Registra que os dois eventos foram conferidos e não são o mesmo rolê. */
+export async function dismissDuplicate(eventId: string, otherEventId: string): Promise<FormState> {
+  await requireStaff();
+  let pair: ReturnType<typeof dismissalPair>;
+  try {
+    pair = dismissalPair(eventId, otherEventId);
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : "Par inválido." };
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.from("duplicate_dismissals").upsert(pair, { ignoreDuplicates: true });
+  if (error) return { error: friendlyError(error) };
+
+  revalidatePath(`/painel/eventos/${eventId}`);
+  revalidatePath(`/painel/eventos/${otherEventId}`);
+  return { ok: "Registrado: são eventos diferentes." };
 }

@@ -33,6 +33,32 @@ export type Database = {
                   Relationships: [
                     
                   ]
+                },"duplicate_dismissals": {
+                  Row: {
+                    "dismissed_at": string,"dismissed_by": string | null,"event_id": string,"other_event_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "dismissed_at"?: string,"dismissed_by"?: string | null,"event_id": string,"other_event_id": string
+                  }
+                  Update: {
+                    "dismissed_at"?: string,"dismissed_by"?: string | null,"event_id"?: string,"other_event_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "duplicate_dismissals_event_id_fkey"
+      columns: ["event_id"]
+isOneToOne: false
+      referencedRelation: "events"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "duplicate_dismissals_other_event_id_fkey"
+      columns: ["other_event_id"]
+isOneToOne: false
+      referencedRelation: "events"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"events": {
                   Row: {
                     "accessibility_notes": string | null,"age_rating": Database["public"]['Enums']["age_rating"] | null,"category_id": number,"cover_credit": string | null,"cover_path": string | null,"cover_rights": Database["public"]['Enums']["image_rights"] | null,"created_at": string,"created_by": string | null,"description": string | null,"id": string,"is_sponsored": boolean,"organization_id": string | null,"published_at": string | null,"slug": string,"status": Database["public"]['Enums']["event_status"],"status_note": string | null,"title": string,"updated_at": string
@@ -277,14 +303,27 @@ isOneToOne: false
                 }
           }
           Functions: {
-            "event_transition_allowed":
+            "comparable_title":
+{ Args: { "t": string }; Returns: string
+                           },
+"event_transition_allowed":
 { Args: { "from_status": Database["public"]['Enums']["event_status"],"to_status": Database["public"]['Enums']["event_status"] }; Returns: boolean
+                           },
+"find_possible_duplicates":
+{ Args: { "p_days"?: (string)[],"p_exclude_event"?: string,"p_title": string,"p_venue_ids"?: (string)[] }; Returns: {
+              "event_id": string,"next_starts_at": string,"same_day": boolean,"same_venue": boolean,"status": Database["public"]['Enums']["event_status"],"strong": boolean,"title": string,"title_similarity": number
+            }[]
                            },
 "is_admin":
 { Args: Record<PropertyKey, never>; Returns: boolean
                            },
 "is_staff":
 { Args: Record<PropertyKey, never>; Returns: boolean
+                           },
+"possible_duplicates_of_event":
+{ Args: { "p_event_id": string }; Returns: {
+              "event_id": string,"next_starts_at": string,"same_day": boolean,"same_venue": boolean,"status": Database["public"]['Enums']["event_status"],"strong": boolean,"title": string,"title_similarity": number
+            }[]
                            }
           }
           Enums: {

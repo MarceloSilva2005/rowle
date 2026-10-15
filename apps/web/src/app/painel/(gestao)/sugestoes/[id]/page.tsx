@@ -1,6 +1,7 @@
 import {
   brasiliaLocalToIso,
   formatSessionDate,
+  localDay,
   readSubmissionPayload,
   SUBMISSION_FIELD_LABELS,
   SUBMISSION_STATUS_LABELS,
@@ -15,6 +16,7 @@ import { Suspense } from "react";
 import { requireStaff } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { ActionForm } from "../../../action-form";
+import { DuplicateList } from "../../eventos/duplicates";
 import { changeSubmissionStatus, createDraftFromSubmission } from "../actions";
 
 const ACTION_LABELS: Partial<Record<SubmissionStatus, string>> = {
@@ -48,6 +50,8 @@ async function SubmissionDetail({ params }: { params: PageProps<"/painel/sugesto
     ? await supabase.from("categories").select("name").eq("id", payload.categoryId).maybeSingle()
     : { data: null };
   const status = submission.status;
+  const isOpen = SUBMISSION_TRANSITIONS[status].length > 0;
+  const duplicates = isOpen && payload.title ? await findDuplicates(supabase, payload) : [];
   const nextStatuses = SUBMISSION_TRANSITIONS[status].filter((to) => to !== "accepted");
   const fields = (Object.keys(SUBMISSION_FIELD_LABELS) as (keyof SubmissionPayload)[]).filter((k) => payload[k] !== undefined);
 
@@ -87,6 +91,23 @@ async function SubmissionDetail({ params }: { params: PageProps<"/painel/sugesto
           Confira tudo numa fonte oficial antes de publicar. Links enviados aqui não foram verificados.
         </p>
       </section>
+
+      {isOpen && payload.title ? (
+        <section className={duplicates.length ? "cartao cartao-aviso" : "cartao"} aria-labelledby="duplicatas">
+          <h2 id="duplicatas">{duplicates.length ? "Já pode estar no catálogo" : "Duplicatas"}</h2>
+          {duplicates.length ? (
+            <>
+              <p className="muted" style={{ marginBottom: 12 }}>
+                Antes de aceitar, veja se algum destes é o mesmo rolê. Se for, complete o evento existente e recuse a sugestão
+                explicando que ele já está no app.
+              </p>
+              <DuplicateList candidates={duplicates} />
+            </>
+          ) : (
+            <p className="muted">Nenhum evento parecido no catálogo.</p>
+          )}
+        </section>
+      ) : null}
 
       <section className="cartao" aria-labelledby="situacao">
         <h2 id="situacao">Situação</h2>
@@ -129,6 +150,21 @@ async function SubmissionDetail({ params }: { params: PageProps<"/painel/sugesto
       </section>
     </>
   );
+}
+
+/** Procura no catálogo pelo título, pelo dia e, se o nome bater com um local cadastrado, pelo local. */
+async function findDuplicates(supabase: Awaited<ReturnType<typeof createClient>>, payload: SubmissionPayload) {
+  const day = localDay(payload.startsAtLocal);
+  const venueName = payload.venueName?.trim();
+  const { data: venues } = venueName
+    ? await supabase.from("venues").select("id").ilike("name", venueName.replace(/[\\%_]/g, "\\$&"))
+    : { data: [] };
+  const { data } = await supabase.rpc("find_possible_duplicates", {
+    p_title: payload.title ?? "",
+    p_days: day ? [day] : [],
+    p_venue_ids: (venues ?? []).map((v) => v.id),
+  });
+  return data ?? [];
 }
 
 function fieldText(key: keyof SubmissionPayload, payload: SubmissionPayload, categoryName?: string): string {
