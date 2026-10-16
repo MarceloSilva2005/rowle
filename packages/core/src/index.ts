@@ -42,3 +42,13 @@ export {
   isTicketingUrl,
 } from './extract';
 export type { ExtractedEvent, Extraction, ExtractionOrigin } from './extract';
+export {
+  readDiscoveryRow,
+  sessionDateParts,
+  brasiliaDay,
+  addDays,
+  weekendDays,
+  formatCardDate,
+  buildFeedSections,
+} from './discovery';
+export type { DateParts, DiscoverySession, FeedItem, FeedSection, FeedSectionKey } from './discovery';

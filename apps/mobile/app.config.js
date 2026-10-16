@@ -9,6 +9,9 @@ const fonts = [
   '@expo-google-fonts/archivo/800ExtraBold/Archivo_800ExtraBold.ttf',
 ].map((file) => require.resolve(file));
 
+// Supabase local responde em http. Só nesse caso o Android libera tráfego sem TLS.
+const cleartext = (process.env.EXPO_PUBLIC_SUPABASE_URL ?? '').startsWith('http://');
+
 module.exports = {
   expo: {
     name: 'Rowlê',
@@ -30,6 +33,8 @@ module.exports = {
       predictiveBackGestureEnabled: false,
     },
     plugins: [
+      'expo-router',
+      ['expo-build-properties', { android: { usesCleartextTraffic: cleartext } }],
       [
         'expo-splash-screen',
         {

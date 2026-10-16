@@ -1,4 +1,4 @@
-import { colors, space } from '@rowle/design';
+import { colors, minTouchTarget, radius, space } from '@rowle/design';
 
 /**
  * Nomes das fontes embutidas pelo plugin expo-font (app.config.js).
@@ -11,4 +11,4 @@ export const fontFamily = {
   bodyBold: 'Archivo_800ExtraBold',
 } as const;
 
-export { colors, space };
+export { colors, minTouchTarget, radius, space };
