@@ -1,4 +1,4 @@
-import { parseReaisToCents, validatePrice, type Price } from "@rowle/core";
+import { isAgeRating, parseReaisToCents, validatePrice, type Price } from "@rowle/core";
 
 // Leitura e validação dos formulários de evento, comuns ao cadastro manual e ao assistente.
 
@@ -15,7 +15,8 @@ export function eventFields(fd: FormData) {
     category_id: categoryId,
     organization_id: organizationId,
     description: optional(fd, "descricao"),
-    age_rating: ageRating as "L" | "10" | "12" | "14" | "16" | "18" | null,
+    age_rating: isAgeRating(ageRating) ? ageRating : null,
+    age_rating_official: fd.get("classificacao_oficial") === "on",
     accessibility_notes: optional(fd, "acessibilidade"),
     is_sponsored: fd.get("patrocinado") === "on",
   };

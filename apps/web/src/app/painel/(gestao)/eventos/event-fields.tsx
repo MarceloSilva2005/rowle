@@ -1,3 +1,5 @@
+import { AGE_RATINGS } from "@rowle/core";
+
 type Option = { id: string | number; name: string };
 
 export type EventDefaults = {
@@ -6,11 +8,11 @@ export type EventDefaults = {
   organization_id?: string | null;
   description?: string | null;
   age_rating?: string | null;
+  age_rating_official?: boolean;
   accessibility_notes?: string | null;
   is_sponsored?: boolean;
 };
 
-const AGE_RATINGS = ["L", "10", "12", "14", "16", "18"];
 
 /** Campos do evento, usados na criação e na edição. */
 export function EventFields({
@@ -70,6 +72,10 @@ export function EventFields({
             </option>
           ))}
         </select>
+      </label>
+      <label className="campo-check">
+        <input type="checkbox" name="classificacao_oficial" defaultChecked={defaults.age_rating_official ?? false} />
+        Classificação oficial do Ministério
       </label>
       <label className="campo campo-largo">
         Descrição

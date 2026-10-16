@@ -70,7 +70,7 @@ async function EventDetail({ params }: { params: PageProps<"/painel/eventos/[id]
   const { data: event } = await supabase
     .from("events")
     .select(
-      "id, title, slug, status, status_note, category_id, organization_id, description, age_rating, accessibility_notes, is_sponsored, published_at",
+      "id, title, slug, status, status_note, category_id, organization_id, description, age_rating, age_rating_official, accessibility_notes, is_sponsored, published_at",
     )
     .eq("id", id)
     .maybeSingle();

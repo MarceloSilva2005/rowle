@@ -81,14 +81,14 @@ isOneToOne: true
                   ]
                 },"events": {
                   Row: {
-                    "accessibility_notes": string | null,"age_rating": Database["public"]['Enums']["age_rating"] | null,"category_id": number,"cover_credit": string | null,"cover_path": string | null,"cover_rights": Database["public"]['Enums']["image_rights"] | null,"created_at": string,"created_by": string | null,"description": string | null,"id": string,"is_sponsored": boolean,"organization_id": string | null,"published_at": string | null,"slug": string,"status": Database["public"]['Enums']["event_status"],"status_note": string | null,"title": string,"updated_at": string
+                    "accessibility_notes": string | null,"age_rating": Database["public"]['Enums']["age_rating"] | null,"age_rating_official": boolean,"category_id": number,"cover_credit": string | null,"cover_path": string | null,"cover_rights": Database["public"]['Enums']["image_rights"] | null,"created_at": string,"created_by": string | null,"description": string | null,"id": string,"is_sponsored": boolean,"organization_id": string | null,"published_at": string | null,"slug": string,"status": Database["public"]['Enums']["event_status"],"status_note": string | null,"title": string,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "accessibility_notes"?: string | null,"age_rating"?: Database["public"]['Enums']["age_rating"] | null,"category_id": number,"cover_credit"?: string | null,"cover_path"?: string | null,"cover_rights"?: Database["public"]['Enums']["image_rights"] | null,"created_at"?: string,"created_by"?: string | null,"description"?: string | null,"id"?: string,"is_sponsored"?: boolean,"organization_id"?: string | null,"published_at"?: string | null,"slug": string,"status"?: Database["public"]['Enums']["event_status"],"status_note"?: string | null,"title": string,"updated_at"?: string
+                    "accessibility_notes"?: string | null,"age_rating"?: Database["public"]['Enums']["age_rating"] | null,"age_rating_official"?: boolean,"category_id": number,"cover_credit"?: string | null,"cover_path"?: string | null,"cover_rights"?: Database["public"]['Enums']["image_rights"] | null,"created_at"?: string,"created_by"?: string | null,"description"?: string | null,"id"?: string,"is_sponsored"?: boolean,"organization_id"?: string | null,"published_at"?: string | null,"slug": string,"status"?: Database["public"]['Enums']["event_status"],"status_note"?: string | null,"title": string,"updated_at"?: string
                   }
                   Update: {
-                    "accessibility_notes"?: string | null,"age_rating"?: Database["public"]['Enums']["age_rating"] | null,"category_id"?: number,"cover_credit"?: string | null,"cover_path"?: string | null,"cover_rights"?: Database["public"]['Enums']["image_rights"] | null,"created_at"?: string,"created_by"?: string | null,"description"?: string | null,"id"?: string,"is_sponsored"?: boolean,"organization_id"?: string | null,"published_at"?: string | null,"slug"?: string,"status"?: Database["public"]['Enums']["event_status"],"status_note"?: string | null,"title"?: string,"updated_at"?: string
+                    "accessibility_notes"?: string | null,"age_rating"?: Database["public"]['Enums']["age_rating"] | null,"age_rating_official"?: boolean,"category_id"?: number,"cover_credit"?: string | null,"cover_path"?: string | null,"cover_rights"?: Database["public"]['Enums']["image_rights"] | null,"created_at"?: string,"created_by"?: string | null,"description"?: string | null,"id"?: string,"is_sponsored"?: boolean,"organization_id"?: string | null,"published_at"?: string | null,"slug"?: string,"status"?: Database["public"]['Enums']["event_status"],"status_note"?: string | null,"title"?: string,"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -290,7 +290,7 @@ isOneToOne: false
           Views: {
             "discoverable_sessions": {
                   Row: {
-                    "category_id": number | null,"cover_path": string | null,"ends_at": string | null,"event_id": string | null,"event_slug": string | null,"is_sponsored": boolean | null,"price_kind": Database["public"]['Enums']["price_kind"] | null,"price_max_cents": number | null,"price_min_cents": number | null,"region_id": number | null,"session_id": string | null,"session_status": Database["public"]['Enums']["session_status"] | null,"starts_at": string | null,"ticket_url": string | null,"time_confirmed": boolean | null,"title": string | null,"venue_id": string | null,"venue_name": string | null
+                    "age_rating": Database["public"]['Enums']["age_rating"] | null,"age_rating_official": boolean | null,"category_id": number | null,"cover_path": string | null,"ends_at": string | null,"event_id": string | null,"event_slug": string | null,"is_sponsored": boolean | null,"price_kind": Database["public"]['Enums']["price_kind"] | null,"price_max_cents": number | null,"price_min_cents": number | null,"region_id": number | null,"session_id": string | null,"session_status": Database["public"]['Enums']["session_status"] | null,"starts_at": string | null,"ticket_url": string | null,"time_confirmed": boolean | null,"title": string | null,"venue_address": string | null,"venue_id": string | null,"venue_name": string | null
                   }
                   ComputedFields: never
                   Relationships: [
@@ -317,6 +317,20 @@ isOneToOne: false
       columns: ["region_id"]
 isOneToOne: false
       referencedRelation: "regions"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"event_last_verified": {
+                  Row: {
+                    "event_id": string | null,"last_verified_at": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    {
+      foreignKeyName: "sources_event_id_fkey"
+      columns: ["event_id"]
+isOneToOne: false
+      referencedRelation: "events"
       referencedColumns: ["id"]
     }
                   ]
@@ -360,7 +374,7 @@ isOneToOne: false
                            }
           }
           Enums: {
-            "age_rating": "L"|"10"|"12"|"14"|"16"|"18","event_status": "draft"|"in_review"|"changes_requested"|"published"|"rejected"|"postponed"|"cancelled"|"suspended"|"archived","image_rights": "own"|"licensed"|"authorized_by_organizer"|"public_domain","link_status": "unchecked"|"ok"|"broken"|"suspicious","price_kind": "free"|"fixed"|"from"|"range"|"on_request"|"unknown","report_reason": "wrong_info"|"cancelled_or_changed"|"suspicious_link"|"fraud"|"offensive"|"image_rights"|"other","report_status": "open"|"investigating"|"resolved"|"dismissed","session_status": "scheduled"|"postponed"|"cancelled"|"sold_out","source_kind": "official_site"|"ticketing"|"social"|"submission"|"press"|"other","staff_role": "curator"|"admin","submission_status": "received"|"in_review"|"needs_info"|"accepted"|"rejected"
+            "age_rating": "L"|"6"|"10"|"12"|"14"|"16"|"18","event_status": "draft"|"in_review"|"changes_requested"|"published"|"rejected"|"postponed"|"cancelled"|"suspended"|"archived","image_rights": "own"|"licensed"|"authorized_by_organizer"|"public_domain","link_status": "unchecked"|"ok"|"broken"|"suspicious","price_kind": "free"|"fixed"|"from"|"range"|"on_request"|"unknown","report_reason": "wrong_info"|"cancelled_or_changed"|"suspicious_link"|"fraud"|"offensive"|"image_rights"|"other","report_status": "open"|"investigating"|"resolved"|"dismissed","session_status": "scheduled"|"postponed"|"cancelled"|"sold_out","source_kind": "official_site"|"ticketing"|"social"|"submission"|"press"|"other","staff_role": "curator"|"admin","submission_status": "received"|"in_review"|"needs_info"|"accepted"|"rejected"
           }
           CompositeTypes: {
             [_ in never]: never
@@ -476,7 +490,7 @@ export type CompositeTypes<
 export const Constants = {
   "public": {
           Enums: {
-            "age_rating": ["L", "10", "12", "14", "16", "18"],"event_status": ["draft", "in_review", "changes_requested", "published", "rejected", "postponed", "cancelled", "suspended", "archived"],"image_rights": ["own", "licensed", "authorized_by_organizer", "public_domain"],"link_status": ["unchecked", "ok", "broken", "suspicious"],"price_kind": ["free", "fixed", "from", "range", "on_request", "unknown"],"report_reason": ["wrong_info", "cancelled_or_changed", "suspicious_link", "fraud", "offensive", "image_rights", "other"],"report_status": ["open", "investigating", "resolved", "dismissed"],"session_status": ["scheduled", "postponed", "cancelled", "sold_out"],"source_kind": ["official_site", "ticketing", "social", "submission", "press", "other"],"staff_role": ["curator", "admin"],"submission_status": ["received", "in_review", "needs_info", "accepted", "rejected"]
+            "age_rating": ["L", "6", "10", "12", "14", "16", "18"],"event_status": ["draft", "in_review", "changes_requested", "published", "rejected", "postponed", "cancelled", "suspended", "archived"],"image_rights": ["own", "licensed", "authorized_by_organizer", "public_domain"],"link_status": ["unchecked", "ok", "broken", "suspicious"],"price_kind": ["free", "fixed", "from", "range", "on_request", "unknown"],"report_reason": ["wrong_info", "cancelled_or_changed", "suspicious_link", "fraud", "offensive", "image_rights", "other"],"report_status": ["open", "investigating", "resolved", "dismissed"],"session_status": ["scheduled", "postponed", "cancelled", "sold_out"],"source_kind": ["official_site", "ticketing", "social", "submission", "press", "other"],"staff_role": ["curator", "admin"],"submission_status": ["received", "in_review", "needs_info", "accepted", "rejected"]
           }
         }
 } as const

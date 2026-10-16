@@ -7,6 +7,9 @@ const fonts = [
   '@expo-google-fonts/archivo/400Regular/Archivo_400Regular.ttf',
   '@expo-google-fonts/archivo/600SemiBold/Archivo_600SemiBold.ttf',
   '@expo-google-fonts/archivo/800ExtraBold/Archivo_800ExtraBold.ttf',
+  // Fita de data (marca) e símbolo da classificação indicativa.
+  '@expo-google-fonts/bungee/400Regular/Bungee_400Regular.ttf',
+  '@expo-google-fonts/roboto-condensed/700Bold/RobotoCondensed_700Bold.ttf',
 ].map((file) => require.resolve(file));
 
 // Supabase local responde em http. Só nesse caso o Android libera tráfego sem TLS.

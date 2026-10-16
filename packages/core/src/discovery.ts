@@ -1,6 +1,7 @@
 import { TIME_ZONE, formatSessionDate } from './datetime';
 import { priceFromColumns, type Price } from './price';
 import type { Database } from './database.types';
+import { isAgeRating, type AgeRating } from './classind';
 
 type ViewRow = Database['public']['Views']['discoverable_sessions']['Row'];
 
@@ -15,6 +16,7 @@ export interface DiscoverySession {
   isSponsored: boolean;
   venueId: string;
   venueName: string;
+  venueAddress: string | null;
   regionId: number;
   startsAt: string;
   endsAt: string | null;
@@ -22,6 +24,9 @@ export interface DiscoverySession {
   soldOut: boolean;
   price: Price;
   ticketUrl: string | null;
+  ageRating: AgeRating | null;
+  /** true = classificação oficial do Ministério; false = autoclassificação (símbolo provisório). */
+  ageRatingOfficial: boolean;
 }
 
 /**
@@ -53,6 +58,7 @@ export function readDiscoveryRow(row: ViewRow): DiscoverySession | null {
     isSponsored: row.is_sponsored ?? false,
     venueId: row.venue_id,
     venueName: row.venue_name,
+    venueAddress: row.venue_address,
     regionId: row.region_id,
     startsAt: row.starts_at,
     endsAt: row.ends_at,
@@ -60,6 +66,8 @@ export function readDiscoveryRow(row: ViewRow): DiscoverySession | null {
     soldOut: row.session_status === 'sold_out',
     price: priceFromColumns(row.price_kind, row.price_min_cents, row.price_max_cents),
     ticketUrl: row.ticket_url,
+    ageRating: isAgeRating(row.age_rating) ? row.age_rating : null,
+    ageRatingOfficial: row.age_rating_official ?? false,
   };
 }
 
@@ -193,4 +201,144 @@ export function sessionDateParts(iso: string, timeConfirmed: boolean): DateParts
     month: get('month'),
     time: timeConfirmed ? (minute === '00' ? `${hour}h` : `${hour}h${minute}`) : null,
   };
+}
+
+// ---------------------------------------------------------------------------
+// Interface aprovada em 2026-10-16 (Rolês, Agenda, Explorar, Você).
+
+/** Texto comparável para busca: minúsculas e sem acento. */
+export function normalizeSearch(text: string): string {
+  return text.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+}
+
+/** Nomes usados na busca e nos filtros (vêm das tabelas de regiões e categorias). */
+export interface DiscoveryNames {
+  regions: ReadonlyMap<number, string>;
+  categories: ReadonlyMap<number, string>;
+}
+
+/** A sessão casa com a busca se cada palavra aparece no título, local, região ou categoria. */
+export function matchesSearch(session: DiscoverySession, query: string, names: DiscoveryNames): boolean {
+  const words = normalizeSearch(query).split(/\s+/).filter(Boolean);
+  if (words.length === 0) return true;
+  const haystack = normalizeSearch(
+    [session.title, session.venueName, names.regions.get(session.regionId) ?? '', names.categories.get(session.categoryId) ?? ''].join(' '),
+  );
+  return words.every((w) => haystack.includes(w));
+}
+
+export interface DiscoveryFilters {
+  /** Dia "AAAA-MM-DD" (Brasília) ou null para todos os próximos. */
+  day: string | null;
+  categories: number[];
+  regions: number[];
+  freeOnly: boolean;
+}
+
+export const NO_FILTERS: DiscoveryFilters = { day: null, categories: [], regions: [], freeOnly: false };
+
+/** Quantos filtros estão ligados, sem contar o dia (que tem botão próprio). */
+export function activeFilterCount(f: DiscoveryFilters): number {
+  return f.categories.length + f.regions.length + (f.freeOnly ? 1 : 0);
+}
+
+/**
+ * Aplica os filtros. "Dia" pega a sessão que acontece naquele dia em Brasília; uma
+ * sessão que começou ontem e ainda não acabou conta para hoje.
+ */
+export function applyFilters(sessions: DiscoverySession[], f: DiscoveryFilters, now: Date): DiscoverySession[] {
+  const today = brasiliaDay(now);
+  return sessions.filter((s) => {
+    if (f.day) {
+      const day = brasiliaDay(s.startsAt);
+      if (f.day === today ? day > today : day !== f.day) return false;
+    }
+    if (f.categories.length && !f.categories.includes(s.categoryId)) return false;
+    if (f.regions.length && !f.regions.includes(s.regionId)) return false;
+    if (f.freeOnly && s.price.kind !== 'free') return false;
+    return true;
+  });
+}
+
+/**
+ * Um rolê por evento (a próxima sessão), em ordem de horário. É a lista da tela
+ * Rolês. `otherDates` conta as outras sessões do mesmo evento na seleção.
+ */
+export function onePerEvent(sessions: DiscoverySession[]): FeedItem[] {
+  const sorted = [...sessions].sort((a, b) => a.startsAt.localeCompare(b.startsAt));
+  const byEvent = new Map<string, FeedItem>();
+  for (const s of sorted) {
+    const item = byEvent.get(s.eventId);
+    if (item) item.moreSessions += 1;
+    else byEvent.set(s.eventId, { session: s, moreSessions: 0 });
+  }
+  return [...byEvent.values()];
+}
+
+export interface WeekDay {
+  day: string;
+  /** "SEX" */
+  weekday: string;
+  /** "16" */
+  dayOfMonth: string;
+  count: number;
+}
+
+/** Os próximos `length` dias a partir de hoje, com quantas sessões há em cada um. */
+export function weekStrip(sessions: DiscoverySession[], now: Date, length = 7): WeekDay[] {
+  const today = brasiliaDay(now);
+  const counts = new Map<string, number>();
+  for (const s of sessions) {
+    const day = brasiliaDay(s.startsAt) < today ? today : brasiliaDay(s.startsAt);
+    counts.set(day, (counts.get(day) ?? 0) + 1);
+  }
+  return Array.from({ length }, (_, i) => {
+    const day = addDays(today, i);
+    const parts = sessionDateParts(`${day}T15:00:00Z`, false);
+    return { day, weekday: parts.weekday.toUpperCase(), dayOfMonth: parts.day, count: counts.get(day) ?? 0 };
+  });
+}
+
+/**
+ * Quanto falta para começar: "agora", "em 40 min", "em 2 h". Só para hoje e para o
+ * que ainda não começou há mais de 1 h; caso contrário, null.
+ */
+export function startsIn(iso: string, timeConfirmed: boolean, now: Date): string | null {
+  if (!timeConfirmed || brasiliaDay(iso) !== brasiliaDay(now)) return null;
+  const minutes = Math.round((new Date(iso).getTime() - now.getTime()) / 60000);
+  if (minutes < -60) return null;
+  if (minutes <= 0) return 'agora';
+  if (minutes < 60) return `em ${minutes} min`;
+  return `em ${Math.round(minutes / 60)} h`;
+}
+
+/** Rótulo do botão de dia na tela Rolês: "Hoje", "Amanhã", "Sáb 17" ou "Próximos". */
+export function dayLabel(day: string | null, now: Date): string {
+  if (!day) return 'Próximos';
+  const today = brasiliaDay(now);
+  if (day === today) return 'Hoje';
+  if (day === addDays(today, 1)) return 'Amanhã';
+  const p = sessionDateParts(`${day}T15:00:00Z`, false);
+  return `${p.weekday.charAt(0).toUpperCase()}${p.weekday.slice(1)} ${p.day}`;
+}
+
+/**
+ * A sessão já acabou? Mesma regra da view `discoverable_sessions`: termina em
+ * `endsAt`; sem término, 6 h depois do início; com horário a confirmar, no fim do
+ * dia (Brasília).
+ */
+export function sessionIsOver(startsAt: string, endsAt: string | null, timeConfirmed: boolean, now: Date): boolean {
+  if (endsAt) return new Date(endsAt) <= now;
+  if (timeConfirmed) return new Date(startsAt).getTime() + 6 * 3600_000 <= now.getTime();
+  return brasiliaDay(startsAt) < brasiliaDay(now);
+}
+
+/** Texto da fita de data na tela Rolês: "HOJE 22H", "AMANHÃ 20H30", "SÁB 17 · 14H", "SÁB 17". */
+export function stampLabel(iso: string, timeConfirmed: boolean, now: Date): string {
+  const p = sessionDateParts(iso, timeConfirmed);
+  const day = brasiliaDay(iso);
+  const today = brasiliaDay(now);
+  const when = day <= today ? 'HOJE' : day === addDays(today, 1) ? 'AMANHÃ' : `${p.weekday.toUpperCase()} ${p.day}`;
+  if (!p.time) return when;
+  return when.includes(' ') ? `${when} · ${p.time.toUpperCase()}` : `${when} ${p.time.toUpperCase()}`;
 }

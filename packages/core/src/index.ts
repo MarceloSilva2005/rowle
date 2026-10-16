@@ -52,3 +52,19 @@ export {
   buildFeedSections,
 } from './discovery';
 export type { DateParts, DiscoverySession, FeedItem, FeedSection, FeedSectionKey } from './discovery';
+export { AGE_RATINGS, CLASSIND_COLORS, classIndLabel, classIndDescription, isAgeRating } from './classind';
+export type { AgeRating } from './classind';
+export {
+  normalizeSearch,
+  matchesSearch,
+  applyFilters,
+  NO_FILTERS,
+  activeFilterCount,
+  onePerEvent,
+  weekStrip,
+  startsIn,
+  dayLabel,
+  sessionIsOver,
+  stampLabel,
+} from './discovery';
+export type { DiscoveryNames, DiscoveryFilters, WeekDay } from './discovery';

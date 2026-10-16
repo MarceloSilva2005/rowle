@@ -9,6 +9,8 @@ export const fontFamily = {
   body: 'Archivo_400Regular',
   bodySemiBold: 'Archivo_600SemiBold',
   bodyBold: 'Archivo_800ExtraBold',
+  brand: 'Bungee_400Regular',
+  classind: 'RobotoCondensed_700Bold',
 } as const;
 
 export { colors, minTouchTarget, radius, space };
