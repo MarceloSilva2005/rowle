@@ -4,8 +4,8 @@ import { SvgXml } from 'react-native-svg';
 const LABELS: Record<MascotPose, string> = {
   acenando: 'Toupeira do Rowlê acenando',
   carregando: 'Três toupeiras saindo da toca',
-  procurando: 'Toupeira procurando com uma lupa',
-  erro: 'Toupeira com olhar de erro',
+  procurando: 'Toupeira farejando o ar',
+  erro: 'Toupeira confusa coçando a cabeça',
   dormindo: 'Toupeira dormindo',
 };
 

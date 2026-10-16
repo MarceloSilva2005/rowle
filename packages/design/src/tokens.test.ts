@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { contrastRatio } from './contrast';
-import { colors, type ColorToken } from './tokens';
+import { colors, mascotColors, type ColorToken } from './tokens';
 
 // Toda combinação de texto e fundo usada na interface precisa passar no WCAG AA
 // para texto normal (4,5:1). Ao criar uma combinação nova, inclua aqui.
@@ -33,5 +33,12 @@ describe('contraste das cores', () => {
 
   it('a cor de borda se distingue do fundo', () => {
     expect(contrastRatio(colors.border, colors.bg)).toBeGreaterThan(1.4);
+  });
+});
+
+describe('toupeira', () => {
+  // Elemento gráfico (WCAG 1.4.11): o corpo precisa se destacar do fundo e das superfícies.
+  it.each(['bg', 'surface'] as const)('pelo tem contraste de 3:1 ou mais com %s', (bg) => {
+    expect(contrastRatio(mascotColors.fur, colors[bg])).toBeGreaterThanOrEqual(3);
   });
 });

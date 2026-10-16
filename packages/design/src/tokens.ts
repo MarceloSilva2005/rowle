@@ -17,10 +17,10 @@ export const colors = {
 
 /** Cores do mascote; não usar em texto ou interface. */
 export const mascotColors = {
-  fur: '#8C7563',
-  belly: '#B49A84',
-  nose: '#FF8FA3',
-  dirt: '#6B5646',
+  fur: '#78817B',
+  belly: '#A3ADA6',
+  nose: '#FF9DB0',
+  claw: '#F3F5F0',
 } as const;
 
 export const fonts = {

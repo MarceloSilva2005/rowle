@@ -39,7 +39,7 @@ export function EstadoVazio({
 export function Carregando({ texto = "Carregando…" }: { texto?: string }) {
   return (
     <div className="carregando" role="status">
-      <Mascote pose="carregando" size={72} />
+      <Mascote pose="carregando" size={96} />
       <span className="muted">{texto}</span>
     </div>
   );

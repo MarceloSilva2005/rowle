@@ -1,6 +1,7 @@
 import type { MascotPose } from '@rowle/design';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { colors, fontFamily, minTouchTarget, radius, space } from '../theme';
+import { CarregandoAnimado } from './CarregandoAnimado';
 import { Mascote } from './Mascote';
 
 interface Props {
@@ -14,7 +15,7 @@ interface Props {
 export function EstadoTela({ pose, title, text, action }: Props) {
   return (
     <View style={styles.container}>
-      <Mascote pose={pose} />
+      {pose === 'carregando' ? <CarregandoAnimado /> : <Mascote pose={pose} />}
       <Text style={styles.title} accessibilityRole="header">
         {title}
       </Text>

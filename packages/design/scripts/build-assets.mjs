@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 import { Resvg } from '@resvg/resvg-js';
 import { logo, symbolArt, symbolSilhouetteMask } from './logo.mjs';
 import { C } from './palette.mjs';
-import { poses } from './mascot.mjs';
+import { headArt, poses } from './mascot.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const pkg = resolve(here, '..');
@@ -39,6 +39,7 @@ function centered(art, height, offsetY = 0) {
 for (const [name, make] of Object.entries(poses)) {
   write(join(pkg, 'assets/mascot', `${name}.svg`), make());
 }
+write(join(pkg, 'assets/mascot', 'cabeca.svg'), headArt());
 
 // Logo e símbolo
 const marks = logo();
@@ -49,8 +50,9 @@ write(join(pkg, 'assets/brand/symbol.svg'), marks.symbol);
 
 // Ícones do Android. O símbolo fica dentro da zona segura de 66/108 do quadro
 // (≈ 626 px de 1024), sem sombra nem máscara embutidas além da sombra do desenho.
+// Os óculos passam da largura do O, por isso o símbolo fica em 470 px de altura.
 const art = symbolArt();
-const foreground = svg1024(centered(art, 520));
+const foreground = svg1024(centered(art, 470));
 const full = svg1024(`<rect width="1024" height="1024" fill="${C.ink}"/>${centered(art, 660)}`);
 const sil = symbolSilhouetteMask('cut');
 const mono = svg1024(centered(sil, 500), sil.defs);
@@ -79,6 +81,8 @@ const svgModule = [
   ...Object.entries(poses).map(([name, make]) => `  ${JSON.stringify(name)}: ${JSON.stringify(make().trim())},`),
   '} as const;',
   'export type MascotPose = keyof typeof mascotSvg;',
+  '/** Cabeça da toupeira, para a animação do carregando (três cabeças saindo da toca). */',
+  `export const mascotHeadSvg = ${JSON.stringify(headArt().trim())};`,
   '',
 ].join('\n');
 write(join(pkg, 'src/svg.generated.ts'), svgModule);

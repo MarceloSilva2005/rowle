@@ -1,4 +1,5 @@
 import { logoSvg } from '@rowle/design';
+import { useLocalSearchParams } from 'expo-router';
 import { RefreshControl, SectionList, StyleSheet, Text, View } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -6,13 +7,21 @@ import { useFeed } from '../src/data/feed';
 import { colors, fontFamily, space } from '../src/theme';
 import { EstadoTela } from '../src/ui/EstadoTela';
 import { EventCard } from '../src/ui/EventCard';
+import { Mascote } from '../src/ui/Mascote';
 
 // Proporção do viewBox do logo (748.8 × 238).
 const LOGO_RATIO = 238 / 748.8;
 const LOGO_WIDTH = 120;
 
 export default function Descobrir() {
-  const { state, refreshing, refresh, retry } = useFeed();
+  const feed = useFeed();
+  const { refreshing, refresh, retry } = feed;
+  // Para capturas e testes locais: com EXPO_PUBLIC_PREVIEW_STATES=1, a URL força um
+  // estado (rowle:///?previa=erro). Desligado nos builds publicados.
+  const params = useLocalSearchParams<{ previa?: string }>();
+  const previa = process.env.EXPO_PUBLIC_PREVIEW_STATES === '1' ? params.previa : undefined;
+  const forced: Record<string, typeof feed.state> = { carregando: { status: 'loading' }, erro: { status: 'error' }, 'sem-internet': { status: 'offline' } };
+  const state = previa === 'vazio' && feed.state.status === 'ready' ? { ...feed.state, sections: [] } : (previa && forced[previa]) || feed.state;
 
   return (
     <SafeAreaView style={styles.screen} edges={['top', 'left', 'right']}>
@@ -60,6 +69,7 @@ export default function Descobrir() {
             />
           )}
           ItemSeparatorComponent={Separator}
+          ListFooterComponent={Fim}
           stickySectionHeadersEnabled={false}
           contentContainerStyle={styles.list}
           refreshControl={
@@ -73,6 +83,15 @@ export default function Descobrir() {
         />
       )}
     </SafeAreaView>
+  );
+}
+
+function Fim() {
+  return (
+    <View style={styles.end}>
+      <Mascote pose="acenando" size={112} />
+      <Text style={styles.endText}>Por agora é isso. Volte mais tarde.</Text>
+    </View>
   );
 }
 
@@ -90,6 +109,8 @@ const styles = StyleSheet.create({
   },
   list: { padding: space.lg, paddingBottom: space.xxxl },
   separator: { height: space.md },
+  end: { alignItems: 'center', gap: space.sm, paddingTop: space.xxl },
+  endText: { color: colors.textMuted, fontFamily: fontFamily.body, fontSize: 15 },
   sectionTitle: {
     color: colors.text,
     fontFamily: fontFamily.display,
