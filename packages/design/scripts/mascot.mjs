@@ -1,187 +1,112 @@
-// A toupeira do Rowlê ("Veludo"): de frente, saindo da toca, em formas geométricas
-// cheias. Pelo cinza aveludado (toupeiras reais são escuras), contorno de luz
-// verde-lima igual à sombra do logo, focinho rosado curto, mãos de pá com cinco
-// garras e os óculos esportivos na testa. Base estável; a expressão vem dos olhos,
-// da boca e das mãos. Quadro de 260 × 260, chão em y = 214.
+// A toupeira do Rowlê ("Adesivo", aprovada em 2026-10-19): o rosto do logo (o "O" lima de
+// cantos arredondados, óculos esportivos e nariz oval em tinta) como adesivo de lambe,
+// com contorno de papel. Os olhos ficam atrás dos óculos: a expressão vem do brilho lima
+// nas lentes, da boca e das mãos de pá (palma lima-escuro, quatro garras curtas e
+// redondas). Sem braços, sem bigodes, sem chão. Quadro de 260 × 260.
 //
-// Tamanho mínimo: poses inteiras a partir de 96 dp; abaixo de 64 dp, usar a
-// cabeça sem bigodes (headArt). O carregando é feito para 160 dp.
-import { bungeeGlyph } from './logo.mjs';
+// Tamanho mínimo: poses inteiras a partir de 64 dp; abaixo disso, só a cabeça (headArt).
+import { bungeeGlyph, SHADES } from './logo.mjs';
+import { C } from './palette.mjs';
 
-// Tokens da interface (packages/design/src/tokens.ts).
-const UI = { bg: '#0B0D0C', surface: '#171A18', border: '#303630', muted: '#A9B1A8', lime: '#C6FF36' };
-// Cores da toupeira (as principais também estão em tokens.ts, mascotColors).
-const P = {
-  fur: '#78817B', // contraste 4,85:1 com o fundo (#0B0D0C)
-  furLight: '#A3ADA6',
-  furEdge: '#5F6762', // contorno do braço sobre o corpo
-  pink: '#FF9DB0',
-  pinkDeep: '#E5677F',
-  claw: '#F3F5F0',
-  ink: '#0B0D0C',
-  paper: '#F3F5F0',
-  hole: '#000000',
+const K = { ink: C.ink, lime: C.lime, limeDeep: '#A6DB22', paper: C.paper, dim: '#3A413B' };
+// Proporções do "O" do logo (logo.mjs): 126 × 150, raio 34.
+const LOGO = { w: 126, h: 150, r: 34 };
+
+const f2 = (v) => Number(v.toFixed(2));
+const svg = (b, vb = '0 0 260 260') => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}">${b}</svg>`;
+const p = (d, f, x = '') => `<path d="${d}" fill="${f}"${x}/>`;
+const ln = (d, c, w, x = '') => `<path d="${d}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"${x}/>`;
+const ci = (x, y, r, f) => `<circle cx="${f2(x)}" cy="${f2(y)}" r="${f2(r)}" fill="${f}"/>`;
+const el = (x, y, rx, ry, f, e = '') => `<ellipse cx="${f2(x)}" cy="${f2(y)}" rx="${f2(rx)}" ry="${f2(ry)}" fill="${f}"${e}/>`;
+const g = (inner, t, extra = '') => `<g transform="${t}"${extra}>${inner}</g>`;
+const rr = (x, y, w, h, r) => `M${x} ${y + r} Q${x} ${y} ${x + r} ${y} H${x + w - r} Q${x + w} ${y} ${x + w} ${y + r} V${y + h - r} Q${x + w} ${y + h} ${x + w - r} ${y + h} H${x + r} Q${x} ${y + h} ${x} ${y + h - r} Z`;
+
+// Rosto com 128 de largura, centrado em x = 130. Óculos 1,2× mais largos que o "O".
+const W = 128;
+const S = W / LOGO.w;
+const H = LOGO.h * S;
+const X = 130 - W / 2;
+const Y = 46;
+const GW = W * 1.2;
+const GS = GW / 140;
+const GX = X - (GW - W) / 2;
+const GY = Y + H * 0.3;
+const LENS = [[GX + 38 * GS, GY + 25 * GS], [GX + 104 * GS, GY + 25 * GS]];
+const NOSE = { x: 130, y: GY + 38 * GS + 13 * S };
+const HEAD = rr(X, Y, W, H, LOGO.r * S);
+const MID = f2(Y + H / 2);
+const OUTLINE = 9;
+const BOTTOM = Y + H + OUTLINE - 1; // onde as mãos se apoiam
+
+const LOOK = {
+  neutro: () => LENS.map(([x, y]) => ln(`M${f2(x - 9)} ${f2(y - 2)} h18`, K.lime, 6)).join(''),
+  feliz: () => LENS.map(([x, y]) => ln(`M${f2(x - 10)} ${f2(y + 3)} q10 -12 20 0`, K.lime, 6)).join(''),
+  fechado: () => LENS.map(([x, y]) => ln(`M${f2(x - 9)} ${f2(y)} q9 5 18 0`, K.dim, 5)).join(''),
+  confuso: () => ci(LENS[0][0], LENS[0][1] - 1, 9, K.lime) + ci(LENS[1][0], LENS[1][1], 4, K.lime),
+  // Triste: o canto de dentro sobe e o de fora cai.
+  triste: () => LENS.map(([x, y], i) => ln(i === 0 ? `M${f2(x - 9)} ${f2(y + 4)} q8 -2 17 -8` : `M${f2(x - 8)} ${f2(y - 4)} q9 6 17 8`, K.lime, 5.5)).join(''),
+  // Procurando: a lente direita fica atrás da lupa.
+  mira: () => ln(`M${f2(LENS[0][0] - 2)} ${f2(LENS[0][1] - 2)} h12`, K.lime, 6),
+};
+const MOUTH = {
+  aberta: p(`M${NOSE.x - 9} ${f2(NOSE.y + 18)} Q${NOSE.x} ${f2(NOSE.y + 33)} ${NOSE.x + 9} ${f2(NOSE.y + 18)} Z`, K.ink),
+  o: el(NOSE.x + 4, NOSE.y + 23, 4, 5, K.ink),
+  torta: ln(`M${NOSE.x - 10} ${f2(NOSE.y + 22)} q5 -5 10 0 q5 5 10 -2`, K.ink, 4.5),
+  triste: ln(`M${NOSE.x - 9} ${f2(NOSE.y + 25)} q9 -7 18 0`, K.ink, 4.5),
+  calma: ln(`M${NOSE.x - 6} ${f2(NOSE.y + 21)} q6 3 12 0`, K.ink, 4),
 };
 
-// Medidas fixas, iguais em todas as poses.
-const CX = 130;
-const GROUND = 214;
-const EYE_Y = 102;
-const EYES_X = [112, 148];
-const STROKE = 5; // traço de olhos e boca
-const RIM = 7; // profundidade da sombra lima
-const BODY = 'M60 214 C56 152 82 132 86 94 C90 58 106 42 130 42 C154 42 170 58 174 94 C178 132 204 152 200 214 Z';
-const SHOULDER = { left: [92, 150], right: [168, 150] };
-const SHADES = 'M0 22 C30 0 112 0 140 20 L134 44 C110 54 88 48 70 38 C52 50 28 54 6 44 Z';
-
-const n = (v) => Number(v.toFixed(2));
-const svg = (body) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 260">${body}</svg>`;
-const g = (inner, t = '', extra = '') => `<g${t ? ` transform="${t}"` : ''}${extra}>${inner}</g>`;
-const path = (d, fill, extra = '') => `<path d="${d}" fill="${fill}"${extra}/>`;
-const line = (d, color, w, extra = '') =>
-  `<path d="${d}" fill="none" stroke="${color}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"${extra}/>`;
-const circle = (cx, cy, r, fill, extra = '') => `<circle cx="${n(cx)}" cy="${n(cy)}" r="${r}" fill="${fill}"${extra}/>`;
-const ellipse = (cx, cy, rx, ry, fill, extra = '') => `<ellipse cx="${n(cx)}" cy="${n(cy)}" rx="${rx}" ry="${ry}" fill="${fill}"${extra}/>`;
-const glyph = (ch, x, y, size, fill, extra = '') => path(bungeeGlyph(ch, x, y, size).d, fill, extra);
-
-let uid = 0;
-const id = (p) => `${p}-${++uid}`;
-
-function extrude(inner, depth, color) {
-  const solid = inner.replace(/fill="(?!none)[^"]*"/g, `fill="${color}"`).replace(/stroke="[^"]*"/g, `stroke="${color}"`);
-  return Array.from({ length: depth }, (_, i) => g(solid, `translate(${depth - i} ${depth - i})`)).join('');
+/** Cabeça-adesivo: contorno de papel em volta do "O" e dos óculos, depois o rosto. */
+function sticker({ look = 'neutro', mouth = null, rot = -4 }) {
+  const border = `<path d="${HEAD}" fill="${K.paper}" stroke="${K.paper}" stroke-width="${OUTLINE * 2}" stroke-linejoin="round"/>` +
+    g(`<path d="${SHADES}" fill="${K.paper}" stroke="${K.paper}" stroke-width="${f2((OUTLINE * 2) / GS)}" stroke-linejoin="round"/>`, `translate(${f2(GX)} ${f2(GY)}) scale(${f2(GS)})`);
+  const face = p(HEAD, K.lime) + g(p(SHADES, K.ink), `translate(${f2(GX)} ${f2(GY)}) scale(${f2(GS)})`) +
+    LOOK[look]() + el(NOSE.x, NOSE.y, 15 * S, 10.5 * S, K.ink) + (mouth ? MOUTH[mouth] : '');
+  return g(border + face, `rotate(${rot} 130 ${MID})`);
 }
 
-function aboveGround(inner) {
-  const c = id('chao');
-  return `<clipPath id="${c}"><rect x="-60" y="-200" width="380" height="${GROUND + 200}"/></clipPath>${g(inner, '', ` clip-path="url(#${c})"`)}`;
+/** Mão de pá: palma lima-escuro com contorno e quatro garras redondas (apontam para -y). */
+function paw(x, y, angle, s = 1) {
+  const claws = [-11, -3.7, 3.7, 11].map((cx, i) => {
+    const len = i === 0 || i === 3 ? 14 : 18;
+    return `<rect x="${f2(cx - 3.8)}" y="${f2(-6 - len)}" width="7.6" height="${len + 6}" rx="3.8" fill="${K.paper}" stroke="${K.ink}" stroke-width="3"/>`;
+  }).join('');
+  return g(claws + el(0, 0, 19, 13.5, K.limeDeep, ` stroke="${K.ink}" stroke-width="4"`) + ln('M-9 3 q9 5 18 0', K.ink, 2.5, ' opacity=".3"'), `translate(${f2(x)} ${f2(y)}) rotate(${f2(angle)}) scale(${s})`);
+}
+// As duas mãos apoiadas na borda de baixo, garras para fora.
+const leftHand = () => paw(88, BOTTOM, 174);
+const bothHands = () => leftHand() + paw(172, BOTTOM, 186);
+
+/** Glifo da Bungee em lima com a sombra de papel do "Ê" do logo. */
+function sign(ch, x, y, size, rot, opacity = 1) {
+  const q = bungeeGlyph(ch, x, y, size);
+  const c = [f2((q.bb.x1 + q.bb.x2) / 2), f2((q.bb.y1 + q.bb.y2) / 2)];
+  const d = f2(size * 0.065);
+  return g(g(p(q.d, K.paper), `translate(${d} ${d})`) + p(q.d, K.lime), `rotate(${rot} ${c[0]} ${c[1]})`, opacity < 1 ? ` opacity="${opacity}"` : '');
 }
 
-function hole() {
-  return ellipse(CX, 216, 104, 12, P.hole) + `<rect x="18" y="213" width="224" height="8" rx="4" fill="${UI.border}"/>`;
+/** Lupa simples (cabo, aro e vidro, olho aumentado em lima), segura pela pata atravessada no cabo. */
+function magnifier() {
+  const cx = LENS[1][0] + 4;
+  const cy = LENS[1][1] + 2;
+  const from = [cx + 18, cy + 18];
+  const to = [cx + 56, cy + 58];
+  const phi = (Math.atan2(to[1] - from[1], to[0] - from[0]) * 180) / Math.PI;
+  const handle = `M${f2(from[0])} ${f2(from[1])} L${f2(to[0])} ${f2(to[1])}`;
+  return ln(handle, K.paper, 19) + ln(handle, K.ink, 10) + ci(cx, cy, 29, K.paper) + ci(cx, cy, 24, K.ink) + ci(cx, cy, 9, K.lime) +
+    paw(cx + 40, cy + 41, phi - 90, 0.95);
 }
-
-/** Mão de pá: palma larga; cinco garras curtas, levemente curvas e de ponta arredondada. */
-function spade() {
-  const claw = 'M-4.6 1 V-6 C-4.6 -11 -2.4 -14.6 0.8 -15.4 C3.6 -15 4.6 -11.6 4.6 -7.5 V1 Z';
-  const claws = [-17, -8.5, 0, 8.5, 17]
-    .map((x, i) => path(claw, P.claw, ` transform="translate(${x} ${-13 + Math.abs(i - 2) * 2.5}) rotate(${(i - 2) * 9})"`))
-    .join('');
-  const palm = path('M-24 -5 C-24 -15 -15 -18 0 -18 C15 -18 24 -15 24 -5 L22 8 C20 17 11 20 0 20 C-11 20 -20 17 -22 8 Z', P.pink);
-  return claws + palm;
-}
-
-const hand = ({ at: [x, y], angle, scale = 1 }) => {
-  const [sx, sy] = Array.isArray(scale) ? scale : [scale, scale];
-  return g(spade(), `translate(${x} ${y}) rotate(${angle}) scale(${sx} ${sy})`);
-};
-
-/** Braço curvo (ombro → cotovelo → pulso), com contorno discreto para se separar do corpo. */
-function curvedArm(d) {
-  return line(d, P.furEdge, 30) + line(d, P.fur, 24);
-}
-
-// Mãos por pose. "apoio": na borda da toca, garras por cima do chão.
-const HANDS = {
-  apoio: { left: { at: [88, 204], angle: 172 }, right: { at: [172, 204], angle: 188 } },
-  // Dormindo: mãos deitadas e sobrepostas, como um travesseiro sob o queixo.
-  descanso: { left: { at: [109, 204], angle: 166, scale: 0.9 }, right: { at: [153, 205], angle: 196, scale: 0.9 } },
-};
-
-const EYES = {
-  aberto: () => EYES_X.map((x) => circle(x, EYE_Y, 7, P.ink) + circle(x + 2.5, EYE_Y - 2.5, 2.5, P.paper)).join(''),
-  feliz: () => EYES_X.map((x) => line(`M${x - 8} ${EYE_Y + 3} Q${x} ${EYE_Y - 8} ${x + 8} ${EYE_Y + 3}`, P.ink, STROKE)).join(''),
-  fechado: () => EYES_X.map((x) => line(`M${x - 8} ${EYE_Y - 1} Q${x} ${EYE_Y + 6} ${x + 8} ${EYE_Y - 1}`, P.ink, STROKE)).join(''),
-  // Olhando ao longe: olhos semicerrados (pálpebra reta em cima), mirando para a direita.
-  ao_longe: () => EYES_X.map((x) => path(`M${x - 7} ${EYE_Y - 1} H${x + 7} A7 6 0 0 1 ${x - 7} ${EYE_Y - 1} Z`, P.ink) + circle(x + 4.5, EYE_Y + 0.5, 2, P.paper)).join(''),
-  // Confuso: um olho arregalado e o outro apertado (sem cara de "derrota").
-  // Confuso: olhos de tamanhos diferentes (um arregalado, outro pequeno), sem piscadela.
-  confuso: () => circle(112, EYE_Y - 1, 9, P.ink) + circle(115, EYE_Y - 4, 3, P.paper) + circle(148, EYE_Y + 1, 4.5, P.ink),
-};
-
-const MOUTHS = {
-  sorriso: line('M120 158 Q130 166 140 158', P.ink, STROKE),
-  aberta: path('M119 154 Q130 172 141 154 Z', P.ink),
-  o: ellipse(130, 160, 5, 6, P.ink),
-  torta: line('M118 160 Q124 154 130 160 Q136 166 142 158', P.ink, STROKE),
-  calma: line('M124 160 Q130 163 136 160', P.ink, STROKE - 1),
-};
-
-function snout({ tilt = 0, whiskers = true } = {}) {
-  const w = whiskers ? line('M118 128 L96 122 M118 136 L98 140 M142 128 L164 122 M142 136 L162 140', P.furLight, 3.5) : '';
-  const s = path('M117 110 Q130 103 143 110 L138 136 Q130 144 122 136 Z', P.pink) + ellipse(130, 138, 8.5, 7, P.pinkDeep) +
-    circle(127, 141, 1.8, P.ink) + circle(133, 141, 1.8, P.ink);
-  return g(w + s, tilt ? `rotate(${tilt} 130 120)` : '');
-}
-
-function glasses({ glint = true, tilt = 0 } = {}) {
-  const shine = glint ? line('M20 20 L46 14 M94 14 L120 20', UI.lime, 8) : '';
-  return g(path(SHADES, P.ink) + shine, `rotate(${tilt} 130 66) translate(86 50) scale(0.63)`);
-}
-
-function body() {
-  const c = id('corpo');
-  return aboveGround(extrude(path(BODY, P.hole), RIM, UI.lime)) + path(BODY, P.fur) +
-    `<clipPath id="${c}"><path d="${BODY}"/></clipPath>` + ellipse(CX, 200, 46, 50, P.furLight, ` clip-path="url(#${c})" opacity="0.45"`);
-}
-
-/**
- * Toupeira completa. `hands`: chave de HANDS; `arm`: braço direito livre
- * (aceno ou coçando a cabeça) no lugar da mão direita apoiada.
- */
-function mole({ eyes = 'aberto', mouth = 'sorriso', hands = 'apoio', arm = null, glassesOpt = {}, snoutTilt = 0, faceTilt = 0, whiskers = true }) {
-  const h = HANDS[hands];
-  const face = glasses(glassesOpt) + EYES[eyes]() + snout({ tilt: snoutTilt, whiskers }) + MOUTHS[mouth];
-  const handsArt = hand(h.left) + (arm ? curvedArm(arm.d) + hand(arm.hand) : hand(h.right));
-  return body() + g(face, faceTilt ? `rotate(${faceTilt} 130 120)` : '') + handsArt;
-}
-
-/** Só a cabeça e o corpo, sem mãos nem bigodes: para o carregando, em tamanho pequeno. */
-function head() {
-  return body() + glasses() + EYES.aberto() + snout({ whiskers: false }) + MOUTHS.sorriso;
-}
-
-const WAVE = line('M240 56 Q252 70 248 88 M250 42 Q268 62 262 94', UI.lime, 5);
 
 export const poses = {
-  acenando: () =>
-    svg(hole() + mole({
-      eyes: 'feliz',
-      mouth: 'aberta',
-      arm: { d: 'M160 158 Q204 150 206 110', hand: { at: [210, 92], angle: 14 } },
-    }) + WAVE),
-  // Toupeira acha as coisas pelo faro: focinho erguido, cheirando o ar.
-  // Procurando: olhando ao longe com a mão em cima dos olhos, como aba de boné.
-  procurando: () =>
-    svg(hole() + mole({
-      eyes: 'ao_longe',
-      mouth: 'o',
-      faceTilt: 8,
-      // Mão achatada (vista de baixo), como aba sobre os olhos; garras para a esquerda.
-      arm: { d: 'M166 150 L212 124 L184 94', hand: { at: [150, 88], angle: -90, scale: [0.5, 0.86] } },
-    })),
-  // Erro: confusa. Cabeça inclinada, um olho arregalado e o outro apertado,
-  // boca torta, óculos tortos e um "?". As duas mãos ficam na toca (sem aceno).
-  erro: () =>
-    svg(hole() + mole({ eyes: 'confuso', mouth: 'torta', faceTilt: -7, glassesOpt: { glint: false, tilt: -10 } }) +
-      glyph('?', 196, 84, 48, UI.lime)),
-  dormindo: () =>
-    svg(hole() + mole({ eyes: 'fechado', mouth: 'calma', hands: 'descanso', glassesOpt: { glint: false }, faceTilt: 5 }) +
-      glyph('Z', 188, 76, 32, UI.lime) + glyph('Z', 216, 46, 22, UI.lime, ' opacity="0.6"')),
-  // Quadro estático do carregando (o app anima as três cabeças).
-  carregando: () => {
-    const S = 0.5;
-    const xs = [44, 130, 216];
-    const sinks = [0, 26, 56];
-    const heads = xs.map((x, i) => {
-      const c = id('toca');
-      const inner = `<clipPath id="${c}"><rect x="-60" y="-200" width="380" height="414"/></clipPath>` + g(g(head(), `translate(0 ${sinks[i]})`), '', ` clip-path="url(#${c})"`);
-      return g(inner, `translate(${n(x - 130 * S)} ${n(200 - 214 * S)}) scale(${S})`);
-    });
-    const holes = xs.map((x) => ellipse(x, 201, 36, 5, P.hole) + `<rect x="${x - 38}" y="198" width="76" height="6" rx="3" fill="${UI.border}"/>`);
-    return svg(heads.join('') + holes.join(''));
-  },
+  acenando: () => svg(sticker({ look: 'feliz', mouth: 'aberta' }) + leftHand() + paw(220, 108, 20)),
+  procurando: () => svg(sticker({ look: 'mira', mouth: 'o', rot: 3 }) + g(magnifier(), `rotate(3 130 ${MID})`) + leftHand()),
+  triste: () => svg(sticker({ look: 'triste', mouth: 'triste', rot: -3 }) + bothHands()),
+  erro: () => svg(sticker({ look: 'confuso', mouth: 'torta', rot: -5 }) + bothHands() + sign('?', 210, 62, 54, 12)),
+  dormindo: () => svg(sticker({ look: 'fechado', mouth: 'calma', rot: 2 }) + bothHands() + sign('Z', 208, 62, 38, 10) + sign('Z', 236, 30, 24, 14, 0.7)),
+  // Quadro parado do carregando (web e "menos movimento"): três cabeças, a do meio no alto.
+  // No app, elas saem uma por vez de trás da fita (CarregandoAnimado).
+  carregando: () => svg([50, 130, 210].map((x, i) => g(sticker({ rot: [-5, 0, 5][i] }), `translate(${f2(x - 130 * 0.36)} ${f2(180 - (i === 1 ? 26 : 0) - (Y + H) * 0.36)}) scale(0.36)`)).join('')),
 };
 
-/** Cabeça isolada (sem mãos nem bigodes), para a animação do carregando no app. */
-export const headArt = () => svg(head());
+/** Cabeça isolada (quadro 272 × 200), para a animação do carregando e tamanhos pequenos. */
+export const headArt = () => svg(sticker({ rot: -4 }), '-6 26 272 200');

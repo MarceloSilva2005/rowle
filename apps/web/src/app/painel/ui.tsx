@@ -35,7 +35,7 @@ export function EstadoVazio({
   );
 }
 
-/** Espera de carregamento: as três toupeiras saindo da toca. */
+/** Espera de carregamento: as três toupeiras (quadro parado da animação do app). */
 export function Carregando({ texto = "Carregando…" }: { texto?: string }) {
   return (
     <div className="carregando" role="status">

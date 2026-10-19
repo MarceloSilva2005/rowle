@@ -102,7 +102,7 @@ export default function Roles() {
           {catalog.sessions.length === 0 ? (
             <EstadoTela pose="dormindo" title="Nenhum rolê marcado por enquanto" text="A agenda é atualizada todo dia." action={{ label: 'Atualizar', onPress: retry }} />
           ) : (
-            <EstadoTela pose="procurando" title="Nenhum rolê com esses filtros" action={{ label: 'Ver todos os rolês', onPress: () => setFilters({ day: null, categories: [], regions: [], freeOnly: false }) }} />
+            <EstadoTela pose="triste" title="Nenhum rolê com esses filtros" action={{ label: 'Ver todos os rolês', onPress: () => setFilters({ day: null, categories: [], regions: [], freeOnly: false }) }} />
           )}
         </View>
       ) : height > 0 ? (

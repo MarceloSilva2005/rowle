@@ -17,9 +17,9 @@ export const colors = {
 
 /** Cores do mascote; não usar em texto ou interface. */
 export const mascotColors = {
-  fur: '#78817B',
-  belly: '#A3ADA6',
-  nose: '#FF9DB0',
+  body: '#C6FF36', // o "O" lima do logo
+  outline: '#F3F5F0', // contorno de adesivo
+  paw: '#A6DB22',
   claw: '#F3F5F0',
 } as const;
 

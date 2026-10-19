@@ -150,7 +150,7 @@ function Results({ catalog, query, pick, onClearPick }: { catalog: Catalog; quer
           <Text style={styles.count}>{items.length === 1 ? '1 rolê' : `${items.length} rolês`}</Text>
         </View>
       }
-      ListEmptyComponent={<EstadoTela pose="procurando" title="Nada encontrado" text="Tente outra palavra ou o nome do lugar." />}
+      ListEmptyComponent={<EstadoTela pose="triste" title="Nada encontrado" text="Tente outra palavra ou o nome do lugar." />}
       renderItem={({ item: { session: s } }) => {
         const region = catalog.regions.get(s.regionId);
         return (

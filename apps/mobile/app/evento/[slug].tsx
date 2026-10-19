@@ -28,7 +28,7 @@ export default function Ficha() {
         {state.status === 'loading' ? (
           <EstadoTela pose="carregando" title="Abrindo o rolê…" />
         ) : state.status === 'not-found' ? (
-          <EstadoTela pose="procurando" title="Esse rolê não está mais no Rowlê" text="Pode ter sido retirado pela curadoria." action={{ label: 'Ver outros rolês', onPress: () => router.replace('/') }} />
+          <EstadoTela pose="triste" title="Esse rolê não está mais no Rowlê" text="Pode ter sido retirado pela curadoria." action={{ label: 'Ver outros rolês', onPress: () => router.replace('/') }} />
         ) : (
           <EstadoTela pose="erro" title="Não deu para abrir o rolê" text="Confira a conexão e tente de novo." action={{ label: 'Tentar de novo', onPress: retry }} />
         )}

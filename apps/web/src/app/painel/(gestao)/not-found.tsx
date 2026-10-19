@@ -4,7 +4,7 @@ import { Mascote } from "../ui";
 export default function PainelNaoEncontrado() {
   return (
     <section className="pagina-erro">
-      <Mascote pose="procurando" size={150} />
+      <Mascote pose="triste" size={150} />
       <h1>Cadastro não encontrado</h1>
       <p className="muted">O link pode estar errado ou o cadastro foi excluído.</p>
       <div className="acoes">

@@ -15,10 +15,17 @@ interface Props {
 export function EstadoTela({ pose, title, text, action }: Props) {
   return (
     <View style={styles.container}>
-      {pose === 'carregando' ? <CarregandoAnimado /> : <Mascote pose={pose} />}
-      <Text style={styles.title} accessibilityRole="header">
-        {title}
-      </Text>
+      {/* No carregando, o título vai escrito na fita da animação. */}
+      {pose === 'carregando' ? (
+        <CarregandoAnimado texto={title} />
+      ) : (
+        <>
+          <Mascote pose={pose} />
+          <Text style={styles.title} accessibilityRole="header">
+            {title}
+          </Text>
+        </>
+      )}
       {text ? <Text style={styles.text}>{text}</Text> : null}
       {action ? (
         <Pressable

@@ -37,8 +37,10 @@ describe('contraste das cores', () => {
 });
 
 describe('toupeira', () => {
-  // Elemento gráfico (WCAG 1.4.11): o corpo precisa se destacar do fundo e das superfícies.
-  it.each(['bg', 'surface'] as const)('pelo tem contraste de 3:1 ou mais com %s', (bg) => {
-    expect(contrastRatio(mascotColors.fur, colors[bg])).toBeGreaterThanOrEqual(3);
+  // Elemento gráfico (WCAG 1.4.11): o adesivo e as mãos precisam se destacar do fundo.
+  it.each(['bg', 'surface'] as const)('contorno, corpo e mãos têm contraste de 3:1 ou mais com %s', (bg) => {
+    for (const c of [mascotColors.outline, mascotColors.body, mascotColors.paw]) {
+      expect(contrastRatio(c, colors[bg])).toBeGreaterThanOrEqual(3);
+    }
   });
 });
