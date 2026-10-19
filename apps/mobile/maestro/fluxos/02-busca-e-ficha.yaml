@@ -19,7 +19,6 @@ name: Busca e ficha do evento
 - tapOn: "Limpar busca"
 - tapOn: "Artista, lugar ou rolê"
 - inputText: "eletrico"
-- hideKeyboard
 - assertVisible: "1 rolê"
 - tapOn: "Show Elétrico do Maestro.*"
 - extendedWaitUntil:

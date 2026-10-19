@@ -20,7 +20,7 @@ module.exports = {
     name: 'Rowlê',
     slug: 'rowle',
     scheme: 'rowle',
-    version: '0.0.0',
+    version: '0.2.0',
     orientation: 'portrait',
     userInterfaceStyle: 'dark',
     backgroundColor: BG,
@@ -28,6 +28,7 @@ module.exports = {
     icon: './assets/icon.png',
     android: {
       package: 'br.com.rowle',
+      versionCode: 2,
       adaptiveIcon: {
         foregroundImage: './assets/adaptive-icon-foreground.png',
         monochromeImage: './assets/adaptive-icon-monochrome.png',
@@ -47,6 +48,7 @@ module.exports = {
         },
       ],
       ['expo-font', { fonts }],
+      './plugins/with-release-signing',
     ],
   },
 };

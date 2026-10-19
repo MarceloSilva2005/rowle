@@ -4,7 +4,6 @@ appId: br.com.rowle
 - tapOn: "Explorar"
 - tapOn: "Artista, lugar ou rolê"
 - inputText: ${BUSCA}
-- hideKeyboard
 - assertVisible: "1 rolê"
 - tapOn: "${TITULO}.*"
 - extendedWaitUntil:

@@ -4,11 +4,16 @@ name: Navegação entre rolês e abas
 ---
 - runFlow: ../comum/abrir.yaml
 - assertVisible: "1 de .*"
-- swipe:
-    direction: UP
-- extendedWaitUntil:
-    visible: "2 de .*"
-    timeout: 5000
+- retry:
+    maxRetries: 2
+    commands:
+      - swipe:
+          start: 50%, 70%
+          end: 50%, 20%
+          duration: 400
+      - extendedWaitUntil:
+          visible: "2 de .*"
+          timeout: 5000
 - tapOn: "Agenda"
 - tapOn: ".* ${AMANHA}, .*rol.*"
 - assertVisible: "Forró Maestro na Praça.*"

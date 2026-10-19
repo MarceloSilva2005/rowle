@@ -6,13 +6,11 @@ name: Casos negativos
 - tapOn: "Explorar"
 - tapOn: "Artista, lugar ou rolê"
 - inputText: "zzzz nada"
-- hideKeyboard
 - assertVisible: "Nada encontrado"
 # Cancelado sai da descoberta.
 - tapOn: "Limpar busca"
 - tapOn: "Artista, lugar ou rolê"
 - inputText: "sarau cancelado maestro"
-- hideKeyboard
 - assertVisible: "Nada encontrado"
 # Quem tem o link de um rolê cancelado vê o aviso e o motivo, sem botão de compra.
 - openLink: "rowle:///evento/maestro-cancelado"
