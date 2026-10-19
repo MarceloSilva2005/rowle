@@ -1,0 +1,8 @@
+# Abre o app do zero (sem salvos) e espera o primeiro rolê aparecer.
+appId: br.com.rowle
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: ".*deslize para o próximo"
+    timeout: 30000

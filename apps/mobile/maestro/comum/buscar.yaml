@@ -1,0 +1,12 @@
+# Busca na aba Explorar e abre o primeiro resultado. Usa ${BUSCA} e ${TITULO}.
+appId: br.com.rowle
+---
+- tapOn: "Explorar"
+- tapOn: "Artista, lugar ou rolê"
+- inputText: ${BUSCA}
+- hideKeyboard
+- assertVisible: "1 rolê"
+- tapOn: "${TITULO}.*"
+- extendedWaitUntil:
+    visible: "Quando"
+    timeout: 15000

@@ -21,8 +21,12 @@ function fetchWithTimeout(input: RequestInfo | URL, init?: RequestInit): Promise
 /**
  * Cliente só de leitura pública (papel anon). O app não tem login: nada de
  * sessão guardada nem renovação de token.
+ *
+ * Sem as repetições automáticas do PostgREST: com 3 novas tentativas, o servidor fora
+ * do ar levava uns 50 s até a tela de erro. A pessoa tenta de novo pelo botão.
  */
 export const supabase = createClient<Database>(url, key, {
   auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+  db: { retry: false },
   global: { fetch: fetchWithTimeout },
 });

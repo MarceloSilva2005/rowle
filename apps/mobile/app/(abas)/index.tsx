@@ -48,6 +48,13 @@ export default function Roles() {
     () => (catalog && previa !== 'vazio' ? onePerEvent(applyFilters(catalog.sessions, filters, catalog.loadedAt)) : []),
     [catalog, filters, previa],
   );
+  // Filtros mudam também pela Agenda: a lista recomeça do primeiro rolê.
+  const listKey = JSON.stringify(filters);
+  const [keyShown, setKeyShown] = useState(listKey);
+  if (listKey !== keyShown) {
+    setKeyShown(listKey);
+    setIndex(0);
+  }
   const pages: Page[] = useMemo(() => (items.length ? [...items.map((item) => ({ kind: 'event' as const, item })), { kind: 'end' as const }] : []), [items]);
 
   // A FlatList exige a mesma função sempre (useState com valor inicial é estável).
@@ -100,6 +107,7 @@ export default function Roles() {
         </View>
       ) : height > 0 ? (
         <FlatList
+          key={listKey}
           data={pages}
           keyExtractor={(p) => (p.kind === 'event' ? p.item.session.sessionId : 'fim')}
           renderItem={({ item: p, index: i }) =>
@@ -139,7 +147,6 @@ export default function Roles() {
         onApply={(f) => {
           setFilters(f);
           setSheet(false);
-          setIndex(0);
         }}
       />
     </View>

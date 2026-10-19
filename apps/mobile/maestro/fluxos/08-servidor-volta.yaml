@@ -1,0 +1,10 @@
+# Continua da tela de erro do fluxo anterior, com a API de volta.
+appId: br.com.rowle
+name: Servidor de volta
+tags:
+  - servidor-fora
+---
+- tapOn: "Tentar de novo"
+- extendedWaitUntil:
+    visible: ".*deslize para o próximo"
+    timeout: 30000

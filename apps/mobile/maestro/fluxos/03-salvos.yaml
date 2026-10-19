@@ -1,0 +1,32 @@
+# Salvar, continuar salvo depois de fechar o app, remover.
+appId: br.com.rowle
+name: Salvos no aparelho
+---
+- runFlow: ../comum/abrir.yaml
+- runFlow:
+    file: ../comum/buscar.yaml
+    env:
+      BUSCA: "forro maestro"
+      TITULO: "Forró Maestro na Praça"
+- tapOn: "Salvar"
+- assertVisible: "Remover dos salvos"
+- tapOn: "Voltar"
+- tapOn: "Você"
+- assertVisible: "Forró Maestro na Praça.*"
+- tapOn: "Já foram"
+- assertVisible: "Nenhum rolê passado"
+- tapOn: "Próximos"
+- stopApp
+- launchApp
+- extendedWaitUntil:
+    visible: ".*deslize para o próximo"
+    timeout: 30000
+- tapOn: "Você"
+- tapOn: "Forró Maestro na Praça.*"
+- extendedWaitUntil:
+    visible: "Remover dos salvos"
+    timeout: 15000
+- tapOn: "Remover dos salvos"
+- assertVisible: "Salvar"
+- tapOn: "Voltar"
+- assertVisible: "Nada salvo ainda"

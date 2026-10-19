@@ -1,0 +1,34 @@
+# Busca sem acento e a ficha com preço, local, classificação e ingresso.
+appId: br.com.rowle
+name: Busca e ficha do evento
+---
+- runFlow: ../comum/abrir.yaml
+- runFlow:
+    file: ../comum/buscar.yaml
+    env:
+      BUSCA: "forro maestro"
+      TITULO: "Forró Maestro na Praça"
+- assertVisible: "Grátis"
+- assertVisible: "Casa do Teste Maestro"
+- assertVisible: "Classificação indicativa: .*"
+- assertVisible: "Conferido pela curadoria em .*"
+# Sem link de ingresso, o botão principal leva à rota.
+- assertVisible: "Como chegar.*"
+- assertNotVisible: "Comprar ingresso.*"
+- tapOn: "Voltar"
+- tapOn: "Limpar busca"
+- tapOn: "Artista, lugar ou rolê"
+- inputText: "eletrico"
+- hideKeyboard
+- assertVisible: "1 rolê"
+- tapOn: "Show Elétrico do Maestro.*"
+- extendedWaitUntil:
+    visible: "Comprar ingresso.*"
+    timeout: 15000
+- assertVisible: "Classificação indicativa: .*18.*"
+# Duas datas: a segunda pode ser escolhida.
+- tapOn:
+    text: ".*22h.*"
+    index: 1
+- assertVisible: "Comprar ingresso.*"
+- tapOn: "Voltar"

@@ -1,0 +1,22 @@
+# Só grátis, combinação sem resultado bloqueada e limpar filtros.
+appId: br.com.rowle
+name: Filtros
+---
+- runFlow: ../comum/abrir.yaml
+- tapOn: "Filtros"
+- assertVisible: "Filtrar rolês"
+- tapOn: "Limpar"
+- tapOn: "Só grátis"
+- tapOn: "Festas e vida noturna"
+# Nenhum rolê grátis nessa categoria: o botão fica desligado.
+- assertVisible: "Nenhum rolê com esses filtros"
+- tapOn: "Nenhum rolê com esses filtros"
+- assertVisible: "Filtrar rolês"
+- tapOn: "Festas e vida noturna"
+- tapOn: "Ver .* rol.*"
+- assertVisible: "Grátis"
+- assertNotVisible: 'R\$.*'
+- tapOn: "Filtros"
+- tapOn: "Limpar"
+- tapOn: "Ver .* rol.*"
+- assertVisible: ".*deslize para o próximo"

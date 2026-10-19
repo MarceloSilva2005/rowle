@@ -1,0 +1,20 @@
+# Feed um por tela, troca de abas e Agenda com o dia escolhido.
+appId: br.com.rowle
+name: Navegação entre rolês e abas
+---
+- runFlow: ../comum/abrir.yaml
+- assertVisible: "1 de .*"
+- swipe:
+    direction: UP
+- extendedWaitUntil:
+    visible: "2 de .*"
+    timeout: 5000
+- tapOn: "Agenda"
+- tapOn: ".* ${AMANHA}, .*rol.*"
+- assertVisible: "Forró Maestro na Praça.*"
+- tapOn: "Explorar"
+- assertVisible: "Categorias"
+- tapOn: "Você"
+- assertVisible: "Nada salvo ainda"
+- tapOn: "Ver rolês"
+- assertVisible: ".*deslize para o próximo"

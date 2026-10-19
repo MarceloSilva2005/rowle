@@ -1,0 +1,26 @@
+# Sem rede ao abrir; a rede volta e "Tentar de novo" carrega o feed.
+appId: br.com.rowle
+name: Sem internet
+---
+- setAirplaneMode: enabled
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "Sem internet"
+    timeout: 30000
+- assertVisible: "Tentar de novo"
+- setAirplaneMode: disabled
+# A rede do emulador leva alguns segundos para voltar.
+- repeat:
+    times: 6
+    while:
+      notVisible: ".*deslize para o próximo"
+    commands:
+      - tapOn:
+          text: "Tentar de novo"
+          optional: true
+      - extendedWaitUntil:
+          visible: ".*deslize para o próximo"
+          timeout: 10000
+          optional: true
+- assertVisible: ".*deslize para o próximo"

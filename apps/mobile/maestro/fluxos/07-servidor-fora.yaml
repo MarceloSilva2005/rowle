@@ -1,0 +1,12 @@
+# Com a internet ligada mas o servidor sem responder (o run.sh pausa a API antes).
+appId: br.com.rowle
+name: Servidor fora do ar
+tags:
+  - servidor-fora
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "Não deu para carregar os rolês"
+    timeout: 25000
+- assertVisible: "Tentar de novo"
