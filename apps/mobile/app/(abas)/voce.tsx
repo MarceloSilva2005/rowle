@@ -72,6 +72,7 @@ export default function Voce() {
               categoryName={catalog?.categories.get(e.categoryId) ?? ''}
               categorySlug={catalog?.categorySlugs.get(e.categoryId) ?? 'outros'}
               seed={e.slug}
+              coverPath={e.coverPath}
               place={catalog?.regions.get(e.regionId) ? `${e.venueName} · ${catalog.regions.get(e.regionId)}` : e.venueName}
               price={e.priceText}
               accessibilityLabel={`${e.title}. ${formatCardDate(e.startsAt, e.timeConfirmed, now)}. ${e.venueName}`}

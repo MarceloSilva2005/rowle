@@ -6,6 +6,7 @@ import { FlatList, Pressable, ScrollView, StyleSheet, Text, TextInput, View, use
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useCatalog, type Catalog } from '../../src/data/catalog';
 import { useSaved } from '../../src/data/saved';
+import { coverUri } from '../../src/supabase';
 import { colors, fontFamily, radius, space } from '../../src/theme';
 import { Cover, Shade } from '../../src/ui/Cover';
 import { EstadoTela } from '../../src/ui/EstadoTela';
@@ -109,7 +110,7 @@ function Home({ catalog, onPick }: { catalog: Catalog; onPick: (p: Pick) => void
           <View style={styles.grid}>
             {weekend.map(({ session: s }) => (
               <Pressable key={s.sessionId} onPress={() => router.push({ pathname: '/evento/[slug]', params: { slug: s.eventSlug, sessao: s.sessionId } })} style={[styles.tile, { width: tileW }]} accessibilityRole="button" accessibilityLabel={`${s.title}. ${formatCardDate(s.startsAt, s.timeConfirmed, catalog.loadedAt)}. ${formatPrice(s.price)}`}>
-                <Cover category={catalog.categorySlugs.get(s.categoryId) ?? 'outros'} seed={s.eventSlug} width={tileW} height={190} />
+                <Cover category={catalog.categorySlugs.get(s.categoryId) ?? 'outros'} seed={s.eventSlug} uri={coverUri(s.coverPath)} width={tileW} height={190} />
                 <Shade stops={[[0.35, 0], [1, 0.94]]} />
                 {s.price.kind === 'free' ? <Text style={styles.tag}>Grátis</Text> : s.isSponsored ? <Text style={styles.tag}>Patrocinado</Text> : null}
                 <View style={styles.cap}>
@@ -159,6 +160,7 @@ function Results({ catalog, query, pick, onClearPick }: { catalog: Catalog; quer
             categoryName={catalog.categories.get(s.categoryId) ?? ''}
             categorySlug={catalog.categorySlugs.get(s.categoryId) ?? 'outros'}
             seed={s.eventSlug}
+            coverPath={s.coverPath}
             place={`${formatCardDate(s.startsAt, s.timeConfirmed, catalog.loadedAt)} · ${region ?? s.venueName}`}
             price={formatPrice(s.price)}
             soldOut={s.soldOut}

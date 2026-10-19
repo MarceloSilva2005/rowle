@@ -8,6 +8,7 @@ import { openRoute, openTicket, shareEvent } from '../../src/actions';
 import { useCatalog } from '../../src/data/catalog';
 import { useEventDetail, type EventDetail, type EventSession } from '../../src/data/event';
 import { useSaved } from '../../src/data/saved';
+import { coverUri } from '../../src/supabase';
 import { colors, fontFamily, radius, space } from '../../src/theme';
 import { ClassInd } from '../../src/ui/ClassInd';
 import { Cover, Shade } from '../../src/ui/Cover';
@@ -63,6 +64,7 @@ function TopBar({ event, session }: { event?: EventDetail; session?: EventSessio
                 endsAt: session.endsAt,
                 timeConfirmed: session.timeConfirmed,
                 priceText: formatPrice(session.price),
+                coverPath: event.coverPath,
                 savedAt: new Date().toISOString(),
               })
             }
@@ -101,7 +103,7 @@ function FichaPronta({ event, initialSession }: { event: EventDetail; initialSes
     <View style={styles.screen}>
       <ScrollView contentContainerStyle={{ paddingBottom: 120 + insets.bottom }} showsVerticalScrollIndicator={false}>
         <View style={{ height: COVER_HEIGHT }}>
-          <Cover category={categorySlug} seed={event.slug} width={width} height={COVER_HEIGHT} />
+          <Cover category={categorySlug} seed={event.slug} uri={coverUri(event.coverPath)} width={width} height={COVER_HEIGHT} />
           <Shade stops={[[0, 0.6], [0.3, 0], [1, 0]]} />
         </View>
         <View style={styles.sheet}>

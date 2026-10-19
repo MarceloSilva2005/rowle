@@ -1,6 +1,6 @@
 import { coverSvg } from '@rowle/design';
-import { memo, useMemo } from 'react';
-import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
+import { memo, useMemo, useState } from 'react';
+import { Image, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import Svg, { Defs, LinearGradient, Rect, Stop, SvgXml } from 'react-native-svg';
 
 interface Props {
@@ -9,14 +9,35 @@ interface Props {
   width: number;
   height: number;
   style?: StyleProp<ViewStyle>;
+  /** Foto do evento. Enquanto carrega, ou se falhar, fica a capa gerada. */
+  uri?: string | null;
 }
 
-/** Capa gerada do evento (cartaz por categoria). Decorativa: o texto vem por cima. */
-export const Cover = memo(function Cover({ category, seed, width, height, style }: Props) {
+/**
+ * Capa do evento: a foto, quando há, por cima da capa gerada (cartaz por categoria), que
+ * aparece enquanto a foto carrega ou se ela falhar. Decorativa: o texto vem por cima.
+ */
+export const Cover = memo(function Cover({ category, seed, width, height, style, uri }: Props) {
   const xml = useMemo(() => coverSvg({ category, seed, width: Math.round(width), height: Math.round(height) }), [category, seed, width, height]);
+  const [failed, setFailed] = useState<string | null>(null);
+  const [loaded, setLoaded] = useState<string | null>(null);
+  const photo = uri && failed !== uri ? uri : null;
   return (
     <View style={[{ width, height, overflow: 'hidden' }, style]} importantForAccessibility="no-hide-descendants">
-      <SvgXml xml={xml} width={width} height={height} />
+      {/* A capa gerada sai quando a foto carrega: as duas desenhadas juntas pesam no deslizar. */}
+      {photo && loaded === photo ? null : <SvgXml xml={xml} width={width} height={height} />}
+      {photo ? (
+        <Image
+          source={{ uri: photo }}
+          style={StyleSheet.absoluteFill}
+          resizeMode="cover"
+          // Decodifica no tamanho da tela (a miniatura não precisa da foto inteira).
+          resizeMethod="resize"
+          fadeDuration={0}
+          onLoad={() => setLoaded(photo)}
+          onError={() => setFailed(photo)}
+        />
+      ) : null}
     </View>
   );
 });

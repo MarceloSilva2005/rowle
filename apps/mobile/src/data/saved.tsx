@@ -17,6 +17,8 @@ export interface SavedEvent {
   endsAt: string | null;
   timeConfirmed: boolean;
   priceText: string;
+  /** Ausente nos salvos antigos. */
+  coverPath?: string | null;
   savedAt: string;
 }
 
@@ -34,6 +36,7 @@ export function snapshot(s: DiscoverySession): SavedEvent {
     endsAt: s.endsAt,
     timeConfirmed: s.timeConfirmed,
     priceText: formatPrice(s.price),
+    coverPath: s.coverPath,
     savedAt: new Date().toISOString(),
   };
 }

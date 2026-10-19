@@ -90,6 +90,7 @@ export default function Agenda() {
                 categoryName={catalog.categories.get(s.categoryId) ?? ''}
                 categorySlug={slug}
                 seed={s.eventSlug}
+                coverPath={s.coverPath}
                 place={region ? `${s.venueName} · ${region}` : s.venueName}
                 price={formatPrice(s.price)}
                 soldOut={s.soldOut}

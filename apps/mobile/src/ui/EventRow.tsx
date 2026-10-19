@@ -1,6 +1,7 @@
 import { categoryColors } from '@rowle/design';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { colors, fontFamily, radius, space } from '../theme';
+import { coverUri } from '../supabase';
 import { Cover } from './Cover';
 
 interface Props {
@@ -8,6 +9,7 @@ interface Props {
   categoryName: string;
   categorySlug: string;
   seed: string;
+  coverPath?: string | null;
   place: string;
   price: string;
   soldOut?: boolean;
@@ -16,10 +18,10 @@ interface Props {
 }
 
 /** Linha de evento (Agenda e salvos): miniatura da capa, categoria, título, local e preço. */
-export function EventRow({ title, categoryName, categorySlug, seed, place, price, soldOut, onPress, accessibilityLabel }: Props) {
+export function EventRow({ title, categoryName, categorySlug, seed, coverPath, place, price, soldOut, onPress, accessibilityLabel }: Props) {
   return (
     <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={accessibilityLabel} style={({ pressed }) => [styles.row, pressed && { opacity: 0.85 }]}>
-      <Cover category={categorySlug} seed={seed} width={72} height={88} style={styles.thumb} />
+      <Cover category={categorySlug} seed={seed} uri={coverUri(coverPath)} width={72} height={88} style={styles.thumb} />
       <View style={styles.body}>
         <Text style={[styles.cat, { color: categoryColors[categorySlug] ?? colors.textMuted }]} numberOfLines={1}>
           {categoryName}

@@ -17,6 +17,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { openRoute, openTicket, shareEvent } from '../../src/actions';
 import { useCatalog, type Catalog } from '../../src/data/catalog';
 import { snapshot, useSaved } from '../../src/data/saved';
+import { coverUri } from '../../src/supabase';
 import { colors, fontFamily, radius, space } from '../../src/theme';
 import { ClassInd } from '../../src/ui/ClassInd';
 import { Cover, Shade } from '../../src/ui/Cover';
@@ -167,7 +168,7 @@ function RolePage({ item, catalog, height, topInset, position, total }: { item: 
 
   return (
     <View style={{ width, height }}>
-      <Cover category={slug} seed={s.eventSlug} width={width} height={height} style={StyleSheet.absoluteFill} />
+      <Cover category={slug} seed={s.eventSlug} uri={coverUri(s.coverPath)} width={width} height={height} style={StyleSheet.absoluteFill} />
       <Shade stops={[[0, 0.8], [0.22, 0], [0.42, 0], [0.76, 0.94], [1, 1]]} />
       <Pressable style={StyleSheet.absoluteFill} onPress={open} accessibilityRole="button" accessibilityLabel={`${s.title}. ${when}. ${s.venueName}${region ? `, ${region}` : ''}. ${price}. Abrir detalhes`} />
 

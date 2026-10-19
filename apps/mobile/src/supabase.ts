@@ -30,3 +30,13 @@ export const supabase = createClient<Database>(url, key, {
   db: { retry: false },
   global: { fetch: fetchWithTimeout },
 });
+
+/**
+ * Endereço da capa: um link https direto (fotos provisórias do banco local) ou um
+ * caminho no bucket público "covers" do Storage.
+ */
+export function coverUri(path: string | null | undefined): string | null {
+  if (!path) return null;
+  if (path.startsWith('https://')) return path;
+  return `${url}/storage/v1/object/public/covers/${path.split('/').map(encodeURIComponent).join('/')}`;
+}

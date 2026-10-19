@@ -28,6 +28,7 @@ export interface EventDetail {
   /** Só as sessões que ainda não acabaram, em ordem. */
   sessions: EventSession[];
   lastVerifiedAt: string | null;
+  coverPath: string | null;
 }
 
 export type EventState = { status: 'loading' } | { status: 'error' } | { status: 'not-found' } | { status: 'ready'; event: EventDetail };
@@ -35,7 +36,7 @@ export type EventState = { status: 'loading' } | { status: 'error' } | { status:
 async function fetchEvent(slug: string): Promise<EventDetail | null> {
   const { data: e, error } = await supabase
     .from('events')
-    .select('id, slug, title, description, category_id, status, status_note, age_rating, age_rating_official, accessibility_notes, organizations(name, verified)')
+    .select('id, slug, title, description, cover_path, category_id, status, status_note, age_rating, age_rating_official, accessibility_notes, organizations(name, verified)')
     .eq('slug', slug)
     .maybeSingle();
   if (error) throw error;
@@ -64,6 +65,7 @@ async function fetchEvent(slug: string): Promise<EventDetail | null> {
     accessibilityNotes: e.accessibility_notes,
     organization: org ? { name: org.name, verified: org.verified } : null,
     lastVerifiedAt: verified.data?.last_verified_at ?? null,
+    coverPath: e.cover_path,
     sessions: (sessions.data ?? [])
       .filter((s) => !sessionIsOver(s.starts_at, s.ends_at, s.time_confirmed, now))
       .flatMap((s) => {
