@@ -55,6 +55,7 @@
 
 .etiqueta-fita {
   display: inline-block;
+  font-family: var(--font-brand), sans-serif;
   padding: 2px 8px;
   background: var(--brand);
   color: var(--bg);
@@ -168,6 +169,27 @@
   }
 }
 
+/* No celular, marca e ações cabem numa linha só; o menu vem embaixo. */
+@media (max-width: 560px) {
+  .painel-topo-linha {
+    gap: 4px 8px;
+  }
+  .painel-marca {
+    gap: 6px;
+  }
+  .painel-marca .etiqueta-fita {
+    font-size: 9px;
+    padding: 2px 6px;
+  }
+  .painel-conta {
+    gap: 4px;
+  }
+  .painel-conta .painel-novo {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+}
+
 @media (max-width: 560px) {
   .painel-topo-linha {
     padding: 10px 16px 0;
@@ -202,10 +224,9 @@
 .painel h1 {
   font-family: var(--font-display), sans-serif;
   font-weight: 400;
-  font-size: clamp(32px, 5vw, 48px);
+  font-size: clamp(30px, 5vw, 40px);
   line-height: 1;
   text-transform: uppercase;
-  text-shadow: 3px 3px 0 color-mix(in srgb, var(--brand) 70%, transparent);
   letter-spacing: 0.5px;
   overflow-wrap: anywhere;
 }
@@ -240,72 +261,43 @@
   color: var(--text-muted);
 }
 
-/* Abertura de página, igual no painel e no site: cartão, título grande em caixa
-   alta com a sombra lima e a toupeira à direita. */
+/* Cabeçalho de página, igual ao do app (tela "Você"): direto no fundo, toupeira
+   pequena à esquerda, título Anton em caixa alta e ações à direita. */
 .cabecalho-pagina,
 .hero {
-  position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 12px 20px;
-  padding: 24px 28px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--raio);
-  overflow: hidden;
+  gap: 12px 16px;
 }
 
 .cabecalho-pagina > div:first-child,
 .hero > div:first-child {
+  flex: 1 1 260px;
   display: grid;
-  gap: 8px;
+  gap: 6px;
   justify-items: start;
+  min-width: 0;
 }
 
 .hero p,
 .cabecalho-pagina p {
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 15px;
   color: var(--text-muted);
-  max-width: 52ch;
+  max-width: 60ch;
 }
 
 .hero img,
 .cabecalho-pagina img {
-  width: 96px;
-  height: 96px;
-  transform: rotate(4deg);
-}
-
-.hero-grande img {
-  width: 150px;
-  height: 150px;
-}
-
-@media (max-width: 560px) {
-  .cabecalho-pagina,
-  .hero {
-    grid-template-columns: 1fr;
-    padding: 20px 18px;
-  }
-  .hero img,
-  .cabecalho-pagina img {
-    position: absolute;
-    right: -10px;
-    top: -6px;
-    width: 92px;
-    height: 92px;
-  }
-  .painel .hero h1,
-  .painel .cabecalho-pagina h1 {
-    padding-right: 76px;
-  }
+  order: -1;
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
 }
 
 /* Página de um item: voltar, título e selos empilhados, sem toupeira. */
 .painel .cabecalho-simples {
-  grid-template-columns: minmax(0, 1fr);
+  display: grid;
   justify-items: start;
   gap: 8px;
 }
@@ -335,21 +327,6 @@
 
 .secao-titulo + * {
   clear: both;
-}
-
-.secao-num {
-  display: inline-grid;
-  place-items: center;
-  flex-shrink: 0;
-  width: 34px;
-  height: 34px;
-  border-radius: 9px;
-  background: var(--brand);
-  color: var(--bg);
-  font-family: var(--font-display), sans-serif;
-  font-size: 20px;
-  transform: rotate(-5deg);
-  box-shadow: 3px 3px 0 var(--text);
 }
 
 .painel .obrigatorio {
@@ -418,8 +395,16 @@
 /* Rótulo e dica na mesma linha; o campo vem embaixo. */
 .campo {
   display: block;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.campo small {
+  text-transform: none;
+  letter-spacing: 0;
 }
 
 .campo > input,
@@ -447,11 +432,14 @@
   min-height: 46px;
   padding: 10px 12px;
   border-radius: var(--raio-sm);
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--border);
   background: var(--campo-bg);
   color: var(--text);
   font: inherit;
+  font-size: 15px;
   font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
   transition: border-color 0.15s;
 }
 
@@ -526,10 +514,10 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 46px;
-  padding: 10px 20px;
-  border-radius: var(--raio-sm);
-  border: 1px solid var(--brand);
+  min-height: 48px;
+  padding: 10px 22px;
+  border-radius: 999px;
+  border: 1.5px solid var(--brand);
   background: var(--brand);
   color: var(--bg);
   font: inherit;
@@ -688,22 +676,16 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 3px 10px 3px 8px;
+  padding: 4px 10px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
   white-space: nowrap;
   color: var(--cor);
   background: color-mix(in srgb, var(--cor) 12%, transparent);
   border: 1px solid color-mix(in srgb, var(--cor) 35%, transparent);
-}
-
-.selo::before {
-  content: "";
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: currentColor;
 }
 
 .selo-published,
@@ -759,9 +741,9 @@
 }
 
 .filtros a {
-  padding: 7px 14px;
+  padding: 8px 16px;
   border-radius: 999px;
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--border);
   text-decoration: none;
   font-size: 14px;
   font-weight: 600;
@@ -774,9 +756,9 @@
 }
 
 .filtros a[aria-current="page"] {
-  background: var(--brand);
+  background: var(--text);
   color: var(--bg);
-  border-color: var(--brand);
+  border-color: var(--text);
   font-weight: 800;
 }
 
@@ -795,7 +777,7 @@
 
 .numeros {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 12px;
 }
 
@@ -1023,6 +1005,7 @@ a.numero:hover {
 }
 
 .fita-aviso {
+  font-family: var(--font-brand), sans-serif;
   position: absolute;
   left: -40px;
   right: -40px;

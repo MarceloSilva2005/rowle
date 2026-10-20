@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { Anton, Archivo } from "next/font/google";
+import { Anton, Archivo, Bungee } from "next/font/google";
 import "./globals.css";
 
 const anton = Anton({ weight: "400", subsets: ["latin"], variable: "--font-display" });
+const bungee = Bungee({ weight: "400", subsets: ["latin"], variable: "--font-brand" });
 const archivo = Archivo({ weight: ["400", "600", "800"], subsets: ["latin"], variable: "--font-body" });
 
 export const metadata: Metadata = {
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="pt-BR" className={`${anton.variable} ${archivo.variable}`}>
+    <html lang="pt-BR" className={`${anton.variable} ${archivo.variable} ${bungee.variable}`}>
       <body>{children}</body>
     </html>
   );

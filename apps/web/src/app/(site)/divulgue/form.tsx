@@ -57,7 +57,7 @@ export function SugestaoForm({ categories }: { categories: { id: number; name: s
 
   return (
     <form onSubmit={onSubmit} className="site-form">
-      <Etapa n={1} titulo="Evento">
+      <Etapa titulo="Evento">
         <label className="campo campo-largo">
           Nome do evento <Obrigatorio />
           <input name="titulo" required maxLength={140} />
@@ -83,7 +83,7 @@ export function SugestaoForm({ categories }: { categories: { id: number; name: s
         </label>
       </Etapa>
 
-      <Etapa n={2} titulo="Data e local">
+      <Etapa titulo="Data e local">
         <label className="campo">
           Data e hora <Obrigatorio />
           <input name="data" type="datetime-local" required />
@@ -98,7 +98,7 @@ export function SugestaoForm({ categories }: { categories: { id: number; name: s
         </label>
       </Etapa>
 
-      <Etapa n={3} titulo="Ingressos">
+      <Etapa titulo="Ingressos">
         <label className="campo">
           Preço
           <input name="preco" maxLength={140} placeholder="Ex.: R$ 20 ou gratuito" />
@@ -113,7 +113,7 @@ export function SugestaoForm({ categories }: { categories: { id: number; name: s
         </label>
       </Etapa>
 
-      <Etapa n={4} titulo="Contato">
+      <Etapa titulo="Contato">
         <label className="campo campo-largo">
           E-mail para contato <small>opcional, usado só para falar sobre este envio</small>
           <input name="email" type="email" maxLength={254} autoComplete="email" />
@@ -132,15 +132,10 @@ export function SugestaoForm({ categories }: { categories: { id: number; name: s
   );
 }
 
-function Etapa({ n, titulo, children }: { n: number; titulo: string; children: ReactNode }) {
+function Etapa({ titulo, children }: { titulo: string; children: ReactNode }) {
   return (
     <fieldset className="cartao secao">
-      <legend className="secao-titulo">
-        <span className="secao-num" aria-hidden="true">
-          {n}
-        </span>
-        {titulo}
-      </legend>
+      <legend className="secao-titulo">{titulo}</legend>
       <div className="grade-campos">{children}</div>
     </fieldset>
   );

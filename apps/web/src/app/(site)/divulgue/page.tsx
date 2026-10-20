@@ -14,7 +14,7 @@ const asImage = (svg: string) => `data:image/svg+xml;utf8,${encodeURIComponent(s
 export default function DivulguePage() {
   return (
     <>
-      <section className="hero hero-grande" aria-labelledby="titulo-divulgue">
+      <section className="hero" aria-labelledby="titulo-divulgue">
         <div>
           <h1 id="titulo-divulgue">Divulgue seu rolê</h1>
           <p>O envio é gratuito. A curadoria analisa cada evento antes de publicar no app.</p>

@@ -12,7 +12,7 @@ const asImage = (svg: string) => `data:image/svg+xml;utf8,${encodeURIComponent(s
 export default function AcompanharPage() {
   return (
     <>
-      <section className="hero hero-grande" aria-labelledby="titulo-acompanhar">
+      <section className="hero" aria-labelledby="titulo-acompanhar">
         <div>
           <h1 id="titulo-acompanhar">Acompanhar sugestão</h1>
           <p>Informe o protocolo e o código recebidos no envio.</p>
