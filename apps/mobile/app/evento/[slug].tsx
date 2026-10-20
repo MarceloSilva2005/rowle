@@ -14,6 +14,7 @@ import { ClassInd } from '../../src/ui/ClassInd';
 import { Cover, Shade } from '../../src/ui/Cover';
 import { EstadoTela } from '../../src/ui/EstadoTela';
 import { Icon } from '../../src/ui/Icon';
+import { ReportSheet } from '../../src/ui/ReportSheet';
 
 const COVER_HEIGHT = 300;
 
@@ -98,6 +99,7 @@ function FichaPronta({ event, initialSession }: { event: EventDetail; initialSes
   const postponed = event.status === 'postponed' || session?.status === 'postponed';
   const verified = event.lastVerifiedAt ? new Intl.DateTimeFormat('pt-BR', { day: 'numeric', month: 'short', timeZone: 'America/Sao_Paulo' }).format(new Date(event.lastVerifiedAt)).replace('.', '') : null;
   const canBuy = session?.ticketUrl && !cancelled && session.status !== 'sold_out';
+  const [reporting, setReporting] = useState(false);
 
   return (
     <View style={styles.screen}>
@@ -191,10 +193,16 @@ function FichaPronta({ event, initialSession }: { event: EventDetail; initialSes
               <Text style={styles.verified}>Conferido pela curadoria em {verified}</Text>
             </View>
           ) : null}
+
+          <Pressable onPress={() => setReporting(true)} accessibilityRole="button" hitSlop={8} style={styles.report}>
+            <Icon name="aviso" size={18} color={colors.textMuted} hole={colors.bg} />
+            <Text style={styles.reportText}>Denunciar rolê</Text>
+          </Pressable>
         </View>
       </ScrollView>
 
       <TopBar event={event} session={session} />
+      <ReportSheet visible={reporting} eventId={event.id} sessionId={session?.id} onClose={() => setReporting(false)} />
 
       {session && !cancelled ? (
         <View style={[styles.ctaWrap, { paddingBottom: Math.max(insets.bottom, space.lg) }]}>
@@ -267,6 +275,8 @@ const styles = StyleSheet.create({
   lineText: { flex: 1, color: colors.text, fontFamily: fontFamily.bodySemiBold, fontSize: 14 },
   empty: { color: colors.textMuted, fontFamily: fontFamily.body, fontSize: 15, marginTop: space.lg },
   desc: { color: colors.text, fontFamily: fontFamily.body, fontSize: 16, lineHeight: 24, marginTop: space.lg },
+  report: { flexDirection: 'row', alignItems: 'center', gap: space.sm, alignSelf: 'flex-start', minHeight: 48, marginTop: space.lg },
+  reportText: { color: colors.textMuted, fontFamily: fontFamily.bodyBold, fontSize: 14, textDecorationLine: 'underline' },
   verified: { color: colors.textMuted, fontFamily: fontFamily.bodySemiBold, fontSize: 13 },
   ctaWrap: { position: 'absolute', left: 0, right: 0, bottom: 0, paddingHorizontal: space.xl - 4, paddingTop: space.md, backgroundColor: colors.bg },
   cta: { height: 58, borderRadius: 29, backgroundColor: colors.brand, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingLeft: 22, paddingRight: 8 },

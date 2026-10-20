@@ -5,6 +5,8 @@ begin;
 
 delete from public.events where slug like 'maestro-%';
 delete from public.venues where slug = 'maestro-casa';
+-- Zera o limite de denúncias: cada rodada denuncia um evento novo.
+truncate private.report_attempts;
 
 do $$
 declare

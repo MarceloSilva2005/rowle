@@ -1,0 +1,24 @@
+# Denúncia anônima pela ficha: motivo obrigatório, envio e confirmação.
+appId: br.com.rowle
+name: Denúncia
+---
+- runFlow: ../comum/abrir.yaml
+- runFlow:
+    file: ../comum/buscar.yaml
+    env:
+      BUSCA: "forro maestro"
+      TITULO: "Forró Maestro na Praça"
+- scrollUntilVisible:
+    element: "Denunciar rolê"
+    direction: DOWN
+- tapOn: "Denunciar rolê"
+- assertVisible: "Escolha um motivo"
+- tapOn: "Informação errada"
+- tapOn: "Conte o que você viu.*"
+- inputText: "O horario mudou"
+- tapOn: "Enviar denúncia"
+- extendedWaitUntil:
+    visible: "Denúncia enviada"
+    timeout: 15000
+- tapOn: "Fechar"
+- assertVisible: "Denunciar rolê"

@@ -22,6 +22,9 @@ run() { maestro --host localhost --port "$ADB_PORT" test -e AMANHA="$AMANHA" --t
 
 echo "== fluxos"
 run --exclude-tags servidor-fora "$DIR/fluxos"
+# A denúncia do fluxo 09 precisa ter chegado à fila do painel.
+REPORTS="$(docker exec "supabase_db_$PROJECT" psql -U postgres -tAc "select count(*) from public.reports r join public.events e on e.id = r.event_id where e.slug = 'maestro-forro' and r.reason = 'wrong_info' and r.status = 'open'")"
+[ "$REPORTS" = "1" ] || { echo "denúncia não chegou ao banco ($REPORTS)"; exit 1; }
 
 echo "== servidor fora do ar"
 trap 'docker unpause "supabase_kong_$PROJECT" > /dev/null 2>&1 || true' EXIT

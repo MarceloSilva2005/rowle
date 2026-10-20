@@ -367,6 +367,9 @@ isOneToOne: false
               "event_id": string,"next_starts_at": string,"same_day": boolean,"same_venue": boolean,"status": Database["public"]['Enums']["event_status"],"strong": boolean,"title": string,"title_similarity": number
             }[]
                            },
+"submit_report":
+{ Args: { "p_details"?: string,"p_event_id": string,"p_reason": Database["public"]['Enums']["report_reason"],"p_session_id"?: string }; Returns: undefined
+                           },
 "suggest_venues":
 { Args: { "p_name": string }; Returns: {
               "address": string,"id": string,"name": string,"region_name": string,"similarity": number
