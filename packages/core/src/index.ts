@@ -52,7 +52,7 @@ export {
   buildFeedSections,
 } from './discovery';
 export type { DateParts, DiscoverySession, FeedItem, FeedSection, FeedSectionKey } from './discovery';
-export { AGE_RATINGS, CLASSIND_COLORS, classIndLabel, classIndDescription, isAgeRating } from './classind';
+export { AGE_RATINGS, CLASSIND_COLORS, classIndDescription, isAgeRating } from './classind';
 export type { AgeRating } from './classind';
 export {
   normalizeSearch,

@@ -35,7 +35,7 @@ export function TabBar({ state, navigation }: BottomTabBarProps) {
             style={styles.tab}
           >
             <View style={[styles.pill, focused && styles.pillOn]}>
-              <Icon name={tab.icon} size={22} color={focused ? colors.onBrand : colors.textMuted} />
+              <Icon name={tab.icon} size={22} color={focused ? colors.onBrand : colors.textMuted} on={focused} />
             </View>
             <Text style={[styles.label, focused && styles.labelOn]}>{tab.label}</Text>
           </Pressable>

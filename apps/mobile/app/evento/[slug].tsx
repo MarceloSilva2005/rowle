@@ -110,7 +110,7 @@ function FichaPronta({ event, initialSession }: { event: EventDetail; initialSes
           <View style={styles.grab} />
           <View style={styles.catRow}>
             <Text style={[styles.cat, { color: categoryColors[categorySlug] ?? colors.textMuted }]}>{categoryName}</Text>
-            {event.ageRating ? <ClassInd rating={event.ageRating} official={event.ageRatingOfficial} size={32} /> : null}
+            {event.ageRating ? <ClassInd rating={event.ageRating} size={32} /> : null}
           </View>
           <Text style={styles.title} accessibilityRole="header">
             {event.title}
@@ -126,7 +126,7 @@ function FichaPronta({ event, initialSession }: { event: EventDetail; initialSes
 
           {cancelled || postponed ? (
             <View style={[styles.alert, cancelled ? styles.alertDanger : styles.alertWarn]}>
-              <Icon name="aviso" size={20} color={colors.bg} />
+              <Icon name="aviso" size={20} color={colors.bg} hole={cancelled ? colors.danger : colors.warning} />
               <View style={{ flex: 1 }}>
                 <Text style={styles.alertTitle}>{cancelled ? 'Cancelado' : 'Adiado'}</Text>
                 {event.statusNote ? <Text style={styles.alertText}>{event.statusNote}</Text> : null}

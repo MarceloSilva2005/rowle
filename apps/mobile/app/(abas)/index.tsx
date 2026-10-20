@@ -186,7 +186,7 @@ function RolePage({ item, catalog, height, topInset, position, total }: { item: 
       <View style={styles.bottom} pointerEvents="box-none">
         <View style={styles.tags}>
           <Text style={styles.chip}>{catalog.categories.get(s.categoryId)?.replace(' e vida noturna', '')}</Text>
-          {s.ageRating ? <ClassInd rating={s.ageRating} official={s.ageRatingOfficial} size={30} /> : null}
+          {s.ageRating ? <ClassInd rating={s.ageRating} size={30} /> : null}
           {s.isSponsored ? <Text style={styles.sponsored}>Patrocinado</Text> : null}
         </View>
         <Text style={[styles.title, { fontSize: titleSize, lineHeight: titleSize * 1.02 }]} numberOfLines={3}>
@@ -216,7 +216,7 @@ function Action({ icon, label, onPress, primary, filled }: { icon: IconName; lab
   return (
     <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={label} style={styles.action}>
       <View style={[styles.actionCircle, primary && styles.actionPrimary]}>
-        <Icon name={icon} size={22} color={primary ? colors.onBrand : colors.text} filled={filled} />
+        <Icon name={icon} size={22} color={primary ? colors.onBrand : colors.text} filled={filled} on={primary} />
       </View>
       <Text style={styles.actionText}>{label}</Text>
     </Pressable>
