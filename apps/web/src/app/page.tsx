@@ -1,4 +1,5 @@
 import { logoSvg, mascotSvg } from "@rowle/design";
+import Link from "next/link";
 
 const asImage = (svg: string) => `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 
@@ -11,6 +12,9 @@ export default function Home() {
       <img src={asImage(mascotSvg.acenando)} alt="Toupeira do Rowlê acenando" width={180} height={180} />
       <p style={{ fontWeight: 800, fontSize: 20 }}>Descubra rolês no DF.</p>
       <p style={{ color: "var(--text-muted)" }}>Em desenvolvimento.</p>
+      <p style={{ fontWeight: 800 }}>
+        <Link href="/divulgue">Divulgue seu rolê</Link> · <Link href="/acompanhar">Acompanhar sugestão</Link>
+      </p>
     </main>
   );
 }

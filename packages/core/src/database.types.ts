@@ -367,12 +367,22 @@ isOneToOne: false
               "event_id": string,"next_starts_at": string,"same_day": boolean,"same_venue": boolean,"status": Database["public"]['Enums']["event_status"],"strong": boolean,"title": string,"title_similarity": number
             }[]
                            },
+"submit_event_suggestion":
+{ Args: { "p_contact_email"?: string,"p_payload": Json }; Returns: {
+              "protocol": string,"tracking_code": string
+            }[]
+                           },
 "submit_report":
 { Args: { "p_details"?: string,"p_event_id": string,"p_reason": Database["public"]['Enums']["report_reason"],"p_session_id"?: string }; Returns: undefined
                            },
 "suggest_venues":
 { Args: { "p_name": string }; Returns: {
               "address": string,"id": string,"name": string,"region_name": string,"similarity": number
+            }[]
+                           },
+"track_submission":
+{ Args: { "p_code": string,"p_protocol": string }; Returns: {
+              "created_at": string,"public_note": string,"status": Database["public"]['Enums']["submission_status"],"title": string,"updated_at": string
             }[]
                            }
           }

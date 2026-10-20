@@ -1,0 +1,227 @@
+/* Site público: reaproveita o painel (campos, cartões, botões) numa coluna estreita. */
+
+.site-topo {
+  max-width: 760px;
+  padding-bottom: 12px;
+  justify-content: space-between;
+}
+
+.site-nav {
+  display: flex;
+  gap: 18px;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.site .site-nav a {
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.site .site-nav a:hover {
+  color: var(--text);
+}
+
+.site-conteudo {
+  max-width: 760px;
+}
+
+/* ----------------------------------------------------------- Abertura */
+
+.site-hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 8px 20px;
+  padding: 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--raio);
+  overflow: hidden;
+}
+
+.site .site-hero h1 {
+  font-size: clamp(40px, 8vw, 64px);
+  line-height: 0.95;
+  text-transform: uppercase;
+  text-shadow: 3px 3px 0 color-mix(in srgb, var(--brand) 70%, transparent);
+}
+
+.site-hero p {
+  margin-top: 10px;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-muted);
+  max-width: 34ch;
+}
+
+.site-hero img {
+  width: 150px;
+  height: 150px;
+  transform: rotate(4deg);
+}
+
+
+@media (max-width: 560px) {
+  .site-hero {
+    grid-template-columns: 1fr;
+    padding: 22px 18px;
+  }
+  .site-hero img {
+    position: absolute;
+    right: -10px;
+    top: -6px;
+    width: 104px;
+    height: 104px;
+    opacity: 0.95;
+  }
+  .site .site-hero h1 {
+    padding-right: 84px;
+  }
+}
+
+/* ----------------------------------------------------------- Formulário */
+
+.site-form {
+  display: grid;
+  gap: 16px;
+}
+
+/* .painel fieldset zera borda e espaçamento; aqui cada etapa é um cartão. */
+.site .site-etapa {
+  border: 1px solid var(--border);
+  padding: 22px;
+  margin: 0;
+  min-width: 0;
+}
+
+@media (max-width: 560px) {
+  .site .site-etapa {
+    padding: 18px 16px;
+  }
+}
+
+.site-etapa-titulo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  float: left;
+  width: 100%;
+  margin-bottom: 18px;
+  font-family: var(--font-display), sans-serif;
+  font-size: 22px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.site-etapa-titulo + * {
+  clear: both;
+}
+
+.site-etapa-num {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: var(--brand);
+  color: var(--bg);
+  font-size: 20px;
+  transform: rotate(-5deg);
+  box-shadow: 3px 3px 0 var(--text);
+}
+
+.site .site-obrigatorio {
+  color: var(--brand);
+}
+
+.site-enviar {
+  width: 100%;
+  min-height: 58px;
+  font-size: 17px;
+  border-radius: 999px;
+  box-shadow: var(--sombra-adesivo);
+}
+
+.site-enviar:hover:not(:disabled) {
+  box-shadow: 6px 6px 0 var(--text);
+}
+
+/* ----------------------------------------------------------- Enviada */
+
+.site-enviada {
+  display: grid;
+  gap: 14px;
+  padding: 28px;
+  background: var(--surface);
+  border: 1px solid var(--brand);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra-adesivo);
+}
+
+.site .site-enviada h2 {
+  font-size: 34px;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+/* Bilhete: duas metades separadas por picote, como o canhoto da ficha no app. */
+.site-bilhete {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: var(--campo-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--raio-sm);
+}
+
+.site-bilhete-celula {
+  display: grid;
+  gap: 4px;
+  padding: 16px 18px;
+}
+
+.site-bilhete-celula + .site-bilhete-celula {
+  border-left: 2px dashed var(--border);
+}
+
+.site-bilhete-rotulo {
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+.site-bilhete-valor {
+  font-family: ui-monospace, "Cascadia Mono", monospace;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--brand);
+  user-select: all;
+  overflow-wrap: anywhere;
+}
+
+.site-copiar {
+  justify-self: start;
+  min-height: 36px;
+  padding: 4px 12px;
+  font-size: 13px;
+}
+
+
+@media (max-width: 560px) {
+  .site-bilhete {
+    grid-template-columns: 1fr;
+  }
+  .site-bilhete-celula + .site-bilhete-celula {
+    border-left: 0;
+    border-top: 2px dashed var(--border);
+  }
+  .site-enviada {
+    padding: 22px 18px;
+  }
+}
+
