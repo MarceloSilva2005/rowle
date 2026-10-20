@@ -13,6 +13,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { requireStaff } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
+import { AcaoComMotivo } from "../../acao-com-motivo";
 import { ActionForm } from "../../action-form";
 import { changeReportStatus } from "./actions";
 import { Carregando, EstadoVazio } from "../../ui";
@@ -92,21 +93,27 @@ async function ReportList({ searchParams }: { searchParams: PageProps<"/painel/d
                 <span className="muted">O que foi feito:</span> {r.resolution_note}
               </p>
             ) : null}
-            {REPORT_TRANSITIONS[r.status].map((to) => (
-              <ActionForm
-                key={to}
-                action={changeReportStatus.bind(null, r.id, r.status, to)}
-                submitLabel={ACTION_LABELS[to]}
-                variant={to === "investigating" ? "secundario" : to === "dismissed" ? "perigo" : "primario"}
-              >
-                {reportRequiresNote(to) ? (
-                  <label className="campo">
-                    O que foi feito <small>só a equipe vê</small>
-                    <input name="nota" maxLength={1000} required />
-                  </label>
-                ) : null}
-              </ActionForm>
-            ))}
+            {REPORT_TRANSITIONS[r.status].length ? (
+              <div className="denuncia-acoes">
+                {REPORT_TRANSITIONS[r.status].map((to) =>
+                  reportRequiresNote(to) ? (
+                    <AcaoComMotivo
+                      key={to}
+                      label={`${ACTION_LABELS[to]}…`}
+                      confirmLabel={to === "resolved" ? "Resolver denúncia" : "Descartar denúncia"}
+                      action={changeReportStatus.bind(null, r.id, r.status, to)}
+                      fieldName="nota"
+                      fieldLabel="O que foi feito"
+                      hint="só a equipe vê"
+                      maxLength={1000}
+                      variant={to === "dismissed" ? "perigo" : "secundario"}
+                    />
+                  ) : (
+                    <ActionForm key={to} action={changeReportStatus.bind(null, r.id, r.status, to)} submitLabel={ACTION_LABELS[to]} variant="secundario" />
+                  ),
+                )}
+              </div>
+            ) : null}
           </article>
         ))
       ) : (

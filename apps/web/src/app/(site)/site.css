@@ -1,4 +1,4 @@
-/* Site público: reaproveita o painel (campos, cartões, botões) numa coluna estreita. */
+/* Site público: mesma base do painel (painel.css), numa coluna estreita. Aqui só o que é do site. */
 
 .site-topo {
   max-width: 760px;
@@ -26,126 +26,11 @@
   max-width: 760px;
 }
 
-/* ----------------------------------------------------------- Abertura */
-
-.site-hero {
-  position: relative;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  gap: 8px 20px;
-  padding: 28px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--raio);
-  overflow: hidden;
-}
-
-.site .site-hero h1 {
-  font-size: clamp(40px, 8vw, 64px);
-  line-height: 0.95;
-  text-transform: uppercase;
-  text-shadow: 3px 3px 0 color-mix(in srgb, var(--brand) 70%, transparent);
-}
-
-.site-hero p {
-  margin-top: 10px;
-  font-size: 17px;
-  font-weight: 600;
-  color: var(--text-muted);
-  max-width: 34ch;
-}
-
-.site-hero img {
-  width: 150px;
-  height: 150px;
-  transform: rotate(4deg);
-}
-
-
-@media (max-width: 560px) {
-  .site-hero {
-    grid-template-columns: 1fr;
-    padding: 22px 18px;
-  }
-  .site-hero img {
-    position: absolute;
-    right: -10px;
-    top: -6px;
-    width: 104px;
-    height: 104px;
-    opacity: 0.95;
-  }
-  .site .site-hero h1 {
-    padding-right: 84px;
-  }
-}
-
 /* ----------------------------------------------------------- Formulário */
 
 .site-form {
   display: grid;
   gap: 16px;
-}
-
-/* .painel fieldset zera borda e espaçamento; aqui cada etapa é um cartão. */
-.site .site-etapa {
-  border: 1px solid var(--border);
-  padding: 22px;
-  margin: 0;
-  min-width: 0;
-}
-
-@media (max-width: 560px) {
-  .site .site-etapa {
-    padding: 18px 16px;
-  }
-}
-
-.site-etapa-titulo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  float: left;
-  width: 100%;
-  margin-bottom: 18px;
-  font-family: var(--font-display), sans-serif;
-  font-size: 22px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.site-etapa-titulo + * {
-  clear: both;
-}
-
-.site-etapa-num {
-  display: inline-grid;
-  place-items: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 9px;
-  background: var(--brand);
-  color: var(--bg);
-  font-size: 20px;
-  transform: rotate(-5deg);
-  box-shadow: 3px 3px 0 var(--text);
-}
-
-.site .site-obrigatorio {
-  color: var(--brand);
-}
-
-.site-enviar {
-  width: 100%;
-  min-height: 58px;
-  font-size: 17px;
-  border-radius: 999px;
-  box-shadow: var(--sombra-adesivo);
-}
-
-.site-enviar:hover:not(:disabled) {
-  box-shadow: 6px 6px 0 var(--text);
 }
 
 /* ----------------------------------------------------------- Enviada */
@@ -210,7 +95,6 @@
   padding: 4px 12px;
   font-size: 13px;
 }
-
 
 @media (max-width: 560px) {
   .site-bilhete {

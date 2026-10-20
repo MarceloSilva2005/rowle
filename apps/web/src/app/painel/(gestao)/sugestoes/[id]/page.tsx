@@ -59,7 +59,7 @@ async function SubmissionDetail({ params }: { params: PageProps<"/painel/sugesto
 
   return (
     <>
-      <div style={{ display: "grid", gap: 8 }}>
+      <div className="cabecalho-pagina cabecalho-simples">
         <Link href="/painel/sugestoes" className="voltar">
           ← Sugestões
         </Link>

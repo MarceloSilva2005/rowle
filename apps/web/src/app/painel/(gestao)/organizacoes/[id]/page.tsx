@@ -34,7 +34,7 @@ async function OrganizationDetail({
 
   return (
     <>
-      <div style={{ display: "grid", gap: 8 }}>
+      <div className="cabecalho-pagina cabecalho-simples">
         <Link href="/painel/organizacoes" className="voltar">
           ← Organizações
         </Link>

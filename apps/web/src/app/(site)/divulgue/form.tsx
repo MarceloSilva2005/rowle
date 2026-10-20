@@ -125,7 +125,7 @@ export function SugestaoForm({ categories }: { categories: { id: number; name: s
           {error}
         </p>
       ) : null}
-      <button type="submit" className="botao site-enviar" disabled={pending}>
+      <button type="submit" className="botao botao-grande" disabled={pending}>
         {pending ? "Enviando…" : "Enviar sugestão"}
       </button>
     </form>
@@ -134,9 +134,9 @@ export function SugestaoForm({ categories }: { categories: { id: number; name: s
 
 function Etapa({ n, titulo, children }: { n: number; titulo: string; children: ReactNode }) {
   return (
-    <fieldset className="cartao site-etapa">
-      <legend className="site-etapa-titulo">
-        <span className="site-etapa-num" aria-hidden="true">
+    <fieldset className="cartao secao">
+      <legend className="secao-titulo">
+        <span className="secao-num" aria-hidden="true">
           {n}
         </span>
         {titulo}
@@ -146,7 +146,7 @@ function Etapa({ n, titulo, children }: { n: number; titulo: string; children: R
   );
 }
 
-const Obrigatorio = () => <small className="site-obrigatorio">obrigatório</small>;
+const Obrigatorio = () => <small className="obrigatorio">obrigatório</small>;
 
 function Enviada({ sent, onAgain }: { sent: Sent; onAgain: () => void }) {
   return (

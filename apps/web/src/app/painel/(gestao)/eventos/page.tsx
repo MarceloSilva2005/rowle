@@ -15,9 +15,6 @@ export default function EventosPage({ searchParams }: PageProps<"/painel/eventos
           <h1>Eventos</h1>
         </div>
         <div className="acoes" style={{ marginTop: 0 }}>
-          <Link href="/painel/eventos/novo" className="botao botao-secundario">
-            Novo evento
-          </Link>
           <Link href="/painel/eventos/assistente" className="botao">
             Colar divulgação
           </Link>

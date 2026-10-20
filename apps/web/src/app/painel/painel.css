@@ -125,6 +125,49 @@
   display: contents;
 }
 
+/* Grupos do menu separados por um traço fino. */
+.painel-nav-grupo {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+}
+
+.painel-nav-grupo + .painel-nav-grupo::before {
+  content: "";
+  width: 1px;
+  height: 18px;
+  margin: 0 8px;
+  background: var(--border);
+}
+
+.painel-nav-contador {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  margin-left: 6px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--warning);
+  color: var(--bg);
+  font-size: 12px;
+  font-weight: 800;
+  vertical-align: 1px;
+}
+
+.painel-conta .painel-novo {
+  min-height: 38px;
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-size: 14px;
+}
+
+@media (max-width: 760px) {
+  .painel-quem {
+    display: none;
+  }
+}
+
 @media (max-width: 560px) {
   .painel-topo-linha {
     padding: 10px 16px 0;
@@ -159,15 +202,19 @@
 .painel h1 {
   font-family: var(--font-display), sans-serif;
   font-weight: 400;
-  font-size: clamp(30px, 4vw, 42px);
-  line-height: 1.05;
+  font-size: clamp(32px, 5vw, 48px);
+  line-height: 1;
+  text-transform: uppercase;
+  text-shadow: 3px 3px 0 color-mix(in srgb, var(--brand) 70%, transparent);
   letter-spacing: 0.5px;
   overflow-wrap: anywhere;
 }
 
-.painel h2 {
+.painel h2,
+.painel legend {
   font-family: var(--font-display), sans-serif;
   font-weight: 400;
+  text-transform: uppercase;
   font-size: 22px;
   line-height: 1.15;
   letter-spacing: 0.4px;
@@ -193,27 +240,132 @@
   color: var(--text-muted);
 }
 
-.cabecalho-pagina {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 16px;
-}
-
-.cabecalho-pagina > div:first-child {
+/* Abertura de página, igual no painel e no site: cartão, título grande em caixa
+   alta com a sombra lima e a toupeira à direita. */
+.cabecalho-pagina,
+.hero {
+  position: relative;
   display: grid;
-  gap: 6px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px 20px;
+  padding: 24px 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--raio);
+  overflow: hidden;
 }
 
+.cabecalho-pagina > div:first-child,
+.hero > div:first-child {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+}
+
+.hero p,
+.cabecalho-pagina p {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-muted);
+  max-width: 52ch;
+}
+
+.hero img,
 .cabecalho-pagina img {
-  margin-bottom: -24px;
+  width: 96px;
+  height: 96px;
+  transform: rotate(4deg);
+}
+
+.hero-grande img {
+  width: 150px;
+  height: 150px;
 }
 
 @media (max-width: 560px) {
-  .cabecalho-pagina img {
-    display: none;
+  .cabecalho-pagina,
+  .hero {
+    grid-template-columns: 1fr;
+    padding: 20px 18px;
   }
+  .hero img,
+  .cabecalho-pagina img {
+    position: absolute;
+    right: -10px;
+    top: -6px;
+    width: 92px;
+    height: 92px;
+  }
+  .painel .hero h1,
+  .painel .cabecalho-pagina h1 {
+    padding-right: 76px;
+  }
+}
+
+/* Página de um item: voltar, título e selos empilhados, sem toupeira. */
+.painel .cabecalho-simples {
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: start;
+  gap: 8px;
+}
+
+/* Seção com título numerado (formulários em etapas). */
+.painel .secao {
+  border: 1px solid var(--border);
+  padding: 22px;
+  margin: 0;
+  min-width: 0;
+}
+
+@media (max-width: 560px) {
+  .painel .secao {
+    padding: 18px 16px;
+  }
+}
+
+.painel .secao-titulo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  float: left;
+  width: 100%;
+  margin-bottom: 18px;
+}
+
+.secao-titulo + * {
+  clear: both;
+}
+
+.secao-num {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: var(--brand);
+  color: var(--bg);
+  font-family: var(--font-display), sans-serif;
+  font-size: 20px;
+  transform: rotate(-5deg);
+  box-shadow: 3px 3px 0 var(--text);
+}
+
+.painel .obrigatorio {
+  color: var(--brand);
+}
+
+.botao-grande {
+  width: 100%;
+  min-height: 58px;
+  font-size: 17px;
+  border-radius: 999px;
+  box-shadow: var(--sombra-adesivo);
+}
+
+.botao-grande:hover:not(:disabled) {
+  box-shadow: 6px 6px 0 var(--text);
 }
 
 .voltar {
@@ -643,7 +795,7 @@
 
 .numeros {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
   gap: 12px;
 }
 
@@ -986,4 +1138,60 @@ a.numero:hover {
 .acao-com-motivo-form {
   margin-top: 14px;
   max-width: 560px;
+}
+
+/* ------------------------------------------------- Página de um item */
+
+/* Edição à esquerda; situação e histórico à direita, acompanhando a rolagem. */
+.detalhe-grade {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 24px;
+  align-items: start;
+}
+
+.detalhe-principal,
+.detalhe-lateral {
+  display: grid;
+  gap: 24px;
+  min-width: 0;
+}
+
+.detalhe-lateral {
+  position: sticky;
+  top: 120px;
+}
+
+.detalhe-lateral .acoes-situacao {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.detalhe-lateral .acoes-situacao .botao,
+.detalhe-lateral .acoes-situacao summary {
+  width: 100%;
+}
+
+@media (max-width: 1000px) {
+  .detalhe-grade {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  /* No celular, a situação vem antes da edição. */
+  .detalhe-lateral {
+    position: static;
+    order: -1;
+  }
+}
+
+/* Denúncia: as ações ficam numa fileira; motivo só abre ao clicar. */
+.denuncia-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.denuncia-acoes > form .acoes,
+.denuncia-acoes .acao-com-motivo .acoes {
+  margin-top: 0;
 }

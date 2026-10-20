@@ -1,7 +1,9 @@
+import { OPEN_REPORT_STATUSES, OPEN_SUBMISSION_STATUSES } from "@rowle/core";
 import { logoSvg } from "@rowle/design";
 import Link from "next/link";
 import { Suspense } from "react";
 import { requireStaff } from "@/lib/auth";
+import { createClient } from "@/lib/supabase/server";
 import { signOut } from "../(sessao)/entrar/actions";
 import { NavLinks, PainelNav } from "./nav";
 
@@ -18,9 +20,12 @@ export default function GestaoLayout({ children }: LayoutProps<"/painel">) {
             <span className="etiqueta-fita">Curadoria</span>
           </Link>
           <Suspense fallback={<NavLinks />}>
-            <PainelNav />
+            <NavWithCounts />
           </Suspense>
           <div className="painel-conta">
+            <Link href="/painel/eventos/novo" className="botao painel-novo">
+              Novo evento
+            </Link>
             <Suspense fallback={<span className="muted">…</span>}>
               <StaffBadge />
             </Suspense>
@@ -37,10 +42,20 @@ export default function GestaoLayout({ children }: LayoutProps<"/painel">) {
   );
 }
 
+async function NavWithCounts() {
+  await requireStaff();
+  const supabase = await createClient();
+  const [submissions, reports] = await Promise.all([
+    supabase.from("submissions").select("id", { count: "exact", head: true }).in("status", [...OPEN_SUBMISSION_STATUSES]),
+    supabase.from("reports").select("id", { count: "exact", head: true }).in("status", [...OPEN_REPORT_STATUSES]),
+  ]);
+  return <PainelNav counts={{ submissions: submissions.count ?? 0, reports: reports.count ?? 0 }} />;
+}
+
 async function StaffBadge() {
   const staff = await requireStaff();
   return (
-    <span className="muted">
+    <span className="muted painel-quem">
       {staff.name} · {staff.role === "admin" ? "admin" : "curadoria"}
     </span>
   );
