@@ -3,6 +3,12 @@ appId: br.com.rowle
 name: Navegação entre rolês e abas
 ---
 - runFlow: ../comum/abrir.yaml
+# O feed abre em "Hoje" quando há rolê hoje (inclusive eventos de amostra do banco
+# local, com um só). Em "Próximos" sempre há os rolês dos fixtures para deslizar.
+- tapOn: "Filtros"
+- tapOn: "Limpar"
+- tapOn: "Ver .* rol.*"
+- assertVisible: "Dia: Próximos.*"
 - assertVisible: "1 de .*"
 - retry:
     maxRetries: 2

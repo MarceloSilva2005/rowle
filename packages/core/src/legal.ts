@@ -5,7 +5,7 @@
  */
 
 export const LEGAL_CONTROLLER = 'Marcelo Henrique Silva Costa';
-export const LEGAL_CONTACT_EMAIL = 'marcelohsc7@gmail.com';
+export const LEGAL_CONTACT_EMAIL = 'contato.rowle@gmail.com';
 
 export const RETENTION = {
   submissionEmailDays: 180,

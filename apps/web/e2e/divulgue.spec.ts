@@ -65,7 +65,7 @@ test("política e termos abrem pelo rodapé, com o contato", async ({ page }) =>
   await page.goto("/divulgue");
   await page.getByRole("contentinfo").getByRole("link", { name: "Privacidade" }).click();
   await expect(page.getByRole("heading", { level: 1, name: "Política de privacidade" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "marcelohsc7@gmail.com" }).first()).toHaveAttribute("href", "mailto:marcelohsc7@gmail.com");
+  await expect(page.getByRole("link", { name: "contato.rowle@gmail.com" }).first()).toHaveAttribute("href", "mailto:contato.rowle@gmail.com");
   await page.getByRole("contentinfo").getByRole("link", { name: "Termos de uso" }).click();
   await expect(page.getByRole("heading", { level: 1, name: "Termos de uso" })).toBeVisible();
   await expect(page.getByText("O Rowlê não vende ingressos")).toBeVisible();
