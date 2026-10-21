@@ -52,11 +52,23 @@ isOneToOne: false
       referencedRelation: "events"
       referencedColumns: ["id"]
     },{
+      foreignKeyName: "duplicate_dismissals_event_id_fkey"
+      columns: ["event_id"]
+isOneToOne: false
+      referencedRelation: "revalidation_queue"
+      referencedColumns: ["event_id"]
+    },{
       foreignKeyName: "duplicate_dismissals_other_event_id_fkey"
       columns: ["other_event_id"]
 isOneToOne: false
       referencedRelation: "events"
       referencedColumns: ["id"]
+    },{
+      foreignKeyName: "duplicate_dismissals_other_event_id_fkey"
+      columns: ["other_event_id"]
+isOneToOne: false
+      referencedRelation: "revalidation_queue"
+      referencedColumns: ["event_id"]
     }
                   ]
                 },"event_entry_timings": {
@@ -77,6 +89,12 @@ isOneToOne: false
 isOneToOne: true
       referencedRelation: "events"
       referencedColumns: ["id"]
+    },{
+      foreignKeyName: "event_entry_timings_event_id_fkey"
+      columns: ["event_id"]
+isOneToOne: true
+      referencedRelation: "revalidation_queue"
+      referencedColumns: ["event_id"]
     }
                   ]
                 },"events": {
@@ -172,6 +190,12 @@ isOneToOne: false
       referencedRelation: "events"
       referencedColumns: ["id"]
     },{
+      foreignKeyName: "reports_event_id_fkey"
+      columns: ["event_id"]
+isOneToOne: false
+      referencedRelation: "revalidation_queue"
+      referencedColumns: ["event_id"]
+    },{
       foreignKeyName: "reports_session_id_fkey"
       columns: ["session_id"]
 isOneToOne: false
@@ -187,14 +211,14 @@ isOneToOne: false
                   ]
                 },"sessions": {
                   Row: {
-                    "created_at": string,"ends_at": string | null,"event_id": string,"id": string,"notes": string | null,"price_kind": Database["public"]['Enums']["price_kind"],"price_max_cents": number | null,"price_min_cents": number | null,"starts_at": string,"status": Database["public"]['Enums']["session_status"],"ticket_url": string | null,"ticket_url_checked_at": string | null,"ticket_url_status": Database["public"]['Enums']["link_status"],"time_confirmed": boolean,"updated_at": string,"venue_id": string
+                    "created_at": string,"ends_at": string | null,"event_id": string,"id": string,"notes": string | null,"price_kind": Database["public"]['Enums']["price_kind"],"price_max_cents": number | null,"price_min_cents": number | null,"starts_at": string,"status": Database["public"]['Enums']["session_status"],"ticket_url": string | null,"ticket_url_checked_at": string | null,"ticket_url_failures": number,"ticket_url_status": Database["public"]['Enums']["link_status"],"time_confirmed": boolean,"updated_at": string,"venue_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"ends_at"?: string | null,"event_id": string,"id"?: string,"notes"?: string | null,"price_kind"?: Database["public"]['Enums']["price_kind"],"price_max_cents"?: number | null,"price_min_cents"?: number | null,"starts_at": string,"status"?: Database["public"]['Enums']["session_status"],"ticket_url"?: string | null,"ticket_url_checked_at"?: string | null,"ticket_url_status"?: Database["public"]['Enums']["link_status"],"time_confirmed"?: boolean,"updated_at"?: string,"venue_id": string
+                    "created_at"?: string,"ends_at"?: string | null,"event_id": string,"id"?: string,"notes"?: string | null,"price_kind"?: Database["public"]['Enums']["price_kind"],"price_max_cents"?: number | null,"price_min_cents"?: number | null,"starts_at": string,"status"?: Database["public"]['Enums']["session_status"],"ticket_url"?: string | null,"ticket_url_checked_at"?: string | null,"ticket_url_failures"?: number,"ticket_url_status"?: Database["public"]['Enums']["link_status"],"time_confirmed"?: boolean,"updated_at"?: string,"venue_id": string
                   }
                   Update: {
-                    "created_at"?: string,"ends_at"?: string | null,"event_id"?: string,"id"?: string,"notes"?: string | null,"price_kind"?: Database["public"]['Enums']["price_kind"],"price_max_cents"?: number | null,"price_min_cents"?: number | null,"starts_at"?: string,"status"?: Database["public"]['Enums']["session_status"],"ticket_url"?: string | null,"ticket_url_checked_at"?: string | null,"ticket_url_status"?: Database["public"]['Enums']["link_status"],"time_confirmed"?: boolean,"updated_at"?: string,"venue_id"?: string
+                    "created_at"?: string,"ends_at"?: string | null,"event_id"?: string,"id"?: string,"notes"?: string | null,"price_kind"?: Database["public"]['Enums']["price_kind"],"price_max_cents"?: number | null,"price_min_cents"?: number | null,"starts_at"?: string,"status"?: Database["public"]['Enums']["session_status"],"ticket_url"?: string | null,"ticket_url_checked_at"?: string | null,"ticket_url_failures"?: number,"ticket_url_status"?: Database["public"]['Enums']["link_status"],"time_confirmed"?: boolean,"updated_at"?: string,"venue_id"?: string
                   }
                   Relationships: [
                     {
@@ -203,6 +227,12 @@ isOneToOne: false
 isOneToOne: false
       referencedRelation: "events"
       referencedColumns: ["id"]
+    },{
+      foreignKeyName: "sessions_event_id_fkey"
+      columns: ["event_id"]
+isOneToOne: false
+      referencedRelation: "revalidation_queue"
+      referencedColumns: ["event_id"]
     },{
       foreignKeyName: "sessions_venue_id_fkey"
       columns: ["venue_id"]
@@ -229,6 +259,12 @@ isOneToOne: false
 isOneToOne: false
       referencedRelation: "events"
       referencedColumns: ["id"]
+    },{
+      foreignKeyName: "sources_event_id_fkey"
+      columns: ["event_id"]
+isOneToOne: false
+      referencedRelation: "revalidation_queue"
+      referencedColumns: ["event_id"]
     }
                   ]
                 },"staff": {
@@ -263,6 +299,12 @@ isOneToOne: false
 isOneToOne: false
       referencedRelation: "events"
       referencedColumns: ["id"]
+    },{
+      foreignKeyName: "submissions_event_id_fkey"
+      columns: ["event_id"]
+isOneToOne: false
+      referencedRelation: "revalidation_queue"
+      referencedColumns: ["event_id"]
     }
                   ]
                 },"venues": {
@@ -307,6 +349,12 @@ isOneToOne: false
       referencedRelation: "events"
       referencedColumns: ["id"]
     },{
+      foreignKeyName: "sessions_event_id_fkey"
+      columns: ["event_id"]
+isOneToOne: false
+      referencedRelation: "revalidation_queue"
+      referencedColumns: ["event_id"]
+    },{
       foreignKeyName: "sessions_venue_id_fkey"
       columns: ["venue_id"]
 isOneToOne: false
@@ -332,7 +380,21 @@ isOneToOne: false
 isOneToOne: false
       referencedRelation: "events"
       referencedColumns: ["id"]
+    },{
+      foreignKeyName: "sources_event_id_fkey"
+      columns: ["event_id"]
+isOneToOne: false
+      referencedRelation: "revalidation_queue"
+      referencedColumns: ["event_id"]
     }
+                  ]
+                },"revalidation_queue": {
+                  Row: {
+                    "bad_links": number | null,"event_id": string | null,"last_verified_at": string | null,"next_starts_at": string | null,"reason": string | null,"status": Database["public"]['Enums']["event_status"] | null,"title": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
                   ]
                 }
           }
@@ -362,10 +424,16 @@ isOneToOne: false
 "is_staff":
 { Args: Record<PropertyKey, never>; Returns: boolean
                            },
+"mark_event_verified":
+{ Args: { "p_event_id": string }; Returns: undefined
+                           },
 "possible_duplicates_of_event":
 { Args: { "p_event_id": string }; Returns: {
               "event_id": string,"next_starts_at": string,"same_day": boolean,"same_venue": boolean,"status": Database["public"]['Enums']["event_status"],"strong": boolean,"title": string,"title_similarity": number
             }[]
+                           },
+"session_ends_at":
+{ Args: { "ends_at": string,"starts_at": string,"time_confirmed": boolean }; Returns: string
                            },
 "submit_event_suggestion":
 { Args: { "p_contact_email"?: string,"p_payload": Json }; Returns: {

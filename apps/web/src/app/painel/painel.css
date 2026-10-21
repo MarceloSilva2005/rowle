@@ -1178,3 +1178,19 @@ a.numero:hover {
 .denuncia-acoes .acao-com-motivo .acoes {
   margin-top: 0;
 }
+
+/* Ingresso na tabela de sessões: link, resultado da checagem e a ação da equipe. */
+.link-ingresso {
+  display: grid;
+  gap: 6px;
+  justify-items: start;
+}
+
+.link-ingresso .acoes {
+  margin-top: 0;
+}
+
+.link-ingresso .botao {
+  padding: 6px 12px;
+  font-size: 13px;
+}

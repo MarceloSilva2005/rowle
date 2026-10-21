@@ -40,6 +40,7 @@ test("cadastra, revisa, publica e cancela um evento sem SQL", async ({ page }) =
   await expect(page.getByRole("heading", { level: 1, name: title })).toBeVisible();
   await expect(page.locator(".selo").first()).toHaveText("Rascunho");
   const slug = (await page.getByText(/^\/samba-de-teste-/).textContent())!.slice(1);
+  const eventUrl = page.url();
 
   // Sessão
   await page.locator("[name=local]").selectOption({ label: `${venue} · Plano Piloto` });
@@ -70,6 +71,21 @@ test("cadastra, revisa, publica e cancela um evento sem SQL", async ({ page }) =
     price_min_cents: number;
   }[];
   expect(visible).toEqual([expect.objectContaining({ title, price_min_cents: 3000 })]);
+
+  // Link suspeito some do app e põe o evento na fila de revalidação até a equipe liberar.
+  await page.getByRole("button", { name: "Marcar suspeito" }).click();
+  await expect(page.getByText("Link marcado como suspeito.")).toBeVisible();
+  expect(await publicRows(`discoverable_sessions?event_slug=eq.${slug}&select=ticket_url`)).toEqual([{ ticket_url: null }]);
+  await page.goto("/painel/revalidar");
+  const queued = page.locator("article", { hasText: title });
+  await expect(queued.getByText("Link com problema")).toBeVisible();
+  await queued.getByRole("link", { name: "Ver sessões" }).click();
+  await page.getByRole("button", { name: "Link funciona" }).click();
+  await expect(page.getByText("Link liberado.")).toBeVisible();
+  await page.goto("/painel/revalidar");
+  await expect(page.getByRole("heading", { name: "Revalidar" })).toBeVisible();
+  await expect(page.locator("article", { hasText: title })).toHaveCount(0);
+  await page.goto(eventUrl);
 
   // Cancelamento com motivo
   const cancel = statusPanel(page, "Cancelar…");

@@ -100,6 +100,21 @@ export async function removeSession(eventId: string, sessionId: string): Promise
   return { ok: "Sessão removida." };
 }
 
+/** Decisão da equipe sobre o link de ingresso: liberar (falso alarme) ou marcar como suspeito. */
+export async function setTicketLinkStatus(eventId: string, sessionId: string, status: "ok" | "suspicious"): Promise<FormState> {
+  await requireStaff();
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("sessions")
+    .update({ ticket_url_status: status, ticket_url_failures: 0, ticket_url_checked_at: new Date().toISOString() })
+    .eq("id", sessionId)
+    .eq("event_id", eventId);
+  if (error) return { error: friendlyError(error) };
+  revalidatePath(`/painel/eventos/${eventId}`);
+  revalidatePath("/painel/revalidar");
+  return { ok: status === "ok" ? "Link liberado." : "Link marcado como suspeito." };
+}
+
 export async function addSource(eventId: string, _state: FormState, formData: FormData): Promise<FormState> {
   await requireStaff();
   const kind = text(formData, "fonte_tipo");

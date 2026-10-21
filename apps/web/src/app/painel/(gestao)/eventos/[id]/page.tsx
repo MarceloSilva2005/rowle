@@ -14,7 +14,7 @@ import { requireStaff } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { AcaoComMotivo } from "../../../acao-com-motivo";
 import { ActionForm } from "../../../action-form";
-import { addSession, addSource, changeStatus, removeSession, updateEvent } from "../actions";
+import { addSession, addSource, changeStatus, removeSession, setTicketLinkStatus, updateEvent } from "../actions";
 import { DuplicateList } from "../duplicates";
 import { EventFields } from "../event-fields";
 import { Carregando } from "../../../ui";
@@ -54,6 +54,13 @@ const SESSION_STATUS: Record<string, string> = {
   sold_out: "Esgotada",
 };
 
+const LINK_STATUS: Record<string, string> = {
+  unchecked: "Ainda não checado",
+  ok: "Link respondeu",
+  broken: "Link quebrado",
+  suspicious: "Link suspeito",
+};
+
 export default function EventoPage({ params }: PageProps<"/painel/eventos/[id]">) {
   return (
     <Suspense fallback={<Carregando texto="Carregando evento…" />}>
@@ -83,13 +90,13 @@ async function EventDetail({ params }: { params: PageProps<"/painel/eventos/[id]
       supabase.from("venues").select("id, name, regions(name)").order("name"),
       supabase
         .from("sessions")
-        .select("id, starts_at, time_confirmed, status, price_kind, price_min_cents, price_max_cents, ticket_url, venues(name)")
+        .select("id, starts_at, time_confirmed, status, price_kind, price_min_cents, price_max_cents, ticket_url, ticket_url_status, ticket_url_checked_at, venues(name)")
         .eq("event_id", id)
         .order("starts_at"),
       supabase.from("sources").select("id, kind, url, description, last_verified_at").eq("event_id", id).order("created_at"),
       supabase
         .from("audit_log")
-        .select("id, action, changed_at, old_data, new_data")
+        .select("id, action, actor, changed_at, old_data, new_data")
         .eq("table_name", "events")
         .eq("row_id", id)
         .order("changed_at", { ascending: false })
@@ -161,9 +168,36 @@ async function EventDetail({ params }: { params: PageProps<"/painel/eventos/[id]
                         <td>{SESSION_STATUS[s.status]}</td>
                         <td>
                           {s.ticket_url ? (
-                            <a href={s.ticket_url} target="_blank" rel="noopener noreferrer">
-                              Abrir link
-                            </a>
+                            <div className="link-ingresso">
+                              <a href={s.ticket_url} target="_blank" rel="noopener noreferrer">
+                                Abrir link
+                              </a>
+                              <span
+                                className={`selo ${s.ticket_url_status === "broken" || s.ticket_url_status === "suspicious" ? "selo-urgente" : ""}`}
+                                title={
+                                  s.ticket_url_checked_at
+                                    ? `Checado em ${new Date(s.ticket_url_checked_at).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })}`
+                                    : undefined
+                                }
+                              >
+                                {LINK_STATUS[s.ticket_url_status]}
+                              </span>
+                              {s.ticket_url_status === "broken" || s.ticket_url_status === "suspicious" ? (
+                                <ActionForm
+                                  action={setTicketLinkStatus.bind(null, event.id, s.id, "ok")}
+                                  submitLabel="Link funciona"
+                                  variant="secundario"
+                                  pendingLabel="Liberando…"
+                                />
+                              ) : (
+                                <ActionForm
+                                  action={setTicketLinkStatus.bind(null, event.id, s.id, "suspicious")}
+                                  submitLabel="Marcar suspeito"
+                                  variant="perigo"
+                                  pendingLabel="Marcando…"
+                                />
+                              )}
+                            </div>
                           ) : (
                             <span className="muted">Sem link</span>
                           )}
@@ -341,7 +375,9 @@ async function EventDetail({ params }: { params: PageProps<"/painel/eventos/[id]
                         : "Dados editados";
                   return (
                     <li key={h.id}>
-                      {what} <span className="muted">· {new Date(h.changed_at).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })}</span>
+                      {what}
+                      {h.action !== "INSERT" && !h.actor ? <span className="muted"> (automático)</span> : null}{" "}
+                      <span className="muted">· {new Date(h.changed_at).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })}</span>
                     </li>
                   );
                 })}

@@ -45,11 +45,16 @@ export default function GestaoLayout({ children }: LayoutProps<"/painel">) {
 async function NavWithCounts() {
   await requireStaff();
   const supabase = await createClient();
-  const [submissions, reports] = await Promise.all([
+  const [submissions, reports, revalidation] = await Promise.all([
     supabase.from("submissions").select("id", { count: "exact", head: true }).in("status", [...OPEN_SUBMISSION_STATUSES]),
     supabase.from("reports").select("id", { count: "exact", head: true }).in("status", [...OPEN_REPORT_STATUSES]),
+    supabase.from("revalidation_queue").select("event_id", { count: "exact", head: true }),
   ]);
-  return <PainelNav counts={{ submissions: submissions.count ?? 0, reports: reports.count ?? 0 }} />;
+  return (
+    <PainelNav
+      counts={{ submissions: submissions.count ?? 0, reports: reports.count ?? 0, revalidation: revalidation.count ?? 0 }}
+    />
+  );
 }
 
 async function StaffBadge() {

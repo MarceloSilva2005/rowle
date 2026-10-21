@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-type NavLink = { href: string; label: string; exact?: boolean; count?: "submissions" | "reports" };
+type NavLink = { href: string; label: string; exact?: boolean; count?: keyof QueueCounts };
 
 // Filas primeiro (o trabalho do dia), depois o catálogo. Criar evento é botão, não página do menu.
 const GROUPS: NavLink[][] = [
@@ -11,6 +11,7 @@ const GROUPS: NavLink[][] = [
   [
     { href: "/painel/sugestoes", label: "Sugestões", count: "submissions" },
     { href: "/painel/denuncias", label: "Denúncias", count: "reports" },
+    { href: "/painel/revalidar", label: "Revalidar", count: "revalidation" },
   ],
   [
     { href: "/painel/eventos", label: "Eventos" },
@@ -19,7 +20,7 @@ const GROUPS: NavLink[][] = [
   ],
 ];
 
-export type QueueCounts = { submissions: number; reports: number };
+export type QueueCounts = { submissions: number; reports: number; revalidation: number };
 
 /** Menu do painel, marcando a seção atual. */
 export function PainelNav({ counts }: { counts?: QueueCounts }) {

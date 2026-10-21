@@ -36,7 +36,7 @@ async function countEvents(supabase: Awaited<ReturnType<typeof createClient>>, s
 async function Counts() {
   await requireStaff();
   const supabase = await createClient();
-  const [inReview, changes, draft, published, venues, submissions, reports, urgent] = await Promise.all([
+  const [inReview, changes, draft, published, venues, submissions, reports, urgent, revalidation, brokenLinks] = await Promise.all([
     countEvents(supabase, "in_review"),
     countEvents(supabase, "changes_requested"),
     countEvents(supabase, "draft"),
@@ -58,6 +58,15 @@ async function Counts() {
       .in("status", [...OPEN_REPORT_STATUSES])
       .in("reason", [...URGENT_REPORT_REASONS])
       .then((r) => r.count ?? 0),
+    supabase
+      .from("revalidation_queue")
+      .select("event_id", { count: "exact", head: true })
+      .then((r) => r.count ?? 0),
+    supabase
+      .from("revalidation_queue")
+      .select("event_id", { count: "exact", head: true })
+      .eq("reason", "broken_link")
+      .then((r) => r.count ?? 0),
   ]);
 
   return (
@@ -72,6 +81,10 @@ async function Counts() {
           <Link href="/painel/sugestoes" className={`cartao numero ${submissions ? "numero-alerta" : ""}`}>
             <strong>{submissions}</strong>
             <span>Sugestões na fila</span>
+          </Link>
+          <Link href="/painel/revalidar" className={`cartao numero ${brokenLinks ? "numero-urgente" : revalidation ? "numero-alerta" : ""}`}>
+            <strong>{revalidation}</strong>
+            <span>{brokenLinks ? `Para revalidar · ${brokenLinks} com problema no link` : "Para revalidar"}</span>
           </Link>
           <Link href="/painel/eventos?status=in_review" className={`cartao numero ${inReview ? "numero-alerta" : ""}`}>
             <strong>{inReview}</strong>
