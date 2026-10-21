@@ -1,3 +1,4 @@
+import { LEGAL_CONTACT_EMAIL } from "@rowle/core";
 import { logoSvg } from "@rowle/design";
 import Link from "next/link";
 import "../painel/painel.css";
@@ -22,6 +23,13 @@ export default function SiteLayout({ children }: LayoutProps<"/">) {
         </div>
       </header>
       <main className="painel-conteudo site-conteudo">{children}</main>
+      <footer className="site-rodape">
+        <nav aria-label="Informações">
+          <Link href="/privacidade">Privacidade</Link>
+          <Link href="/termos">Termos de uso</Link>
+          <a href={`mailto:${LEGAL_CONTACT_EMAIL}`}>Contato</a>
+        </nav>
+      </footer>
     </div>
   );
 }

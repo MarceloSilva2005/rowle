@@ -1,0 +1,20 @@
+# Política e termos abrem dentro do app, pela aba Você.
+appId: br.com.rowle
+name: Privacidade e termos
+---
+- runFlow: ../comum/abrir.yaml
+- tapOn: "Você"
+- scrollUntilVisible:
+    element: "Privacidade"
+    direction: DOWN
+- tapOn: "Privacidade"
+- assertVisible: "Política de privacidade"
+- assertVisible: "Quem é o responsável"
+- scrollUntilVisible:
+    element: "Seus direitos"
+    direction: DOWN
+- tapOn: "Voltar"
+- tapOn: "Termos de uso"
+- assertVisible: "O que é o Rowlê"
+- tapOn: "Voltar"
+- assertVisible: "Fale com a gente"

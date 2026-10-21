@@ -1,7 +1,7 @@
-import { formatCardDate, sessionIsOver } from '@rowle/core';
+import { formatCardDate, LEGAL_CONTACT_EMAIL, sessionIsOver } from '@rowle/core';
 import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
-import { FlatList, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Linking, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useCatalog } from '../../src/data/catalog';
 import { useSaved } from '../../src/data/saved';
@@ -10,7 +10,7 @@ import { EventRow } from '../../src/ui/EventRow';
 import { Icon } from '../../src/ui/Icon';
 import { Mascote } from '../../src/ui/Mascote';
 
-/** Você: salvos neste aparelho (sem conta) e a região preferida. */
+/** Você: salvos neste aparelho (sem conta), a região preferida, privacidade, termos e contato. */
 export default function Voce() {
   const insets = useSafeAreaInsets();
   const { saved, preferredRegion, setPreferredRegion } = useSaved();
@@ -89,6 +89,9 @@ export default function Voce() {
               </View>
               <Icon name="seta" size={16} color={colors.textMuted} />
             </Pressable>
+            <MenuLink label="Privacidade" onPress={() => router.push('/privacidade')} />
+            <MenuLink label="Termos de uso" onPress={() => router.push('/termos')} />
+            <MenuLink label="Fale com a gente" sub={LEGAL_CONTACT_EMAIL} onPress={() => Linking.openURL(`mailto:${LEGAL_CONTACT_EMAIL}`)} />
           </View>
         }
       />
@@ -109,6 +112,18 @@ export default function Voce() {
         </View>
       </Modal>
     </View>
+  );
+}
+
+function MenuLink({ label, sub, onPress }: { label: string; sub?: string; onPress: () => void }) {
+  return (
+    <Pressable style={styles.menuItem} onPress={onPress} accessibilityRole="button">
+      <View>
+        <Text style={styles.menuText}>{label}</Text>
+        {sub ? <Text style={styles.menuSub}>{sub}</Text> : null}
+      </View>
+      <Icon name="seta" size={16} color={colors.textMuted} />
+    </Pressable>
   );
 }
 

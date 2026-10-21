@@ -109,3 +109,59 @@
   }
 }
 
+
+/* ----------------------------------------------------------- Política e termos */
+
+.documento-legal {
+  display: grid;
+  gap: 8px;
+  line-height: 1.6;
+}
+
+.site .documento-legal h1 {
+  font-size: 40px;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.site .documento-legal h2 {
+  font-size: 22px;
+  margin: 20px 0 4px;
+}
+
+.documento-legal section {
+  display: grid;
+  gap: 10px;
+}
+
+.documento-legal p,
+.documento-legal li {
+  max-width: 68ch;
+}
+
+.documento-legal ul {
+  display: grid;
+  gap: 4px;
+  padding-left: 20px;
+}
+
+/* ----------------------------------------------------------- Rodapé */
+
+.site-rodape {
+  max-width: 760px;
+  margin: 40px auto 0;
+  padding: 20px 16px 32px;
+  border-top: 1px solid var(--border);
+}
+
+.site-rodape nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.site .site-rodape a {
+  color: var(--text-muted);
+}

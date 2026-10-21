@@ -128,6 +128,10 @@ export function SugestaoForm({ categories }: { categories: { id: number; name: s
       <button type="submit" className="botao botao-grande" disabled={pending}>
         {pending ? "Enviando…" : "Enviar sugestão"}
       </button>
+      <p className="muted" style={{ fontSize: 13 }}>
+        Ao enviar, você concorda com os <Link href="/termos">termos de uso</Link> e a{" "}
+        <Link href="/privacidade">política de privacidade</Link>.
+      </p>
     </form>
   );
 }

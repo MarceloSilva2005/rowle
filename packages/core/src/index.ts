@@ -68,3 +68,13 @@ export {
   stampLabel,
 } from './discovery';
 export type { DiscoveryNames, DiscoveryFilters, WeekDay } from './discovery';
+export {
+  LEGAL_CONTROLLER,
+  LEGAL_CONTACT_EMAIL,
+  LEGAL_DOCUMENTS,
+  PRIVACY_POLICY,
+  TERMS_OF_USE,
+  RETENTION,
+  formatLegalDate,
+} from './legal';
+export type { LegalDocument, LegalSection } from './legal';
